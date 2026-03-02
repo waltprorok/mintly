@@ -1,9 +1,9 @@
 /.phpunit.cache
+/database/database.sqlite
 /node_modules
 /public/build
 /public/hot
 /public/storage
-/database/database.sqlite
 /storage/*.key
 /vendor
 .env
