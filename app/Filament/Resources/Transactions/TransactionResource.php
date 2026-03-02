@@ -13,6 +13,7 @@ use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
@@ -39,7 +40,7 @@ class TransactionResource extends Resource
         return $schema->components([
 
             Hidden::make('user_id')
-                ->default(fn () => auth()->id())
+                ->default(fn() => auth()->id())
                 ->required(),
 
             Select::make('type')
@@ -102,30 +103,34 @@ class TransactionResource extends Resource
 
                 TextColumn::make('type')
                     ->badge()
-                    ->formatStateUsing(fn (string $state) => ucfirst($state))
-                    ->color(fn ($state) => match (strtolower($state)) {
-                        'income' => 'success',   // green
-                        'expense' => 'primary',  // blue
+                    ->formatStateUsing(fn($state) => ucfirst(strtolower($state)))
+                    ->color(fn($state) => match (strtolower($state)) {
+                        'income' => 'success', // green
+                        'expense' => 'info', // blue
                         default => 'gray',
+
                     })
                     ->sortable(),
 
                 TextColumn::make('category.name')
-                    ->label('Category')
-                    ->sortable()
-                    ->searchable(),
+                    ->sortable(),
+
+                TextColumn::make('merchant')
+                    ->sortable(),
 
                 TextColumn::make('amount')
                     ->money('USD')
                     ->sortable(),
 
-                IconColumn::make('status')
-                    ->label('Paid')
-                    ->boolean(),
-
                 IconColumn::make('is_recurring')
                     ->label('Recurring')
                     ->boolean(),
+
+                ToggleColumn::make('status')
+                    ->label('Paid')
+                    ->sortable()
+                    ->onColor('success')   // green when true
+                    ->offColor('gray') ,    // gray when false
             ])
             ->filters([
                 SelectFilter::make('type')
@@ -140,9 +145,9 @@ class TransactionResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index'  => Pages\ListTransactions::route('/'),
+            'index' => Pages\ListTransactions::route('/'),
             'create' => Pages\CreateTransaction::route('/create'),
-            'edit'   => Pages\EditTransaction::route('/{record}/edit'),
+            'edit' => Pages\EditTransaction::route('/{record}/edit'),
         ];
     }
 }

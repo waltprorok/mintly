@@ -83,17 +83,24 @@ class CategoryResource extends Resource
 
                 TextColumn::make('type')
                     ->badge()
+                    ->formatStateUsing(fn($state) => ucfirst(strtolower($state)))
+                    ->color(fn($state) => match (strtolower($state)) {
+                        'income' => 'success', // green
+                        'expense' => 'info', // blue
+                        default => 'gray',
+
+                    })
                     ->sortable(),
 
                 TextColumn::make('spend_classification')
                     ->label('Classification')
-                    ->badge()
+                    ->formatStateUsing(fn($state) => ucfirst(strtolower($state)))
                     ->sortable(),
 
-                IconColumn::make('user_id')
-                    ->label('Global')
-                    ->boolean()
-                    ->state(fn (Category $record) => $record->user_id === null),
+//                IconColumn::make('user_id')
+//                    ->label('Global')
+//                    ->boolean()
+//                    ->state(fn (Category $record) => $record->user_id === null),
             ])
             ->filters([
                 SelectFilter::make('type')
