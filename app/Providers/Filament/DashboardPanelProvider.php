@@ -17,6 +17,7 @@ use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\HtmlString;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class DashboardPanelProvider extends PanelProvider
@@ -27,6 +28,16 @@ class DashboardPanelProvider extends PanelProvider
             ->default()
             ->id('dashboard')
             ->path('dashboard')
+            ->renderHook(
+                'panels::styles.before',
+                fn() => new HtmlString('
+                    <style>
+                        .fi-sidebar {
+                            background-color: white !important;
+                        }
+                    </style>
+                ')
+            )
             ->login()
             ->colors([
                 'primary' => Color::Green,

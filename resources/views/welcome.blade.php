@@ -278,9 +278,9 @@
                     </div>
                 </div>
 
-                <div class="alert alert-primary mt-3 mb-0">
-                    Want admin tools? Filament is available at <strong>/admin</strong> for your staff/admin accounts.
-                </div>
+{{--                <div class="alert alert-primary mt-3 mb-0">--}}
+{{--                    Want admin tools? Filament is available at <strong>/admin</strong> for your staff/admin accounts.--}}
+{{--                </div>--}}
             </div>
         </div>
     </div>

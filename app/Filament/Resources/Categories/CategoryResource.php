@@ -94,7 +94,14 @@ class CategoryResource extends Resource
 
                 TextColumn::make('spend_classification')
                     ->label('Classification')
-                    ->formatStateUsing(fn($state) => ucfirst(strtolower($state)))
+                    ->badge()
+                    ->color('gray')
+                    ->formatStateUsing(function ($state) {
+                        return str($state)
+                            ->replace('_', '-')
+                            ->lower()
+                            ->title();
+                    })
                     ->sortable(),
 
 //                IconColumn::make('user_id')
