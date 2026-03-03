@@ -113,12 +113,15 @@ class TransactionResource extends Resource
                     ->sortable(),
 
                 TextColumn::make('category.name')
+                    ->searchable()
                     ->sortable(),
 
                 TextColumn::make('merchant')
+                    ->searchable()
                     ->sortable(),
 
                 TextColumn::make('amount')
+                    ->searchable()
                     ->money('USD')
                     ->sortable(),
 
@@ -132,6 +135,7 @@ class TransactionResource extends Resource
                     ->onColor('success')   // green when true
                     ->offColor('gray') ,    // gray when false
             ])
+            ->searchable()
             ->filters([
                 SelectFilter::make('type')
                     ->options([
