@@ -3,17 +3,15 @@
 namespace App\Filament\Resources\Categories;
 
 use App\Models\Category;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Tables\Table;
-use Filament\Forms\Components\Hidden;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use App\Filament\Resources\Categories\Pages;
 
 class CategoryResource extends Resource
 {
@@ -21,7 +19,7 @@ class CategoryResource extends Resource
 
     protected static string|null|\BackedEnum $navigationIcon = 'heroicon-o-tag';
     protected static string|null|\UnitEnum $navigationGroup = 'Mintly';
-    protected static ?int $navigationSort = 5;
+    protected static ?int $navigationSort = 2;
 
     /* -------------------------------------------------
      | SaaS visibility (user categories + global)
@@ -43,7 +41,7 @@ class CategoryResource extends Resource
         return $schema->components([
 
             Hidden::make('user_id')
-                ->default(fn () => auth()->id()),
+                ->default(fn() => auth()->id()),
 
             TextInput::make('name')
                 ->required()
@@ -130,9 +128,9 @@ class CategoryResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index'  => Pages\ListCategories::route('/'),
+            'index' => Pages\ListCategories::route('/'),
             'create' => Pages\CreateCategory::route('/create'),
-            'edit'   => Pages\EditCategory::route('/{record}/edit'),
+            'edit' => Pages\EditCategory::route('/{record}/edit'),
         ];
     }
 }
