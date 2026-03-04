@@ -75,8 +75,8 @@ class IncomeExpenseChart extends ChartWidget
                 [
                     'label' => 'Expenses',
                     'data' => $expenseData,
-                    'borderColor' => '#ef4444',
-                    'backgroundColor' => 'rgba(239,68,68,0.15)',
+                    'borderColor' => '#3b82f6',
+                    'backgroundColor' => 'rgba(59,130,246,0.15)',
                     'tension' => 0.2,
                     'fill' => false,
                 ],
