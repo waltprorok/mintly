@@ -3,19 +3,19 @@
 namespace App\Filament\Resources\Transactions;
 
 use App\Models\Transaction;
-use Filament\Resources\Resource;
-use Filament\Schemas\Schema;
-use Filament\Tables\Table;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
 class TransactionResource extends Resource
@@ -99,6 +99,10 @@ class TransactionResource extends Resource
             ->columns([
                 TextColumn::make('due_at')
                     ->dateTime('M j, Y')
+                    ->weight(fn ($record) => optional($record->due_at)?->isToday()
+                        ? 'bold'
+                        : 'normal'
+                    )
                     ->sortable(),
 
                 TextColumn::make('type')
@@ -106,7 +110,7 @@ class TransactionResource extends Resource
                     ->formatStateUsing(fn($state) => ucfirst(strtolower($state)))
                     ->color(fn($state) => match (strtolower($state)) {
                         'income' => 'success', // green
-                        'expense' => 'info', // blue
+                        'expense' => 'warning', // blue
                         default => 'gray',
 
                     })
@@ -143,7 +147,7 @@ class TransactionResource extends Resource
                         'expense' => 'Expense',
                     ]),
             ])
-            ->defaultSort('due_at', 'desc');
+            ->defaultSort('due_at');
     }
 
     public static function getPages(): array
