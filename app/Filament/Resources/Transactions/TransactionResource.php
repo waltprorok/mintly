@@ -3,7 +3,7 @@
 namespace App\Filament\Resources\Transactions;
 
 use App\Models\Transaction;
-use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -27,14 +27,10 @@ class TransactionResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        // SaaS protection
         return parent::getEloquentQuery()
             ->where('user_id', auth()->id());
     }
 
-    /* -------------------------------------------------
-     | FORM (v4 syntax)
-     |-------------------------------------------------*/
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
@@ -61,11 +57,12 @@ class TransactionResource extends Resource
                 ->required()
                 ->prefix('$'),
 
-            DateTimePicker::make('due_at')
+            DatePicker::make('due_at')
                 ->seconds(false)
                 ->nullable(),
 
             TextInput::make('merchant')
+                ->placeholder('Netflix')
                 ->nullable(),
 
             Select::make('payment_method')
@@ -90,9 +87,6 @@ class TransactionResource extends Resource
         ]);
     }
 
-    /* -------------------------------------------------
-     | TABLE
-     |-------------------------------------------------*/
     public static function table(Table $table): Table
     {
         return $table
@@ -136,8 +130,8 @@ class TransactionResource extends Resource
                 ToggleColumn::make('status')
                     ->label('Paid')
                     ->sortable()
-                    ->onColor('success')   // green when true
-                    ->offColor('gray') ,    // gray when false
+                    ->onColor('success')
+                    ->offColor('gray'),
             ])
             ->searchable()
             ->filters([

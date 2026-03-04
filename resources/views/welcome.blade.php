@@ -5,9 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Mintly — Personal Budget Tracker</title>
 
-{{--    --}}{{-- If you're using Laravel UI Bootstrap, this is usually available --}}
-{{--    <link href="{{ asset('css/app.css') }}" rel="stylesheet">--}}
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/css/bootstrap.css', 'resources/js/app.js'])
     <meta name="description" content="Mintly is a personal budget tracker to plan, track, and grow your money with clarity.">
 </head>
 <body class="bg-light">

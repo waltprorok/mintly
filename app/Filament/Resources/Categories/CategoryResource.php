@@ -3,6 +3,8 @@
 namespace App\Filament\Resources\Categories;
 
 use App\Models\Category;
+use Filament\Actions\Action;
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -21,9 +23,6 @@ class CategoryResource extends Resource
     protected static string|null|\UnitEnum $navigationGroup = 'Mintly';
     protected static ?int $navigationSort = 2;
 
-    /* -------------------------------------------------
-     | SaaS visibility (user categories + global)
-     |-------------------------------------------------*/
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
@@ -33,13 +32,9 @@ class CategoryResource extends Resource
             });
     }
 
-    /* -------------------------------------------------
-     | FORM (v4 syntax)
-     |-------------------------------------------------*/
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-
             Hidden::make('user_id')
                 ->default(fn() => auth()->id()),
 
@@ -69,9 +64,6 @@ class CategoryResource extends Resource
         ]);
     }
 
-    /* -------------------------------------------------
-     | TABLE
-     |-------------------------------------------------*/
     public static function table(Table $table): Table
     {
         return $table
@@ -107,6 +99,81 @@ class CategoryResource extends Resource
 //                    ->label('Global')
 //                    ->boolean()
 //                    ->state(fn (Category $record) => $record->user_id === null),
+            ])
+            ->headerActions([
+                Action::make('install_defaults')
+                    ->label('Create Default Categories')
+                    ->icon('heroicon-o-sparkles')
+                    ->color('info')
+                    ->form([
+                        CheckboxList::make('categories')
+                            ->label('Choose Categories')
+                            ->options([
+                                'Housing' => 'Housing',
+                                'Rent' => 'Rent',
+                                'Utilities' => 'Utilities',
+                                'Groceries' => 'Groceries',
+                                'Transportation' => 'Transportation',
+                                'Insurance' => 'Insurance',
+                                'Healthcare' => 'Healthcare',
+
+                                'Subscriptions' => 'Subscriptions',
+                                'Dining' => 'Dining',
+                                'Entertainment' => 'Entertainment',
+                                'Shopping' => 'Shopping',
+                                'Travel' => 'Travel',
+
+                                'Savings' => 'Savings',
+                                'Investments' => 'Investments',
+
+                                'Income' => 'Income',
+                                'Salary' => 'Salary',
+                                'Bonus' => 'Bonus',
+                                'Side Hustle' => 'Side Hustle',
+                            ])
+                            ->columns(3)
+                            ->required(),
+                    ])
+                    ->action(function (array $data) {
+                        $map = [
+                            'Housing' => ['expense','non_discretionary'],
+                            'Rent' => ['expense','non_discretionary'],
+                            'Utilities' => ['expense','non_discretionary'],
+                            'Groceries' => ['expense','non_discretionary'],
+                            'Transportation' => ['expense','non_discretionary'],
+                            'Insurance' => ['expense','non_discretionary'],
+                            'Healthcare' => ['expense','non_discretionary'],
+
+                            'Subscriptions' => ['expense','discretionary'],
+                            'Dining' => ['expense','discretionary'],
+                            'Entertainment' => ['expense','discretionary'],
+                            'Shopping' => ['expense','discretionary'],
+                            'Travel' => ['expense','discretionary'],
+
+                            'Savings' => ['both','non_discretionary'],
+                            'Investments' => ['both','non_discretionary'],
+
+                            'Income' => ['income','unknown'],
+                            'Salary' => ['income','unknown'],
+                            'Bonus' => ['income','unknown'],
+                            'Side Hustle' => ['income','unknown'],
+                        ];
+
+                        foreach ($data['categories'] as $name) {
+                            [$type,$classification] = $map[$name];
+
+                            Category::firstOrCreate(
+                                [
+                                    'user_id' => auth()->id(),
+                                    'name' => $name,
+                                ],
+                                [
+                                    'type' => $type,
+                                    'spend_classification' => $classification,
+                                ]
+                            );
+                        }
+                    }),
             ])
             ->filters([
                 SelectFilter::make('type')

@@ -21,6 +21,11 @@ class ExpenseCategoryChart extends ChartWidget
         return 'doughnut';
     }
 
+    public function getHeading(): string
+    {
+        return 'Expense Breakdown | ' . now()->format('F Y');
+    }
+
     protected function getData(): array
     {
         $data = Transaction::query()
