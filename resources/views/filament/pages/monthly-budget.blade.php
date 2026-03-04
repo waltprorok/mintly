@@ -5,6 +5,7 @@
         <span class="font-semibold text-success-600 dark:text-success-400">
             ${{ number_format($income, 2) }}
         </span>
+        | {{ $this->getPeriodLabel() }}
 
 {{--        <div class="font-medium">--}}
 {{--            Total Expenses:--}}

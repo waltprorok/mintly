@@ -28,14 +28,13 @@ class DashboardPanelProvider extends PanelProvider
             ->path('dashboard')
             ->renderHook(
                 'panels::styles.before',
-                fn () => new HtmlString('
+                fn() => new HtmlString('
                     <style>
                         /* Light mode */
                         html:not(.dark) .fi-sidebar {
                             background-color: white !important;
                             border-right: 1px solid #e5e7eb;
                         }
-
                         /* Dark mode (use Filament default dark background) */
                         html.dark .fi-sidebar {
                             background-color: #020204 !important; /* Tailwind gray-900 */
@@ -47,6 +46,7 @@ class DashboardPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Green,
             ])
+            ->profile()
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([

@@ -23,7 +23,7 @@ class TransactionResource extends Resource
     protected static ?string $model = Transaction::class;
 
     protected static string|null|\BackedEnum $navigationIcon = 'heroicon-o-banknotes';
-    protected static string|null|\UnitEnum $navigationGroup = 'Mintly';
+    //    protected static string|null|\UnitEnum $navigationGroup = 'Mintly';
     protected static ?int $navigationSort = 2;
 
     public static function getEloquentQuery(): Builder
@@ -94,7 +94,7 @@ class TransactionResource extends Resource
             ->columns([
                 TextColumn::make('due_at')
                     ->dateTime('M j, Y')
-                    ->weight(fn ($record) => optional($record->due_at)?->isToday()
+                    ->weight(fn($record) => optional($record->due_at)?->isToday()
                         ? 'bold'
                         : 'normal'
                     )

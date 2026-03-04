@@ -28,7 +28,7 @@ class MonthlyBudget extends Page implements HasTable
 
     protected static bool $shouldRegisterNavigation = true;
 
-    protected static string|null|\UnitEnum $navigationGroup = 'Mintly';
+//    protected static string|null|\UnitEnum $navigationGroup = 'Mintly';
 
     protected static ?string $navigationLabel = 'Budget Planner';
 
@@ -152,12 +152,10 @@ class MonthlyBudget extends Page implements HasTable
 
                 ])
                 ->action(function (array $data) {
-
                     $this->month = $data['month'];
                     $this->year = $data['year'];
 
                     $this->loadIncome();
-
                     $this->resetTable();
                 }),
 
@@ -226,6 +224,11 @@ class MonthlyBudget extends Page implements HasTable
                         ->send();
                 }),
         ];
+    }
+
+    public function getPeriodLabel(): string
+    {
+        return Carbon::create($this->year, $this->month)->format('M Y');
     }
 
     public function mount(): void
