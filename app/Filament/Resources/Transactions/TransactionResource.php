@@ -146,6 +146,28 @@ class TransactionResource extends Resource
                         'income' => 'Income',
                         'expense' => 'Expense',
                     ]),
+                SelectFilter::make('month')
+                    ->label('Month')
+                    ->options([
+                        '1' => 'January',
+                        '2' => 'February',
+                        '3' => 'March',
+                        '4' => 'April',
+                        '5' => 'May',
+                        '6' => 'June',
+                        '7' => 'July',
+                        '8' => 'August',
+                        '9' => 'September',
+                        '10' => 'October',
+                        '11' => 'November',
+                        '12' => 'December',
+                    ])
+                    ->default(now()->month)
+                    ->query(function (Builder $query, array $data) {
+                        if ($data['value']) {
+                            $query->whereMonth('due_at', $data['value']);
+                        }
+                    }),
             ])
             ->defaultSort('due_at');
     }

@@ -1,8 +1,8 @@
 <x-filament-panels::page>
 
-    <div class="mb-6 text-lg">
+    <div class="mb-4 text-lg">
         Monthly Income:
-        <span class="font-semibold text-success-600">
+        <span class="font-semibold text-success-600 dark:text-success-400">
             ${{ number_format($income, 2) }}
         </span>
 

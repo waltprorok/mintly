@@ -84,7 +84,7 @@ class CategoryResource extends Resource
                     ->formatStateUsing(fn($state) => ucfirst(strtolower($state)))
                     ->color(fn($state) => match (strtolower($state)) {
                         'income' => 'success', // green
-                        'expense' => 'info', // blue
+                        'expense' => 'warning', // blue
                         default => 'gray',
 
                     })
