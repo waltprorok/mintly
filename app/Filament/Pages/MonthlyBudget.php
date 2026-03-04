@@ -32,7 +32,6 @@ class MonthlyBudget extends Page implements HasTable
 
     protected static ?string $title = 'Monthly Budget';
 
-
     public string $income;
 
     public function table(Table $table): Table

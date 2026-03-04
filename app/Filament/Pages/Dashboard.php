@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Widgets\ExpenseCategoryChart;
 use App\Filament\Widgets\IncomeExpenseChart;
 use App\Filament\Widgets\MonthlyExpenses;
 use App\Filament\Widgets\MonthlyIncome;
@@ -17,8 +18,9 @@ class Dashboard extends BaseDashboard
             MonthlyIncome::class,
             MonthlyExpenses::class,
             MonthlyNet::class,
-            UpcomingBills::class,
             IncomeExpenseChart::class,
+            ExpenseCategoryChart::class,
+            UpcomingBills::class,
         ];
     }
 

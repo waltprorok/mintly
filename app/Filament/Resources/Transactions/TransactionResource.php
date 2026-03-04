@@ -110,9 +110,8 @@ class TransactionResource extends Resource
                     ->formatStateUsing(fn($state) => ucfirst(strtolower($state)))
                     ->color(fn($state) => match (strtolower($state)) {
                         'income' => 'success', // green
-                        'expense' => 'warning', // blue
+                        'expense' => 'info', // blue
                         default => 'gray',
-
                     })
                     ->sortable(),
 
@@ -121,6 +120,7 @@ class TransactionResource extends Resource
                     ->sortable(),
 
                 TextColumn::make('merchant')
+                    ->placeholder('Netflix')
                     ->searchable()
                     ->sortable(),
 

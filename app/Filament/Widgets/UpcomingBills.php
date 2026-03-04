@@ -12,9 +12,11 @@ class UpcomingBills extends TableWidget
 {
     protected static ?string $heading = 'Upcoming Bills';
 
-    protected int|string|array $columnSpan = 'full';
+//    protected int|string|array $columnSpan = 'full';
 
-    protected static ?int $sort = 4;
+    protected int|string|array $columnSpan = 1;
+
+    protected static ?int $sort = 10;
 
     public function table(Table $table): Table
     {
@@ -32,17 +34,14 @@ class UpcomingBills extends TableWidget
             )
             ->columns([
                 Tables\Columns\TextColumn::make('merchant')
-                    ->label('Merchant')
-                    ->searchable(),
+                    ->label('Merchant'),
 
                 Tables\Columns\TextColumn::make('amount')
-                    ->money('USD')
-                    ->sortable(),
+                    ->money('USD'),
 
                 Tables\Columns\TextColumn::make('due_at')
                     ->label('Due Date')
-                    ->date('M j')
-                    ->sortable(),
+                    ->date('M j'),
 
                 ToggleColumn::make('status')
                     ->label('Paid')

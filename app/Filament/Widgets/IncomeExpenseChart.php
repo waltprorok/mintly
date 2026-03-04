@@ -13,7 +13,7 @@ class IncomeExpenseChart extends ChartWidget
 
     protected int|string|array $columnSpan = 'full';
 
-    protected static ?int $sort = 10;
+    protected static ?int $sort = 4;
 
     public ?string $filter = '12';
 
@@ -87,6 +87,6 @@ class IncomeExpenseChart extends ChartWidget
 
     protected function getType(): string
     {
-        return 'line';
+        return 'bar';
     }
 }

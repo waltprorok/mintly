@@ -45,6 +45,7 @@ class CategoryResource extends Resource
 
             TextInput::make('name')
                 ->required()
+                ->placeholder('Subscriptions')
                 ->maxLength(255),
 
             Select::make('type')
@@ -84,7 +85,7 @@ class CategoryResource extends Resource
                     ->formatStateUsing(fn($state) => ucfirst(strtolower($state)))
                     ->color(fn($state) => match (strtolower($state)) {
                         'income' => 'success', // green
-                        'expense' => 'warning', // blue
+                        'expense' => 'info', // blue
                         default => 'gray',
 
                     })
