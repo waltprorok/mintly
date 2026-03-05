@@ -13,6 +13,7 @@ use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 
@@ -36,9 +37,8 @@ class MonthlyBudget extends Page implements HasTable
 
     protected static ?string $title = 'Monthly Budget';
 
-    public string $income;
-
     public int $month;
+
     public int $year;
 
     public function table(Table $table): Table
@@ -49,8 +49,6 @@ class MonthlyBudget extends Page implements HasTable
                     ->with('category')
                     ->where('user_id', auth()->id())
                     ->whereIn('type', ['income', 'expense'])
-                    ->whereMonth('due_at', $this->month)
-                    ->whereYear('due_at', $this->year)
                     ->select('*')
                     ->selectRaw("((cast(strftime('%d', due_at) as integer) - 1) / 7) + 1 as week")
                     ->orderByRaw("CASE WHEN type = 'income' THEN 0 ELSE 1 END")
@@ -85,10 +83,10 @@ class MonthlyBudget extends Page implements HasTable
 //                            ->label('Category Total'),
 //
 //                        // Footer-only
-//                        Sum::make()
-//                            ->money('USD')
-//                            ->label('Total Income')
-//                            ->query(fn ($query) => $query->where('transactions.type', 'income')),
+                        Sum::make()
+                            ->money('USD')
+                            ->label('Total Income')
+                            ->query(fn($query) => $query->where('transactions.type', 'income')),
 //
                         Sum::make()
                             ->money('USD')
@@ -112,73 +110,73 @@ class MonthlyBudget extends Page implements HasTable
                 IconColumn::make('status')
                     ->label('Paid')
                     ->boolean(),
-            ]);
+            ])
+            ->filters([
+                Filter::make('period')
+                    ->label('Period')
+                    ->form([
+                        Select::make('month')
+                            ->label('Month')
+                            ->options([
+                                1 => 'January',
+                                2 => 'February',
+                                3 => 'March',
+                                4 => 'April',
+                                5 => 'May',
+                                6 => 'June',
+                                7 => 'July',
+                                8 => 'August',
+                                9 => 'September',
+                                10 => 'October',
+                                11 => 'November',
+                                12 => 'December',
+                            ])
+                            ->default(now()->month),
+
+                        Select::make('year')
+                            ->label('Year')
+                            ->options(
+                                collect(range(now()->year - 1, now()->year + 1))
+                                    ->mapWithKeys(fn($y) => [$y => $y])
+                            )
+                            ->default(now()->year),
+                    ])
+                    ->query(function ($query, array $data) {
+                        $this->month = $data['month'] ?? now()->month;
+                        $this->year = $data['year'] ?? now()->year;
+
+                        $query->whereMonth('due_at', $this->month)
+                            ->whereYear('due_at', $this->year);
+                    })
+                    ->indicateUsing(function (array $data) {
+                        $month = $data['month'] ?? now()->month;
+                        $year = $data['year'] ?? now()->year;
+
+                        return Carbon::create($year, $month)->format('F Y');
+                    }),
+            ])
+            ->persistFiltersInSession();
     }
 
     protected function getHeaderActions(): array
     {
         return [
-            Action::make('period')
-                ->label('Change Period')
-                ->modalWidth('sm')
-                ->form([
-                    Select::make('month')
-                        ->label('Month')
-                        ->options([
-                            1 => 'January',
-                            2 => 'February',
-                            3 => 'March',
-                            4 => 'April',
-                            5 => 'May',
-                            6 => 'June',
-                            7 => 'July',
-                            8 => 'August',
-                            9 => 'September',
-                            10 => 'October',
-                            11 => 'November',
-                            12 => 'December',
-                        ])
-                        ->default($this->month)
-                        ->required(),
-
-                    Select::make('year')
-                        ->label('Year')
-                        ->options(
-                            collect(range(now()->year - 1, now()->year + 1))
-                                ->mapWithKeys(fn($y) => [$y => $y])
-                        )
-                        ->default($this->year)
-                        ->required(),
-
-                ])
-                ->action(function (array $data) {
-                    $this->month = $data['month'];
-                    $this->year = $data['year'];
-
-                    $this->loadIncome();
-                    $this->resetTable();
-                }),
-
             Action::make('roll_forward')
                 ->label('Prepare Next Month')
                 ->icon('heroicon-o-arrow-right-circle')
                 ->color('success')
-
                 ->requiresConfirmation()
-
                 ->modalHeading('Prepare Next Month')
-                ->modalDescription('This will copy all transactions from the current month into next month.')
-
+                ->modalDescription('This will copy ALL RECURRING transactions from the current month into next month.')
                 ->modalSubmitActionLabel('Copy Transactions')
-
                 ->action(function () {
                     $currentMonth = Carbon::create($this->year, $this->month);
                     $nextMonth = $currentMonth->copy()->addMonth();
-
                     $lastDay = $nextMonth->copy()->endOfMonth()->day;
 
                     $transactions = Transaction::query()
                         ->where('user_id', auth()->id())
+                        ->where('is_recurring', true)
                         ->whereMonth('due_at', $this->month)
                         ->whereYear('due_at', $this->year)
                         ->get();
@@ -186,7 +184,6 @@ class MonthlyBudget extends Page implements HasTable
                     $count = 0;
 
                     foreach ($transactions as $transaction) {
-
                         $day = $transaction->due_at->day;
 
                         $newDay = min($day, $lastDay);
@@ -208,7 +205,7 @@ class MonthlyBudget extends Page implements HasTable
                             [
                                 'type' => $transaction->type,
                                 'payment_method' => $transaction->payment_method,
-                                'notes' => $transaction->notes,
+                                'notes' => null,
                                 'is_recurring' => $transaction->is_recurring,
                                 'status' => false,
                             ]
@@ -226,26 +223,29 @@ class MonthlyBudget extends Page implements HasTable
         ];
     }
 
-    public function getPeriodLabel(): string
-    {
-        return Carbon::create($this->year, $this->month)->format('M Y');
-    }
-
     public function mount(): void
     {
         $this->month = now()->month;
         $this->year = now()->year;
-
-        $this->loadIncome();
     }
 
-    protected function loadIncome(): void
-    {
-        $this->income = Transaction::query()
-            ->where('user_id', auth()->id())
-            ->where('type', 'income')
-            ->whereMonth('due_at', $this->month)
-            ->whereYear('due_at', $this->year)
-            ->sum('amount');
-    }
+//    protected function loadIncome(): void
+//    {
+//        $this->income = Transaction::query()
+//            ->where('user_id', auth()->id())
+//            ->where('type', 'income')
+//            ->whereMonth('due_at', $this->month)
+//            ->whereYear('due_at', $this->year)
+//            ->sum('amount');
+//    }
+
+//    protected function getHeaderWidgets(): array
+//    {
+//        return [
+//            BudgetStats::make([
+//                'month' => $this->month,
+//                'year' => $this->year,
+//            ]),
+//        ];
+//    }
 }

@@ -100,6 +100,7 @@ class CategoryResource extends Resource
 //                    ->boolean()
 //                    ->state(fn (Category $record) => $record->user_id === null),
             ])
+            ->persistFiltersInSession()
             ->headerActions([
                 Action::make('install_defaults')
                     ->label('Create Default Categories')

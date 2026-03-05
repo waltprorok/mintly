@@ -80,7 +80,9 @@ class TransactionResource extends Resource
                 ->default(false),
 
             Toggle::make('is_recurring')
-                ->default(false),
+                ->label('Is Recurring (Income or Expense)')
+                ->default(false)
+                ->helperText('Recurring automatically copies to the next month when preparing a new period.'),
 
             Textarea::make('notes')
                 ->rows(4)
@@ -135,6 +137,7 @@ class TransactionResource extends Resource
                     ->offColor('gray'),
             ])
             ->searchable()
+            ->persistFiltersInSession()
             ->filters([
                 SelectFilter::make('type')
                     ->options([

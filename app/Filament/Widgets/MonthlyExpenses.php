@@ -13,6 +13,8 @@ class MonthlyExpenses extends StatsOverviewWidget
 
     protected int|string|array $columnSpan = 1;
 
+    protected static bool $isDiscovered = false;
+
     protected function getColumns(): int | array
     {
         return [
