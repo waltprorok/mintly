@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Widgets\BudgetStats;
 use App\Models\Transaction;
 use Carbon\Carbon;
 use Filament\Actions\Action;
@@ -114,6 +115,10 @@ class MonthlyBudget extends Page implements HasTable
             ->filters([
                 Filter::make('period')
                     ->label('Period')
+                    ->default([
+                        'month' => now()->month,
+                        'year' => now()->year,
+                    ])
                     ->form([
                         Select::make('month')
                             ->label('Month')
@@ -145,7 +150,13 @@ class MonthlyBudget extends Page implements HasTable
                         $this->month = $data['month'] ?? now()->month;
                         $this->year = $data['year'] ?? now()->year;
 
-                        $query->whereMonth('due_at', $this->month)
+                        $this->dispatch('updateBudgetStats',
+                            month: $this->month,
+                            year: $this->year
+                        );
+
+                        return $query
+                            ->whereMonth('due_at', $this->month)
                             ->whereYear('due_at', $this->year);
                     })
                     ->indicateUsing(function (array $data) {
@@ -239,13 +250,10 @@ class MonthlyBudget extends Page implements HasTable
 //            ->sum('amount');
 //    }
 
-//    protected function getHeaderWidgets(): array
-//    {
-//        return [
-//            BudgetStats::make([
-//                'month' => $this->month,
-//                'year' => $this->year,
-//            ]),
-//        ];
-//    }
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            BudgetStats::class,
+        ];
+    }
 }

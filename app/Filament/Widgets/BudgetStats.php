@@ -11,8 +11,24 @@ class BudgetStats extends StatsOverviewWidget
 {
     protected int|string|array $columnSpan = 'full';
 
-    public ?int $month = null;
-    public ?int $year = null;
+    protected ?string $pollingInterval = null;
+
+    protected $listeners = ['updateBudgetStats'];
+
+    public int $month;
+    public int $year;
+
+    public function mount()
+    {
+        $this->month = now()->month;
+        $this->year = now()->year;
+    }
+
+    public function updateBudgetStats($month, $year)
+    {
+        $this->month = $month;
+        $this->year = $year;
+    }
 
     protected function getColumns(): int
     {
@@ -21,8 +37,8 @@ class BudgetStats extends StatsOverviewWidget
 
     protected function getStats(): array
     {
-        $month = $this->month ?? now()->month;
-        $year = $this->year ?? now()->year;
+        $month = $this->month;
+        $year = $this->year;
 
         $userId = auth()->id();
 
