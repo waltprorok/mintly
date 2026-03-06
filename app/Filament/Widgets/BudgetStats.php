@@ -18,13 +18,13 @@ class BudgetStats extends StatsOverviewWidget
     public int $month;
     public int $year;
 
-    public function mount()
+    public function mount(): void
     {
         $this->month = now()->month;
         $this->year = now()->year;
     }
 
-    public function updateBudgetStats($month, $year)
+    public function updateBudgetStats($month, $year): void
     {
         $this->month = $month;
         $this->year = $year;
@@ -77,6 +77,30 @@ class BudgetStats extends StatsOverviewWidget
 
         $prevNet = $prevIncome - $prevExpenses;
 
+        $paidExpenses = Transaction::query()
+            ->where('user_id', $userId)
+            ->where('type', 'expense')
+            ->where('status', true)
+            ->whereMonth('due_at', $month)
+            ->whereYear('due_at', $year)
+            ->sum('amount');
+
+        $unpaidExpenses = Transaction::query()
+            ->where('user_id', $userId)
+            ->where('type', 'expense')
+            ->where('status', false)
+            ->whereMonth('due_at', $month)
+            ->whereYear('due_at', $year)
+            ->sum('amount');
+
+        $paidPercent = $expenses > 0
+            ? round(($paidExpenses / $expenses) * 100)
+            : 0;
+
+        $unpaidPercent = $expenses > 0
+            ? round(($unpaidExpenses / $expenses) * 100)
+            : 0;
+
         $incomeChange = $this->percentChange($income, $prevIncome);
         $expenseChange = $this->percentChange($expenses, $prevExpenses);
         $netChange = $this->percentChange($net, $prevNet);
@@ -97,6 +121,22 @@ class BudgetStats extends StatsOverviewWidget
                 ->description($netChange)
                 ->descriptionIcon($this->trendIcon($netChange))
                 ->color($net >= 0 ? 'success' : 'danger'),
+
+            Stat::make('Bills Paid', '$' . number_format($paidExpenses, 2))
+                ->description($paidPercent . '% of expenses cleared')
+                ->descriptionIcon('heroicon-m-check-circle')
+                ->color('success'),
+
+            Stat::make('Outstanding Bills', '$' . number_format($unpaidExpenses, 2))
+                ->description($unpaidPercent . '% remaining')
+                ->descriptionIcon('heroicon-m-clock')
+                ->color('warning'),
+
+            Stat::make('Expense Progress', $paidPercent . '%')
+                ->description('of monthly expenses paid')
+                ->descriptionIcon('heroicon-m-chart-bar')
+//                ->chart([$paidPercent, 100 - $paidPercent])
+                ->color($paidPercent > 75 ? 'success' : 'warning'),
         ];
     }
 
