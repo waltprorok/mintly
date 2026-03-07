@@ -23,7 +23,9 @@ class TransactionResource extends Resource
     protected static ?string $model = Transaction::class;
 
     protected static string|null|\BackedEnum $navigationIcon = 'heroicon-o-banknotes';
+
     //    protected static string|null|\UnitEnum $navigationGroup = 'Mintly';
+
     protected static ?int $navigationSort = 2;
 
     public static function getEloquentQuery(): Builder

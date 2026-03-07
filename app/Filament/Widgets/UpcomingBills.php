@@ -3,6 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Transaction;
+use Carbon\Carbon;
 use Filament\Tables;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
@@ -34,13 +35,28 @@ class UpcomingBills extends TableWidget
             )
             ->columns([
                 Tables\Columns\TextColumn::make('merchant')
+                    ->weight(fn ($record) =>
+                    $record->due_at?->isSameDay(Carbon::today())
+                        ? 'bold'
+                        : 'normal'
+                    )
                     ->label('Merchant'),
 
                 Tables\Columns\TextColumn::make('amount')
+                    ->weight(fn ($record) =>
+                    $record->due_at?->isSameDay(Carbon::today())
+                        ? 'bold'
+                        : 'normal'
+                    )
                     ->money('USD'),
 
                 Tables\Columns\TextColumn::make('due_at')
                     ->label('Due Date')
+                    ->weight(fn ($record) =>
+                    $record->due_at?->isSameDay(Carbon::today())
+                        ? 'bold'
+                        : 'normal'
+                    )
                     ->date('M j'),
 
                 ToggleColumn::make('status')
