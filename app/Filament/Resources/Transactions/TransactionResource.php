@@ -128,6 +128,16 @@ class TransactionResource extends Resource
                     ->money('USD')
                     ->sortable(),
 
+                TextColumn::make('payment_method')
+                    ->formatStateUsing(function ($state) {
+                        return str($state)
+                            ->replace('_', ' ')
+                            ->lower()
+                            ->title();
+                    })
+                    ->searchable()
+                    ->sortable(),
+
                 IconColumn::make('is_recurring')
                     ->label('Recurring')
                     ->boolean(),

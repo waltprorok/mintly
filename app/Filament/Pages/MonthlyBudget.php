@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Widgets\BudgetStats;
+use App\Filament\Widgets\WeeklyCashFlowStats;
 use App\Models\Transaction;
 use Carbon\Carbon;
 use Filament\Actions\Action;
@@ -70,34 +71,35 @@ class MonthlyBudget extends Page implements HasTable
 
                 TextColumn::make('merchant')
                     ->label('Description')
-                    ->alignRight()
                     ->default(fn($record) => $record->category->name),
 
                 TextColumn::make('amount')
                     ->money('USD')
-                    ->alignRight()
                     ->sortable()
                     ->summarize([
-                        // This one is OK to show per category (category expense totals)
-//                        Sum::make()
-//                            ->money('USD')
-//                            ->label('Category Total'),
-//
-//                        // Footer-only
                         Sum::make()
-                            ->money('USD')
-                            ->label('Total Income')
-                            ->query(fn($query) => $query->where('transactions.type', 'income')),
-//
-                        Sum::make()
-                            ->money('USD')
-                            ->label('Total Expenses')
-                            ->query(fn($query) => $query->where('transactions.type', 'expense')),
+                            ->label('')
+                            ->formatStateUsing(function ($state, $query) {
+                                $income = (clone $query)
+                                    ->where('type', 'income')
+                                    ->sum('amount');
+
+                                $expenses = (clone $query)
+                                    ->where('type', 'expense')
+                                    ->sum('amount');
+
+                                if ($income > 0) {
+                                    return "<strong>$" . number_format($income, 2) . " Income</strong>";
+                                }
+
+                                return "<strong>$" . number_format($expenses, 2) . " </strong>";
+                            }),
+
                     ]),
+
                 ...collect(range(1, 4))->map(
                     fn($week) => TextColumn::make("week{$week}")
                         ->label("Week {$week}")
-                        ->alignRight()
                         ->money('USD')
                         ->getStateUsing(fn($record) => $record->week == $week ? $record->amount : null
                         )
@@ -240,19 +242,10 @@ class MonthlyBudget extends Page implements HasTable
         $this->year = now()->year;
     }
 
-//    protected function loadIncome(): void
-//    {
-//        $this->income = Transaction::query()
-//            ->where('user_id', auth()->id())
-//            ->where('type', 'income')
-//            ->whereMonth('due_at', $this->month)
-//            ->whereYear('due_at', $this->year)
-//            ->sum('amount');
-//    }
-
     protected function getHeaderWidgets(): array
     {
         return [
+            WeeklyCashFlowStats::class,
             BudgetStats::class,
         ];
     }
