@@ -178,8 +178,7 @@ class MonthlyBudget extends Page implements HasTable
 
                         return Carbon::create($year, $month)->format('F Y');
                     }),
-            ])
-            ->persistFiltersInSession();
+            ]);
     }
 
     protected function getHeaderActions(): array
