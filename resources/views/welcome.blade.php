@@ -4,9 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Mintly — Personal Budget Tracker</title>
+    <meta name="description" content="Mintly is a personal budget tracker to plan, track, and grow your money with clarity.">
 
     @vite(['resources/css/bootstrap.css', 'resources/js/app.js'])
-    <meta name="description" content="Mintly is a personal budget tracker to plan, track, and grow your money with clarity.">
 </head>
 <body class="bg-light">
 
@@ -425,6 +425,6 @@
 </footer>
 
 {{-- If you're using Laravel UI, Bootstrap JS is usually in app.js --}}
-{{--<script src="{{ asset('js/app.js') }}"></script>--}}
+<script src="{{ asset('js/app.js') }}"></script>
 </body>
 </html>

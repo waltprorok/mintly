@@ -135,7 +135,6 @@ class BudgetStats extends StatsOverviewWidget
             Stat::make('Expense Progress', $paidPercent . '%')
                 ->description('of monthly expenses paid')
                 ->descriptionIcon('heroicon-m-chart-bar')
-//                ->chart([$paidPercent, 100 - $paidPercent])
                 ->color($paidPercent > 75 ? 'success' : 'warning'),
         ];
     }
