@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Transactions;
 
 use App\Models\Transaction;
+use Carbon\Carbon;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
@@ -39,7 +40,7 @@ class TransactionResource extends Resource
         return $schema->components([
 
             Hidden::make('user_id')
-                ->default(fn() => auth()->id())
+                ->default(fn () => auth()->id())
                 ->required(),
 
             Select::make('type')
@@ -98,24 +99,9 @@ class TransactionResource extends Resource
             ->columns([
                 TextColumn::make('due_at')
                     ->dateTime('M j, Y')
-                    ->weight(fn($record) => optional($record->due_at)?->isToday()
+                    ->weight(fn ($record) => optional($record->due_at)?->isToday()
                         ? 'bold'
-                        : 'normal'
-                    )
-                    ->sortable(),
-
-                TextColumn::make('type')
-                    ->badge()
-                    ->formatStateUsing(fn($state) => ucfirst(strtolower($state)))
-                    ->color(fn($state) => match (strtolower($state)) {
-                        'income' => 'success', // green
-                        'expense' => 'info', // blue
-                        default => 'gray',
-                    })
-                    ->sortable(),
-
-                TextColumn::make('category.name')
-                    ->searchable()
+                        : 'normal')
                     ->sortable(),
 
                 TextColumn::make('merchant')
@@ -124,18 +110,29 @@ class TransactionResource extends Resource
                     ->sortable(),
 
                 TextColumn::make('amount')
-                    ->searchable()
                     ->money('USD')
                     ->sortable(),
 
-                TextColumn::make('payment_method')
-                    ->formatStateUsing(function ($state) {
-                        return str($state)
-                            ->replace('_', ' ')
-                            ->lower()
-                            ->title();
-                    })
+                TextColumn::make('category.name')
                     ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('payment_method')
+                    ->formatStateUsing(fn ($state) => str($state)
+                        ->replace('_', ' ')
+                        ->lower()
+                        ->title())
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('type')
+                    ->badge()
+                    ->formatStateUsing(fn ($state) => ucfirst(strtolower($state)))
+                    ->color(fn ($state) => match (strtolower($state)) {
+                        'income' => 'success',
+                        'expense' => 'info',
+                        default => 'gray',
+                    })
                     ->sortable(),
 
                 IconColumn::make('is_recurring')
@@ -148,37 +145,79 @@ class TransactionResource extends Resource
                     ->onColor('success')
                     ->offColor('gray'),
             ])
-            ->searchable()
-            ->persistFiltersInSession()
             ->filters([
+
                 SelectFilter::make('type')
                     ->options([
                         'income' => 'Income',
                         'expense' => 'Expense',
                     ]),
+
                 SelectFilter::make('month')
                     ->label('Month')
                     ->options([
-                        '1' => 'January',
-                        '2' => 'February',
-                        '3' => 'March',
-                        '4' => 'April',
-                        '5' => 'May',
-                        '6' => 'June',
-                        '7' => 'July',
-                        '8' => 'August',
-                        '9' => 'September',
-                        '10' => 'October',
-                        '11' => 'November',
-                        '12' => 'December',
+                        1 => 'January',
+                        2 => 'February',
+                        3 => 'March',
+                        4 => 'April',
+                        5 => 'May',
+                        6 => 'June',
+                        7 => 'July',
+                        8 => 'August',
+                        9 => 'September',
+                        10 => 'October',
+                        11 => 'November',
+                        12 => 'December',
                     ])
                     ->default(now()->month)
                     ->query(function (Builder $query, array $data) {
-                        if ($data['value']) {
-                            $query->whereMonth('due_at', $data['value']);
+                        $value = $data['value'] ?? null;
+
+                        if (! $value) {
+                            return;
                         }
+
+                        $query->whereMonth('due_at', $value);
+                    })
+                    ->indicateUsing(function ($state) {
+                        $month = data_get($state, 'value', $state);
+
+                        if (! $month) {
+                            return null;
+                        }
+
+                        return Carbon::create()->month((int) $month)->format('F');
+                    }),
+
+                SelectFilter::make('year')
+                    ->label('Year')
+                    ->options(function () {
+                        $oldest = Transaction::min('due_at');
+
+                        $oldestYear = $oldest
+                            ? Carbon::parse($oldest)->year
+                            : now()->year;
+
+                        $lastYear = now()->addMonth()->year;
+
+                        return collect(range($oldestYear, $lastYear))
+                            ->reverse() // newest first
+                            ->mapWithKeys(fn ($year) => [$year => $year])
+                            ->toArray();
+                    })
+                    ->default(now()->year)
+                    ->query(function (Builder $query, array $data) {
+                        $value = $data['value'] ?? null;
+
+                        if (! $value) {
+                            return;
+                        }
+
+                        $query->whereYear('due_at', $value);
                     }),
             ])
+            ->searchable()
+            ->persistFiltersInSession()
             ->defaultSort('due_at');
     }
 

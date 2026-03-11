@@ -142,17 +142,28 @@ class MonthlyBudget extends Page implements HasTable
 
                         Select::make('year')
                             ->label('Year')
-                            ->options(
-                                collect(range(now()->year - 1, now()->year + 1))
-                                    ->mapWithKeys(fn($y) => [$y => $y])
-                            )
+                            ->options(function () {
+                                $oldest = Transaction::min('due_at');
+
+                                $oldestYear = $oldest
+                                    ? Carbon::parse($oldest)->year
+                                    : now()->year;
+
+                                $lastYear = now()->addMonth()->year;
+
+                                return collect(range($oldestYear, $lastYear))
+                                    ->reverse() // newest first
+                                    ->mapWithKeys(fn ($year) => [$year => $year])
+                                    ->toArray();
+                            })
                             ->default(now()->year),
                     ])
                     ->query(function ($query, array $data) {
                         $this->month = $data['month'] ?? now()->month;
                         $this->year = $data['year'] ?? now()->year;
 
-                        $this->dispatch('updateBudgetStats',
+                        $this->dispatch(
+                            'updateBudgetStats',
                             month: $this->month,
                             year: $this->year
                         );
@@ -194,8 +205,6 @@ class MonthlyBudget extends Page implements HasTable
                         ->whereYear('due_at', $this->year)
                         ->get();
 
-                    $count = 0;
-
                     foreach ($transactions as $transaction) {
                         $day = $transaction->due_at->day;
 
@@ -212,10 +221,10 @@ class MonthlyBudget extends Page implements HasTable
                                 'user_id' => $transaction->user_id,
                                 'category_id' => $transaction->category_id,
                                 'merchant' => $transaction->merchant,
-                                'amount' => $transaction->amount,
                                 'due_at' => $newDate,
                             ],
                             [
+                                'amount' => $transaction->amount,
                                 'type' => $transaction->type,
                                 'payment_method' => $transaction->payment_method,
                                 'notes' => null,
@@ -223,9 +232,9 @@ class MonthlyBudget extends Page implements HasTable
                                 'status' => false,
                             ]
                         );
-
-                        $count++;
                     }
+
+                    $count = $transactions->count();
 
                     Notification::make()
                         ->title('Next month prepared')
