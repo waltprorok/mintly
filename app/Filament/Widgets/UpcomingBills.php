@@ -13,8 +13,6 @@ class UpcomingBills extends TableWidget
 {
     protected static ?string $heading = 'Upcoming Bills';
 
-//    protected int|string|array $columnSpan = 'full';
-
     protected int|string|array $columnSpan = 1;
 
     protected static ?int $sort = 10;
@@ -28,8 +26,8 @@ class UpcomingBills extends TableWidget
                     ->where('type', 'expense')
                     ->where('status', false)
                     ->whereBetween('due_at', [
-                        now(),
-                        now()->addDays(7)
+                        now()->startOfWeek(),
+                        now()->endOfWeek(),
                     ])
                     ->orderBy('due_at')
             )
