@@ -51,7 +51,11 @@ class TransactionResource extends Resource
                 ->required(),
 
             Select::make('category_id')
-                ->relationship('category', 'name')
+                ->relationship(
+                    name: 'category',
+                    titleAttribute: 'name',
+                    modifyQueryUsing: fn (Builder $query) => $query->where('user_id', auth()->id())
+                )
                 ->searchable()
                 ->preload()
                 ->required(),

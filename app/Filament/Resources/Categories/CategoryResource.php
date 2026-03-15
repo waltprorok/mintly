@@ -20,7 +20,9 @@ class CategoryResource extends Resource
     protected static ?string $model = Category::class;
 
     protected static string|null|\BackedEnum $navigationIcon = 'heroicon-o-tag';
-//    protected static string|null|\UnitEnum $navigationGroup = 'Mintly';
+
+    //    protected static string|null|\UnitEnum $navigationGroup = 'Mintly';
+
     protected static ?int $navigationSort = 3;
 
     public static function getEloquentQuery(): Builder
@@ -114,6 +116,7 @@ class CategoryResource extends Resource
                                 'Rent' => 'Rent',
                                 'Utilities' => 'Utilities',
                                 'Groceries' => 'Groceries',
+                                'Car' => 'Car',
                                 'Transportation' => 'Transportation',
                                 'Insurance' => 'Insurance',
                                 'Healthcare' => 'Healthcare',
@@ -124,12 +127,11 @@ class CategoryResource extends Resource
                                 'Shopping' => 'Shopping',
                                 'Travel' => 'Travel',
 
-                                'Savings' => 'Savings',
-                                'Investments' => 'Investments',
-
                                 'Income' => 'Income',
                                 'Salary' => 'Salary',
+                                'Savings' => 'Savings',
                                 'Bonus' => 'Bonus',
+                                'Investments' => 'Investments',
                                 'Side Hustle' => 'Side Hustle',
                             ])
                             ->columns(3)
@@ -141,6 +143,7 @@ class CategoryResource extends Resource
                             'Rent' => ['expense','non_discretionary'],
                             'Utilities' => ['expense','non_discretionary'],
                             'Groceries' => ['expense','non_discretionary'],
+                            'Car' => ['expense','non_discretionary'],
                             'Transportation' => ['expense','non_discretionary'],
                             'Insurance' => ['expense','non_discretionary'],
                             'Healthcare' => ['expense','non_discretionary'],
@@ -151,12 +154,11 @@ class CategoryResource extends Resource
                             'Shopping' => ['expense','discretionary'],
                             'Travel' => ['expense','discretionary'],
 
-                            'Savings' => ['both','non_discretionary'],
-                            'Investments' => ['both','non_discretionary'],
-
                             'Income' => ['income','unknown'],
                             'Salary' => ['income','unknown'],
+                            'Savings' => ['both','non_discretionary'],
                             'Bonus' => ['income','unknown'],
+                            'Investments' => ['both','non_discretionary'],
                             'Side Hustle' => ['income','unknown'],
                         ];
 
