@@ -253,8 +253,8 @@ class MonthlyBudget extends Page implements HasTable
     protected function getHeaderWidgets(): array
     {
         return [
-            WeeklyCashFlowStats::class,
             BudgetStats::class,
+            WeeklyCashFlowStats::class,
         ];
     }
 }
