@@ -5,13 +5,14 @@ namespace App\Filament\Widgets;
 use App\Models\Transaction;
 use Carbon\Carbon;
 use Filament\Tables;
+use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget;
 
 class UpcomingBills extends TableWidget
 {
-    protected static ?string $heading = 'Upcoming Bills';
+    protected static ?string $heading = 'Upcoming Bills This Week';
 
     protected int|string|array $columnSpan = 1;
 
@@ -46,7 +47,12 @@ class UpcomingBills extends TableWidget
                         ? 'bold'
                         : 'normal'
                     )
-                    ->money('USD'),
+                    ->money('USD')
+                    ->summarize(
+                        Sum::make()
+                            ->label(' ')
+                            ->money('USD')
+                    ),
 
                 Tables\Columns\TextColumn::make('due_at')
                     ->label('Due Date')
@@ -65,4 +71,5 @@ class UpcomingBills extends TableWidget
             ])
             ->defaultPaginationPageOption(5);
     }
+
 }
