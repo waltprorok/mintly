@@ -8,9 +8,8 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class WeeklyCashFlowStats extends StatsOverviewWidget
 {
-    protected ?string $pollingInterval = null;
-
     protected static bool $isCollapsible = true;
+
     protected static bool $isCollapsed = true;
 
     protected static bool $isDiscovered = false;
@@ -31,7 +30,6 @@ class WeeklyCashFlowStats extends StatsOverviewWidget
         $this->month = $month;
         $this->year = $year;
     }
-
 
     protected function getStats(): array
     {
