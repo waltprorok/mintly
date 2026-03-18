@@ -106,7 +106,6 @@ class BudgetStats extends StatsOverviewWidget
         $netChange = $this->percentChange($net, $prevNet);
 
         return [
-
             Stat::make('Monthly Income', '$' . number_format($income, 2))
                 ->description($incomeChange)
                 ->descriptionIcon($this->trendIcon($incomeChange))
