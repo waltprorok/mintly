@@ -18,7 +18,6 @@ return new class extends Migration
             $table->enum('type', ['income', 'expense', 'both'])->default('both');
             $table->enum('spend_classification', ['discretionary', 'non_discretionary', 'unknown'])
                 ->default('unknown')
-                ->after('type')
                 ->index();
             $table->timestamps();
 

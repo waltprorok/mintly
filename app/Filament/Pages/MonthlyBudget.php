@@ -54,8 +54,13 @@ class MonthlyBudget extends Page implements HasTable
                     ->where('user_id', auth()->id())
                     ->whereIn('type', ['income', 'expense'])
                     ->select('*')
-                    ->selectRaw("((cast(strftime('%d', due_at) as integer) - 1) / 7) + 1 as week")
-                    ->orderByRaw("CASE WHEN type = 'income' THEN 0 ELSE 1 END")
+                    ->selectRaw("
+                        CASE
+                            WHEN due_at IS NULL THEN NULL
+                            ELSE ((DAY(due_at) - 1) DIV 7) + 1
+                        END as week
+                    ")
+                    ->orderByRaw("type = 'expense'")
             )
             ->defaultSort('due_at')
             ->groups([

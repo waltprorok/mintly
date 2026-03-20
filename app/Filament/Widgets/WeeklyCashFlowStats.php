@@ -38,10 +38,10 @@ class WeeklyCashFlowStats extends StatsOverviewWidget
             ->whereMonth('due_at', $this->month)
             ->whereYear('due_at', $this->year)
             ->selectRaw("
-                ((cast(strftime('%d', due_at) as integer)-1)/7)+1 as week,
-                SUM(CASE WHEN type='income' THEN amount ELSE 0 END) as income,
-                SUM(CASE WHEN type='expense' THEN amount ELSE 0 END) as expenses
-                ")
+                ((DAY(due_at) - 1) DIV 7) + 1 as week,
+                SUM(CASE WHEN type = 'income' THEN amount ELSE 0 END) as income,
+                SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END) as expenses
+            ")
             ->groupBy('week')
             ->get()
             ->keyBy('week');
