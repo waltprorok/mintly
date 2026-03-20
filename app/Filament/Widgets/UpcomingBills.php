@@ -50,8 +50,10 @@ class UpcomingBills extends TableWidget
                     ->money('USD')
                     ->summarize(
                         Sum::make()
+                            ->formatStateUsing(fn ($state) => "<strong>$" . number_format($state, 2) . "</strong>")
+                            ->html()
                             ->label(' ')
-                            ->money('USD')
+//                            ->money('USD')
                     ),
 
                 Tables\Columns\TextColumn::make('due_at')

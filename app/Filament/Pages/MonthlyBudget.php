@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Resources\Transactions\TransactionResource;
 use App\Filament\Widgets\BudgetStats;
 use App\Filament\Widgets\WeeklyCashFlowStats;
 use App\Models\Transaction;
@@ -10,9 +11,10 @@ use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
-use Filament\Tables\Columns\IconColumn;
+use Filament\Schemas\Schema;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Filters\Filter;
@@ -70,7 +72,7 @@ class MonthlyBudget extends Page implements HasTable
                     ->sortable(),
 
                 TextColumn::make('merchant')
-                    ->label('Description')
+                    ->label('Merchant')
                     ->default(fn($record) => $record->category->name),
 
                 TextColumn::make('amount')
@@ -78,6 +80,7 @@ class MonthlyBudget extends Page implements HasTable
                     ->sortable()
                     ->summarize([
                         Sum::make()
+                            ->html()
                             ->label('')
                             ->formatStateUsing(function ($state, $query) {
                                 $income = (clone $query)
@@ -94,8 +97,12 @@ class MonthlyBudget extends Page implements HasTable
 
                                 return "<strong>$" . number_format($expenses, 2) . " </strong>";
                             }),
-
                     ]),
+
+                TextColumn::make('payment_method')
+                    ->label('Payment Type')
+                    ->formatStateUsing(fn($state) => str($state)->replace('_', ' ')->title()
+                    ),
 
                 ...collect(range(1, 4))->map(
                     fn($week) => TextColumn::make("week{$week}")
@@ -105,14 +112,16 @@ class MonthlyBudget extends Page implements HasTable
                         )
                 )->all(),
 
-                TextColumn::make('payment_method')
-                    ->label('Payment')
-                    ->formatStateUsing(fn($state) => str($state)->replace('_', ' ')->title()
-                    ),
 
-                IconColumn::make('status')
+                ToggleColumn::make('status')
                     ->label('Paid')
-                    ->boolean(),
+                    ->sortable()
+                    ->onColor('success')
+                    ->offColor('gray'),
+//
+//                IconColumn::make('status')
+//                    ->label('Paid')
+//                    ->boolean(),
             ])
             ->filters([
                 Filter::make('period')
@@ -153,7 +162,7 @@ class MonthlyBudget extends Page implements HasTable
 
                                 return collect(range($oldestYear, $lastYear))
                                     ->reverse() // newest first
-                                    ->mapWithKeys(fn ($year) => [$year => $year])
+                                    ->mapWithKeys(fn($year) => [$year => $year])
                                     ->toArray();
                             })
                             ->default(now()->year),
@@ -178,7 +187,28 @@ class MonthlyBudget extends Page implements HasTable
 
                         return Carbon::create($year, $month)->format('F Y');
                     }),
+            ])
+            ->recordAction('editTransaction')
+            ->recordUrl(null)
+            ->actions([
+                Action::make('editTransaction')
+                    ->icon('heroicon-o-pencil-square')
+                    ->label(' ')
+//                    ->tooltip('Edit transaction')
+                    ->color('blue')
+                    ->modalHeading('Edit Transaction')
+                    ->modalWidth('lg')
+                    ->form(
+                        TransactionResource::form(
+                            app(Schema::class)
+                        )->getComponents()
+                    )
+                    ->fillForm(fn($record) => $record->toArray())
+                    ->action(function ($record, array $data) {
+                        $record->update($data);
+                    })
             ]);
+//            ->actionsColumnLabel('Action');
     }
 
     protected function getHeaderActions(): array
@@ -190,8 +220,8 @@ class MonthlyBudget extends Page implements HasTable
                 ->color('success')
                 ->requiresConfirmation()
                 ->modalHeading('Prepare Next Month')
-                ->modalDescription('This will copy ALL RECURRING transactions from the current month into next month.')
-                ->modalSubmitActionLabel('Copy Transactions')
+                ->modalDescription('Recurring transactions will be carried over to next month without creating duplicates.')
+                ->modalSubmitActionLabel('Prepare Month')
                 ->action(function () {
                     $currentMonth = Carbon::create($this->year, $this->month);
                     $nextMonth = $currentMonth->copy()->addMonth();

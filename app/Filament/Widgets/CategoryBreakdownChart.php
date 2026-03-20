@@ -75,7 +75,13 @@ class CategoryBreakdownChart extends ChartWidget
     protected function getOptions(): array
     {
         return [
-            'indexAxis' => 'x', // y horizontal bars
+            'scales' => [
+                'y' => [
+                    'ticks' => [
+                        'precision' => 0,
+                    ],
+                ],
+            ],
         ];
     }
 
