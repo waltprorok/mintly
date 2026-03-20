@@ -70,6 +70,7 @@ class IncomeExpenseChart extends ChartWidget
                     'hoverBorderColor' => '#22c55e',
                     'hoverBackgroundColor' => 'rgba(34,197,94,0.25)',
                     'tension' => 0.2,
+                    'borderRadius' => 6,
                     'fill' => false,
                 ],
                 [
@@ -78,6 +79,7 @@ class IncomeExpenseChart extends ChartWidget
                     'borderColor' => '#3b82f6',
                     'backgroundColor' => 'rgba(59,130,246,0.15)',
                     'tension' => 0.2,
+                    'borderRadius' => 6,
                     'fill' => false,
                 ],
             ],
