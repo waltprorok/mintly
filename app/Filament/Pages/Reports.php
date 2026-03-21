@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Widgets\CategoryBreakdownChart;
+use App\Filament\Widgets\CategoryBreakdownTable;
 use Filament\Pages\Page;
 
 class Reports extends Page
@@ -21,6 +22,7 @@ class Reports extends Page
     {
         return [
             CategoryBreakdownChart::class,
+            CategoryBreakdownTable::class,
         ];
     }
 }

@@ -10,9 +10,7 @@ class CategoryBreakdownChart extends ChartWidget
 {
     protected ?string $heading = 'Expenses by Category';
 
-    protected ?string $maxHeight = '720px';
-
-    protected int|string|array $columnSpan = 2;
+    protected int|string|array $columnSpan = 1;
 
     protected static bool $isDiscovered = false;
 
@@ -37,14 +35,14 @@ class CategoryBreakdownChart extends ChartWidget
             ->with('category')
             ->get()
             ->groupBy('category.name')
-            ->map(fn ($items) => $items->sum('amount'))
+            ->map(fn($items) => $items->sum('amount'))
             ->sortDesc();
 
         $values = $data->values()->toArray();
         $labels = $data->keys()->toArray();
 
         $colors = collect($values)
-            ->map(fn ($_,$i) => "hsl(" . ($i * 40 % 360) . ", 70%, 50%)")
+            ->map(fn ($_,$i) => "hsl(" . ($i * 40 % 360) . ", 70%, 55%)")
             ->toArray();
 
         return [
@@ -52,13 +50,13 @@ class CategoryBreakdownChart extends ChartWidget
                 [
                     'label' => 'Expenses',
                     'data' => $values,
-//                    'backgroundColor' => $colors,
+                    'backgroundColor' => $colors,
 //                    'borderWidth' => 0,
 //                    'hoverBorderWidth' => 0,
-                    'borderRadius' => 6,
+//                    'borderRadius' => 6,
 
-                    'borderColor' => '#3b82f6',
-                    'backgroundColor' => 'rgba(59,130,246,0.15)',
+//                    'borderColor' => '#3b82f6',
+//                    'backgroundColor' => 'rgba(59,130,246,0.15)',
                     'tension' => 0.2,
                     'fill' => true,
                 ],
@@ -69,7 +67,7 @@ class CategoryBreakdownChart extends ChartWidget
 
     protected function getType(): string
     {
-        return 'bar';
+        return 'doughnut';
     }
 
     protected function getOptions(): array
@@ -107,12 +105,16 @@ class CategoryBreakdownChart extends ChartWidget
         return collect($periods)->reverse()->toArray();
     }
 
-//    public function getHeading(): ?string
-//    {
-//        [$year, $month] = $this->filter
-//            ? explode('-', $this->filter)
-//            : [now()->year, now()->month];
-//
-//        return 'Spending by Category — ' . Carbon::create($year, $month)->format('F Y');
-//    }
+    public function updatedFilter(): void
+    {
+        [$year, $month] = $this->filter
+            ? explode('-', $this->filter)
+            : [now()->year, now()->month];
+
+        $this->dispatch('categoryPeriodChanged', [
+            'month' => $month,
+            'year' => $year,
+        ]);
+    }
+
 }
