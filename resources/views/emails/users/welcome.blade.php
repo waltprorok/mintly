@@ -27,7 +27,7 @@ Next steps:
 
 If you ever need help or have feedback, we’d love to hear from you.
 
-Welcome aboard! 🚀
+Welcome aboard!
 
 Thanks,
 

@@ -51,7 +51,7 @@ class CategoryResource extends Resource
                     'expense' => 'Expense',
                     'both' => 'Both',
                 ])
-                ->default('both')
+//                ->default('expense')
                 ->required(),
 
             Select::make('spend_classification')
@@ -61,7 +61,7 @@ class CategoryResource extends Resource
                     'non_discretionary' => 'Non-Discretionary (Needs)',
                     'unknown' => 'Unknown',
                 ])
-                ->default('unknown')
+//                ->default('discretionary')
                 ->required(),
         ]);
     }
@@ -113,6 +113,7 @@ class CategoryResource extends Resource
                             ->label('Choose Categories')
                             ->options([
                                 'Housing' => 'Housing',
+                                'Mortgage' => 'Mortgage',
                                 'Rent' => 'Rent',
                                 'Utilities' => 'Utilities',
                                 'Groceries' => 'Groceries',
@@ -140,6 +141,7 @@ class CategoryResource extends Resource
                     ->action(function (array $data) {
                         $map = [
                             'Housing' => ['expense','non_discretionary'],
+                            'Mortgage' => ['expense','non_discretionary'],
                             'Rent' => ['expense','non_discretionary'],
                             'Utilities' => ['expense','non_discretionary'],
                             'Groceries' => ['expense','non_discretionary'],
