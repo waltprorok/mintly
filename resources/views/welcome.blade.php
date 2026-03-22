@@ -89,13 +89,12 @@
             </div>
 
             <div class="col-lg-6">
-                {{-- KEEPING YOUR ORIGINAL Monthly Snapshot --}}
                 <div class="card shadow-sm border-0">
                     <div class="card-body p-4">
                         <div class="d-flex align-items-center justify-content-between mb-3">
                             <div>
                                 <div class="fw-bold">Monthly Snapshot</div>
-                                <div class="text-secondary small">March • Cash flow overview</div>
+                                <div class="text-secondary small">{{ now()->format('F') }} • Cash flow overview</div>
                             </div>
                             <span class="badge bg-dark-subtle text-dark">Preview</span>
                         </div>
@@ -393,11 +392,12 @@
             <a class="text-decoration-none" href="#pricing">Pricing</a>
             <a class="text-decoration-none" href="#faq">FAQ</a>
             <a class="text-decoration-none" href="{{ route('login') }}">Log in</a>
+            <a class="text-decoration-none" href="{{ route('terms-conditions') }}">Terms & Conditions</a>
+            <a class="text-decoration-none" href="{{ route('user-agreement') }}">User Agreement</a>
         </div>
     </div>
 </footer>
 
-{{-- If you're using Laravel UI, Bootstrap JS is usually in app.js --}}
 <script src="{{ asset('js/app.js') }}"></script>
 </body>
 </html>

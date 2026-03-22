@@ -10,6 +10,7 @@ use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\View\PanelsRenderHook;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -57,6 +58,17 @@ class DashboardPanelProvider extends PanelProvider
 //                AccountWidget::class,
 //                FilamentInfoWidget::class,
             ])
+            ->renderHook(
+                PanelsRenderHook::AUTH_LOGIN_FORM_AFTER,
+                fn () => new HtmlString('
+                    <div class="mt-4 text-center">
+                        <a href="/"
+                           class="text-sm text-gray-500 hover:text-gray-700">
+                            Cancel
+                        </a>
+                    </div>
+                ')
+            )
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
