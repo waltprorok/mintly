@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Mintly — Monthly Cash Flow Made Clear</title>
-    <meta name="description" content="Plan your month, track your spending, and understand your cash flow week by week with Mintly Budget.">
+    <meta name="description" content="Plan your month, track your spending, and understand your cash flow week by week with Mintly.">
 
     @vite(['resources/css/bootstrap.css', 'resources/js/app.js'])
 </head>
