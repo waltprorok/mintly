@@ -1,4 +1,4 @@
-# Mintly
+# Mintly Budget
 Personal Budget App
 
 ### Requirements
