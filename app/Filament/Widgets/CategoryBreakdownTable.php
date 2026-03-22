@@ -51,8 +51,20 @@ class CategoryBreakdownTable extends TableWidget
         return $this->getTableRecords()->sum('total');
     }
 
+    protected function getTotalIncome(): float
+    {
+        return Transaction::query()
+            ->where('user_id', auth()->id())
+            ->where('type', 'income')
+            ->whereMonth('due_at', $this->month)
+            ->whereYear('due_at', $this->year)
+            ->sum('amount');
+    }
+
     public function getTableRecords(): Collection
     {
+        $income = $this->getTotalIncome();
+
         return Transaction::query()
             ->where('user_id', auth()->id())
             ->where('type', 'expense')
@@ -61,11 +73,14 @@ class CategoryBreakdownTable extends TableWidget
             ->with('category')
             ->get()
             ->groupBy(fn ($record) => $record->category->name ?? 'Uncategorized')
-            ->map(function ($items, $category) {
+            ->map(function ($items, $category) use ($income) {
+                $total = $items->sum('amount');
+
                 return [
                     'id' => md5($category),
                     'category_name' => $category,
-                    'total' => $items->sum('amount'),
+                    'total' => $total,
+                    'percent' => $income > 0 ? round(($total / $income) * 100) : 0,
                 ];
             })
             ->sortByDesc('total')
@@ -81,6 +96,26 @@ class CategoryBreakdownTable extends TableWidget
             TextColumn::make('total')
                 ->label('Amount')
                 ->money('USD'),
+
+            TextColumn::make('percent')
+                ->label('Income Usage')
+                ->alignCenter()
+                ->tooltip('Percentage of your total monthly income')
+                ->formatStateUsing(fn ($state) => $state . '%')
+                ->summarize([
+                    Summarizer::make()
+                        ->label('Income Used')
+                        ->formatStateUsing(function () {
+                            $income = $this->getTotalIncome();
+                            $expenses = $this->getTotalSum();
+
+                            $percent = $income > 0
+                                ? round(($expenses / $income) * 100)
+                                : 0;
+
+                            return $percent . '%';
+                        }),
+                ]),
 
             TextColumn::make('total')
                 ->label('Amount')
