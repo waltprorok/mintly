@@ -128,13 +128,13 @@
                             </div>
                             <div class="list-group">
                                 <div class="list-group-item d-flex justify-content-between align-items-center">
-                                    <span>Housing</span><span class="fw-semibold">$1,839</span>
+                                    <span>Mortgage</span><span class="fw-semibold">$1,839</span>
                                 </div>
                                 <div class="list-group-item d-flex justify-content-between align-items-center">
-                                    <span>Groceries</span><span class="fw-semibold">$495</span>
+                                    <span>Groceries</span><span class="fw-semibold">$595</span>
                                 </div>
                                 <div class="list-group-item d-flex justify-content-between align-items-center">
-                                    <span>Insurance</span><span class="fw-semibold">$399</span>
+                                    <span>Subscriptions</span><span class="fw-semibold">$99</span>
                                 </div>
                             </div>
                         </div>
