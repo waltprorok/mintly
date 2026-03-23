@@ -218,6 +218,16 @@
                     </div>
                 </div>
             </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="card p-4 shadow-sm border-0">
+                    <div class="fw-bold mb-2">Loan Calculator</div>
+                    <div class="text-secondary">
+                        Estimate your monthly payments and total loan cost based on interest rate and term.
+                        Add extra payments to see how much time and interest you can save by paying down your loan faster.
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </section>
