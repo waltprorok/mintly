@@ -49,7 +49,7 @@ class CategoryResource extends Resource
                 ->options([
                     'income' => 'Income',
                     'expense' => 'Expense',
-                    'both' => 'Both',
+//                    'both' => 'Both',
                 ])
 //                ->default('expense')
                 ->required(),
@@ -185,7 +185,7 @@ class CategoryResource extends Resource
                     ->options([
                         'income' => 'Income',
                         'expense' => 'Expense',
-                        'both' => 'Both',
+//                        'both' => 'Both',
                     ]),
 
                 SelectFilter::make('spend_classification')
