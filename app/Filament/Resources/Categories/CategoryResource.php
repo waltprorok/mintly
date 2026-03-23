@@ -4,10 +4,12 @@ namespace App\Filament\Resources\Categories;
 
 use App\Models\Category;
 use Filament\Actions\Action;
+use Filament\Actions\DeleteAction;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
@@ -28,6 +30,11 @@ class CategoryResource extends Resource
                 $query->where('user_id', auth()->id())
                     ->orWhereNull('user_id');
             });
+    }
+
+    public static function canDelete($record): bool
+    {
+        return ! $record->transactions()->exists();
     }
 
     public static function form(Schema $schema): Schema
@@ -191,7 +198,25 @@ class CategoryResource extends Resource
                         'unknown' => 'Unknown',
                     ]),
             ])
+            ->actions([
+                DeleteAction::make()
+                    ->label('')
+                    ->icon('heroicon-o-trash')
+                    ->visible(fn ($record) => ! $record->transactions()->exists())
+                    ->before(function ($record) {
+                        if ($record->transactions()->exists()) {
+                            Notification::make()
+                                ->title('Cannot delete category')
+                                ->body('This category has transactions. Reassign or delete them first.')
+                                ->danger()
+                                ->send();
+
+                            return false;
+                        }
+                    }),
+            ])
             ->defaultSort('name');
+
     }
 
     public static function getPages(): array
