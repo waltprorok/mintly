@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete(); // null = global categories
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('name');
             $table->enum('type', ['income', 'expense', 'both'])->default('both');
             $table->enum('spend_classification', ['discretionary', 'non_discretionary', 'unknown'])
@@ -22,6 +22,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->index(['user_id', 'type']);
+            $table->unique(['user_id', 'name']);
         });
     }
 

@@ -13,6 +13,10 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
+        $schedule->command('app:roll-forward-recurring-transactions')
+            ->dailyAt('02:00')
+            ->when(fn () => now()->diffInDays(now()->copy()->endOfMonth()) < 7)
+            ->withoutOverlapping();
     }
 
     /**

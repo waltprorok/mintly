@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Transactions;
 
 use App\Models\Transaction;
 use Carbon\Carbon;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
@@ -22,11 +23,7 @@ use Illuminate\Database\Eloquent\Builder;
 class TransactionResource extends Resource
 {
     protected static ?string $model = Transaction::class;
-
     protected static string|null|\BackedEnum $navigationIcon = 'heroicon-o-banknotes';
-
-    //    protected static string|null|\UnitEnum $navigationGroup = 'Mintly';
-
     protected static ?int $navigationSort = 2;
 
     public static function getEloquentQuery(): Builder
@@ -222,7 +219,14 @@ class TransactionResource extends Resource
             ])
             ->searchable()
             ->persistFiltersInSession()
-            ->defaultSort('due_at');
+            ->defaultSort('due_at')
+            ->bulkActions([
+                DeleteBulkAction::make()
+                    ->label('Delete Selected')
+                    ->requiresConfirmation()
+                    ->modalHeading('Delete Transactions')
+                    ->modalDescription('Are you sure you want to delete the selected transactions? This cannot be undone.')
+            ]);
     }
 
     public static function getPages(): array

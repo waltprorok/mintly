@@ -162,35 +162,9 @@
         </p>
 
         <div class="row g-3">
-            <div class="col-md-6 col-lg-4">
-                <div class="card p-4 shadow-sm border-0">
-                    <div class="fw-bold mb-2">Monthly Overview</div>
-                    <div class="text-secondary">
-                        Instantly see your income, expenses, and net for the month.
-                    </div>
-                </div>
-            </div>
 
-            <div class="col-md-6 col-lg-4">
-                <div class="card p-4 shadow-sm border-0">
-                    <div class="fw-bold mb-2">Weekly Cash Flow</div>
-                    <div class="text-secondary">
-                        Break your month into weeks so you always know where you stand.
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6 col-lg-4">
-                <div class="card p-4 shadow-sm border-0">
-                    <div class="fw-bold mb-2">Bill Tracking</div>
-                    <div class="text-secondary">
-                        Track what’s paid and what’s still outstanding.
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6 col-lg-4">
-                <div class="card p-4 shadow-sm border-0">
+            <div class="col-md-6 col-lg-4 d-flex">
+                <div class="card p-4 shadow-sm border-0 w-100">
                     <div class="fw-bold mb-2">Default Categories</div>
                     <div class="text-secondary">
                         Start with ready-made categories for income and expenses —
@@ -199,8 +173,35 @@
                 </div>
             </div>
 
-            <div class="col-md-6 col-lg-4">
-                <div class="card p-4 shadow-sm border-0">
+            <div class="col-md-6 col-lg-4 d-flex">
+                <div class="card p-4 shadow-sm border-0 w-100">
+                    <div class="fw-bold mb-2">Monthly Overview</div>
+                    <div class="text-secondary">
+                        Instantly see your income, expenses, and net for the month.
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4 d-flex">
+                <div class="card p-4 shadow-sm border-0 w-100">
+                    <div class="fw-bold mb-2">Bill Tracking</div>
+                    <div class="text-secondary">
+                        Track what’s paid and what’s still outstanding.
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4 d-flex">
+                <div class="card p-4 shadow-sm border-0 w-100">
+                    <div class="fw-bold mb-2">Weekly Cash Flow</div>
+                    <div class="text-secondary">
+                        Break your month into weeks so you always know where you stand.
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4 d-flex">
+                <div class="card p-4 shadow-sm border-0 w-100">
                     <div class="fw-bold mb-2">Visual Reports</div>
                     <div class="text-secondary">
                         See exactly where your money goes with clear charts and category breakdowns.
@@ -209,8 +210,8 @@
                 </div>
             </div>
 
-            <div class="col-md-6 col-lg-4">
-                <div class="card p-4 shadow-sm border-0">
+            <div class="col-md-6 col-lg-4 d-flex">
+                <div class="card p-4 shadow-sm border-0 w-100">
                     <div class="fw-bold mb-2">Prepare Next Month</div>
                     <div class="text-secondary">
                         Roll over recurring income and expenses into the next month automatically —
@@ -219,8 +220,18 @@
                 </div>
             </div>
 
-            <div class="col-md-6 col-lg-4">
-                <div class="card p-4 shadow-sm border-0">
+            <div class="col-md-6 col-lg-4 d-flex">
+                <div class="card p-4 shadow-sm border-0 w-100">
+                    <div class="fw-bold mb-2">Never lose track of your money</div>
+                    <div class="text-secondary">
+                        Even if you forget to log in, your budget stays updated—and you’ll
+                        get a monthly summary to keep you on track.
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4 d-flex">
+                <div class="card p-4 shadow-sm border-0 w-100">
                     <div class="fw-bold mb-2">Loan Calculator</div>
                     <div class="text-secondary">
                         Estimate your monthly payments and total loan cost based on interest rate and term.
@@ -228,6 +239,7 @@
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 </section>
@@ -404,6 +416,7 @@
             <a class="text-decoration-none" href="{{ route('login') }}">Log in</a>
             <a class="text-decoration-none" href="{{ route('terms-conditions') }}">Terms & Conditions</a>
             <a class="text-decoration-none" href="{{ route('user-agreement') }}">User Agreement</a>
+            <a class="text-decoration-none" href="{{ route('privacy-policy') }}">Privacy Policy</a>
         </div>
     </div>
 </footer>

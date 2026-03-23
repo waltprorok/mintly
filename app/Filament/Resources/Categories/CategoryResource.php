@@ -18,11 +18,7 @@ use Illuminate\Database\Eloquent\Builder;
 class CategoryResource extends Resource
 {
     protected static ?string $model = Category::class;
-
     protected static string|null|\BackedEnum $navigationIcon = 'heroicon-o-tag';
-
-    //    protected static string|null|\UnitEnum $navigationGroup = 'Mintly';
-
     protected static ?int $navigationSort = 3;
 
     public static function getEloquentQuery(): Builder

@@ -12,18 +12,13 @@ return new class extends Migration
             $table->id();
 
             // Multi-user SaaS
-            $table->foreignId('user_id')
-                ->constrained()
-                ->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
 
             // Income or Expense
             $table->enum('type', ['income', 'expense'])->index();
 
             // Category relationship (recommended over string)
-            $table->foreignId('category_id')
-                ->nullable()
-                ->constrained()
-                ->nullOnDelete();
+            $table->foreignId('category_id')->constrained()->cascadeOnDelete();
 
             // Store as decimal dollars (ex: 1250.50)
             $table->decimal('amount', 12, 2);
