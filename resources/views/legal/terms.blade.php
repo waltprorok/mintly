@@ -33,9 +33,11 @@
             <p>You agree to use the Service only for lawful purposes and in accordance with these terms.</p>
             <ul>
                 <li>You may not use the Service for illegal or fraudulent activities.</li>
-                <li>You may not attempt to interfere with or disrupt the platform.</li>
+                <li>You may not attempt to gain unauthorized access to the Service.</li>
+                <li>You may not interfere with or disrupt the platform.</li>
                 <li>You are responsible for the accuracy of the data you provide.</li>
             </ul>
+
 
             <h4 class="fw-bold mt-4">5. User Data</h4>
             <p>
@@ -47,8 +49,10 @@
             <p>
                 Mintly is not a bank, financial advisor, or investment service. The information and insights provided
                 are for informational purposes only and should not be considered financial, legal, or investment advice.
+                We do not guarantee the accuracy or completeness of any data, calculations, or insights.
                 You are solely responsible for your financial decisions.
             </p>
+
 
             <h4 class="fw-bold mt-4">7. Payments and Subscriptions</h4>
             <p>
@@ -68,7 +72,9 @@
             <h4 class="fw-bold mt-4">9. Termination</h4>
             <p>
                 We reserve the right to suspend or terminate your account if you violate these terms or misuse the Service.
+                You may terminate your account at any time by discontinuing use of the Service or deleting your account.
             </p>
+
 
             <h4 class="fw-bold mt-4">10. Limitation of Liability</h4>
             <p>
@@ -89,7 +95,15 @@
                 conflict of law principles.
             </p>
 
-            <h4 class="fw-bold mt-4">13. Contact</h4>
+            <h4 class="fw-bold mt-4">13. Intellectual Property</h4>
+            <p>
+                The Service, including all content, features, and functionality, is owned by Mintly and is protected
+                by applicable intellectual property laws. You may not copy, modify, distribute, or reverse engineer
+                any part of the Service without our permission.
+            </p>
+
+
+            <h4 class="fw-bold mt-4">14. Contact</h4>
             <p>
                 If you have questions about these terms, please contact:
                 <br>
