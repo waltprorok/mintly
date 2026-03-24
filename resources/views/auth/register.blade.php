@@ -88,9 +88,9 @@
                             {{-- Terms --}}
                             <div class="text-center small text-muted mb-3">
                                 By creating an account you agree to our
-                                <a href="{{ route('terms-conditions') }}" target="_blank">Terms & Conditions</a>
+                                <a href="{{ route('privacy') }}" target="_blank">Privacy Policy</a>
                                 and
-                                <a href="{{ route('user-agreement') }}" target="_blank">User Agreement</a>.
+                                <a href="{{ route('terms') }}" target="_blank">Terms of Service</a>.
                             </div>
 
                             {{-- Login link --}}

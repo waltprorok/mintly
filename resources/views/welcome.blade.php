@@ -405,18 +405,27 @@
 
 {{-- Footer --}}
 <footer class="py-4">
-    <div class="container d-flex flex-wrap justify-content-between align-items-center gap-3">
-        <div class="text-secondary small">
-            © {{ date('Y') }} Mintly. All rights reserved.
-        </div>
-        <div class="d-flex gap-3 small">
-            <a class="text-decoration-none" href="#features">Features</a>
-            <a class="text-decoration-none" href="#pricing">Pricing</a>
-            <a class="text-decoration-none" href="#faq">FAQ</a>
-            <a class="text-decoration-none" href="{{ route('login') }}">Log in</a>
-            <a class="text-decoration-none" href="{{ route('terms-conditions') }}">Terms & Conditions</a>
-            <a class="text-decoration-none" href="{{ route('user-agreement') }}">User Agreement</a>
-            <a class="text-decoration-none" href="{{ route('privacy-policy') }}">Privacy Policy</a>
+    <div class="container text-center text-md-start">
+        <div class="row align-items-center">
+            <div class="col-12 col-md-6 mb-3 mb-md-0 text-secondary small">
+                &copy; {{ date('Y') }} Mintly. All rights reserved.
+            </div>
+
+            <div class="col-12 col-md-6">
+                <div class="d-flex flex-wrap justify-content-center justify-content-md-end gap-2 small">
+                    <div class="text-center text-md-end small">
+                        <div class="mb-1">
+                            <a class="text-decoration-none"  href="#features">Features</a> |
+                            <a class="text-decoration-none"  href="#pricing">Pricing</a> |
+                            <a class="text-decoration-none"  href="#faq">FAQ</a> |
+                            <a class="text-decoration-none"  href="{{ route('login') }}">Log in</a>
+                        </div>
+                    <div>
+                        <a class="text-decoration-none" href="{{ route('privacy') }}">Privacy</a> |
+                        <a class="text-decoration-none" href="{{ route('terms') }}">Terms</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </footer>

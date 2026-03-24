@@ -20,6 +20,5 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::view('/user-agreement', 'legal.user-agreement')->name('user-agreement');
-Route::view('/terms-conditions', 'legal.terms-conditions')->name('terms-conditions');
-Route::view('/privacy-policy', 'legal.privacy-policy')->name('privacy-policy');
+Route::view('/terms', 'legal.terms')->name('terms');
+Route::view('/privacy', 'legal.privacy')->name('privacy');
