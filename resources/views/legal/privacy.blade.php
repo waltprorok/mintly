@@ -65,8 +65,8 @@
             <h4 class="fw-bold mt-4">8. Your Rights</h4>
             <p>You may:</p>
             <ul>
-                <li>Access and update your account information</li>
-                <li>Request deletion of your account and associated data</li>
+                <li>Access and update your account information.</li>
+                <li>Request deletion of your account and associated data.</li>
             </ul>
 
             <h4 class="fw-bold mt-4">9. Data Retention</h4>
