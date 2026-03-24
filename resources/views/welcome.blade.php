@@ -415,14 +415,15 @@
                 <div class="d-flex flex-wrap justify-content-center justify-content-md-end gap-2 small">
                     <div class="text-center text-md-end small">
                         <div class="mb-1">
-                            <a class="text-decoration-none"  href="#features">Features</a> |
-                            <a class="text-decoration-none"  href="#pricing">Pricing</a> |
-                            <a class="text-decoration-none"  href="#faq">FAQ</a> |
-                            <a class="text-decoration-none"  href="{{ route('login') }}">Log in</a>
+                            <a class="text-decoration-none" href="#features">Features</a> |
+                            <a class="text-decoration-none" href="#pricing">Pricing</a> |
+                            <a class="text-decoration-none" href="#faq">FAQ</a> |
+                            <a class="text-decoration-none" href="{{ route('login') }}">Log in</a>
                         </div>
-                    <div>
-                        <a class="text-decoration-none" href="{{ route('privacy') }}">Privacy</a> |
-                        <a class="text-decoration-none" href="{{ route('terms') }}">Terms</a>
+                        <div>
+                            <a class="text-decoration-none" href="{{ route('privacy') }}">Privacy</a> |
+                            <a class="text-decoration-none" href="{{ route('terms') }}">Terms</a>
+                        </div>
                     </div>
                 </div>
             </div>
