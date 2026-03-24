@@ -33,6 +33,9 @@ class LoanCalculator extends Page implements HasForms
 
     public $months_saved = 0;
     public $interest_saved = 0;
+    public $years_saved = 0;
+    public $total_monthly_payment = 0;
+    public $total_interest_without_extra = 0;
 
     public function mount(): void
     {
@@ -93,8 +96,9 @@ class LoanCalculator extends Page implements HasForms
     {
         $balance = (float) $this->loan_amount;
         $rate = (float) $this->interest_rate;
-        $years = (int) $this->years;
+        $years = (float) $this->years;
         $extra = (float) ($this->extra_payment ?? 0);
+
 
         if ($balance <= 0 || $years <= 0) {
             return;
@@ -168,6 +172,10 @@ class LoanCalculator extends Page implements HasForms
 
         $this->months_saved = max(0, $normalMonths - $actualMonths);
         $this->interest_saved = max(0, round($normalInterest - $totalInterest, 2));
+
+        $this->years_saved = round($this->months_saved / 12, 1);
+        $this->total_monthly_payment = round($monthly + $extra, 2);
+        $this->total_interest_without_extra = round($normalInterest, 2);
     }
 
     public function clearForm(): void
@@ -184,6 +192,9 @@ class LoanCalculator extends Page implements HasForms
         $this->total_paid = 0;
         $this->months_saved = 0;
         $this->interest_saved = 0;
+        $this->years_saved = 0;
+        $this->total_monthly_payment = 0;
+        $this->total_interest_without_extra = 0;
 
         // Reset form state (important for Filament)
         $this->form->fill();

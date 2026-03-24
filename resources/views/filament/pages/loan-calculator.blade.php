@@ -113,6 +113,24 @@
                     <div class="value">${{ number_format($monthly_payment, 2) }}</div>
                 </div>
 
+                @if(($extra_payment ?? 0) > 0)
+                    <div class="row-item">
+                        <div class="label">Total Monthly Payment</div>
+                        <div class="value">
+                            ${{ number_format($total_monthly_payment, 2) }}
+                        </div>
+                    </div>
+                @endif
+
+                <hr class="section-divider">
+
+                <div class="row-item">
+                    <div class="label">Loan Amount</div>
+                    <div class="value">
+                        ${{ number_format($loan_amount ?? 0, 2) }}
+                    </div>
+                </div>
+
                 <div class="row-item">
                     <div class="label">Total Interest</div>
                     <div class="value">${{ number_format($total_interest, 2) }}</div>
@@ -128,14 +146,21 @@
 
                     <div class="row-item">
                         <div class="label">Months Saved</div>
-                        <div class="value" style="color:green;">
-                            {{ $months_saved }}
+                        <div class="value">
+                            {{ $months_saved }} months
+                        </div>
+                    </div>
+
+                    <div class="row-item">
+                        <div class="label">Years Saved</div>
+                        <div class="value">
+                            {{ number_format($years_saved, 1) }} years
                         </div>
                     </div>
 
                     <div class="row-item">
                         <div class="label">Interest Saved</div>
-                        <div class="value" style="color:green;">
+                        <div class="value">
                             ${{ number_format($interest_saved, 2) }}
                         </div>
                     </div>
