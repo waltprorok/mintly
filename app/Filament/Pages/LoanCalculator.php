@@ -68,11 +68,11 @@ class LoanCalculator extends Page implements HasForms
                         ->required(),
 
                     Forms\Components\TextInput::make('extra_payment')
-                        ->label('Extra Toward Principal')
+                        ->label('Extra Towards Principal')
                         ->numeric()
                         ->prefix('$')
                         ->default(0)
-                        ->helperText('Optional: pay extra toward principal each month'),
+                        ->helperText('Optional: pay extra toward principals each month'),
 
                     Actions::make([
                         Action::make('calculate')

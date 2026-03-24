@@ -115,6 +115,13 @@
 
                 @if(($extra_payment ?? 0) > 0)
                     <div class="row-item">
+                        <div class="label">Extra Payment</div>
+                        <div class="value">
+                            ${{ number_format($extra_payment, 2) }}
+                        </div>
+                    </div>
+
+                    <div class="row-item">
                         <div class="label">Total Monthly Payment</div>
                         <div class="value">
                             ${{ number_format($total_monthly_payment, 2) }}
