@@ -7,6 +7,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class RollForwardRecurringTransactions extends Command
 {
@@ -56,7 +57,7 @@ class RollForwardRecurringTransactions extends Command
                     $lastMonth->addMonth();
                 }
 
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
 
                 Log::error('Roll forward failed for user', [
                     'user_id' => $user->id,
@@ -117,7 +118,7 @@ class RollForwardRecurringTransactions extends Command
 
                 $created++;
 
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
 
                 Log::error('Transaction roll forward failed', [
                     'user_id' => $user->id,
