@@ -80,7 +80,7 @@ class BudgetStats extends StatsOverviewWidget
         $paidExpenses = Transaction::query()
             ->where('user_id', $userId)
             ->where('type', 'expense')
-            ->where('status', true)
+            ->where('is_paid', true)
             ->whereMonth('due_at', $month)
             ->whereYear('due_at', $year)
             ->sum('amount');
@@ -88,7 +88,7 @@ class BudgetStats extends StatsOverviewWidget
         $unpaidExpenses = Transaction::query()
             ->where('user_id', $userId)
             ->where('type', 'expense')
-            ->where('status', false)
+            ->where('is_paid', false)
             ->whereMonth('due_at', $month)
             ->whereYear('due_at', $year)
             ->sum('amount');

@@ -3,8 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Transaction extends Model
@@ -23,14 +23,14 @@ class Transaction extends Model
         'payment_method',
         'is_recurring',
         'recurring_rule',
-        'status',
+        'is_paid',
     ];
 
     protected $casts = [
         'amount' => 'decimal:2',
         'due_at' => 'datetime',
         'is_recurring' => 'boolean',
-        'status' => 'boolean',
+        'is_paid' => 'boolean',
     ];
 
     /*
@@ -67,12 +67,12 @@ class Transaction extends Model
 
     public function scopePaid(Builder $query): Builder
     {
-        return $query->where('status', true);
+        return $query->where('is_paid', true);
     }
 
     public function scopeUnpaid(Builder $query): Builder
     {
-        return $query->where('status', false);
+        return $query->where('is_paid', false);
     }
 
     /*

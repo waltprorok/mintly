@@ -21,9 +21,7 @@ return new class extends Migration
             $table->string('payment_method')->nullable();
             $table->boolean('is_recurring')->default(false);
             $table->string('recurring_rule')->nullable();
-            // Paid status
-            $table->boolean('status')->default(false)->index();
-            // false = unpaid, true = paid
+            $table->boolean('is_paid')->default(false)->index();
             $table->timestamps();
             $table->index(['user_id', 'type']);
         });

@@ -25,7 +25,7 @@ class UpcomingBills extends TableWidget
                 Transaction::query()
                     ->where('user_id', auth()->id())
                     ->where('type', 'expense')
-                    ->where('status', false)
+                    ->where('is_paid', false)
                     ->whereBetween('due_at', [
                         now()->startOfWeek(),
                         now()->endOfWeek(),
@@ -65,7 +65,7 @@ class UpcomingBills extends TableWidget
                     )
                     ->date('M j'),
 
-                ToggleColumn::make('status')
+                ToggleColumn::make('is_paid')
                     ->label('Paid')
                     ->sortable()
                     ->onColor('success')   // green when true

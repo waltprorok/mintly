@@ -12,8 +12,8 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Filters\SelectFilter;
@@ -37,7 +37,7 @@ class TransactionResource extends Resource
         return $schema->components([
 
             Hidden::make('user_id')
-                ->default(fn () => auth()->id())
+                ->default(fn() => auth()->id())
                 ->required(),
 
             Select::make('type')
@@ -51,7 +51,7 @@ class TransactionResource extends Resource
                 ->relationship(
                     name: 'category',
                     titleAttribute: 'name',
-                    modifyQueryUsing: fn (Builder $query) => $query->where('user_id', auth()->id())
+                    modifyQueryUsing: fn(Builder $query) => $query->where('user_id', auth()->id())
                 )
                 ->searchable()
                 ->preload()
@@ -79,19 +79,59 @@ class TransactionResource extends Resource
                 ])
                 ->nullable(),
 
-            Toggle::make('status')
-                ->label('Paid')
-                ->default(false),
+            Select::make('recurring_rule')
+                ->label('Repeat')
+                ->options([
+                    'once' => 'One Time',
+                    'weekly' => 'Weekly',
+                    'biweekly' => 'Bi-Weekly',
+                    'monthly' => 'Monthly',
+                    'quarterly' => 'Quarterly',
+                    'yearly' => 'Yearly',
+                ])
+                ->default('once')
+                ->helperText('Automatically repeats based on selected schedule'),
 
-            Toggle::make('is_recurring')
-                ->label('Is Recurring (Income or Expense)')
-                ->default(false)
-                ->helperText('Recurring automatically copies to the next month when preparing a new period.'),
+//            Select::make('recurring_rule')
+//                ->label('Recurrence')
+//                ->options([
+//                    null => 'One Time',
+//                    'weekly' => 'Weekly',
+//                    'biweekly' => 'Bi-Weekly',
+//                    'monthly' => 'Monthly',
+//                    'quarterly' => 'Quarterly',
+//                    'yearly' => 'Yearly',
+//                ])
+//                ->reactive()
+//                ->afterStateUpdated(function ($state, callable $set) {
+//                    $set('is_recurring', ! is_null($state));
+//                })
+//                ->helperText('Automatically repeats based on selected schedule'),
+
+//            Toggle::make('is_paid')
+//                ->label('Paid')
+//                ->default(false),
+
+            Section::make(' ')
+                ->columns(1)
+                ->schema([
+                    Toggle::make('is_paid')
+                        ->label('Paid')
+                        ->default(false),
+//                    Toggle::make('is_recurring')
+//                        ->label('Is Recurring (Income or Expense)')
+//                       ->disabled(),
+//                        ->helperText('Recurring automatically copies to the next month when preparing a new period.'),
+
+                ]),
 
             Textarea::make('notes')
                 ->rows(4)
                 ->nullable(),
+
         ]);
+
+
     }
 
     public static function table(Table $table): Table
@@ -100,7 +140,7 @@ class TransactionResource extends Resource
             ->columns([
                 TextColumn::make('due_at')
                     ->dateTime('M j, Y')
-                    ->weight(fn ($record) => optional($record->due_at)?->isToday()
+                    ->weight(fn($record) => optional($record->due_at)?->isToday()
                         ? 'bold'
                         : 'normal')
                     ->sortable(),
@@ -119,7 +159,7 @@ class TransactionResource extends Resource
                     ->sortable(),
 
                 TextColumn::make('payment_method')
-                    ->formatStateUsing(fn ($state) => str($state)
+                    ->formatStateUsing(fn($state) => str($state)
                         ->replace('_', ' ')
                         ->lower()
                         ->title())
@@ -128,26 +168,47 @@ class TransactionResource extends Resource
 
                 TextColumn::make('type')
                     ->badge()
-                    ->formatStateUsing(fn ($state) => ucfirst(strtolower($state)))
-                    ->color(fn ($state) => match (strtolower($state)) {
+                    ->formatStateUsing(fn($state) => ucfirst(strtolower($state)))
+                    ->color(fn($state) => match (strtolower($state)) {
                         'income' => 'success',
                         'expense' => 'info',
                         default => 'gray',
                     })
                     ->sortable(),
 
-                IconColumn::make('is_recurring')
-                    ->label('Recurring')
-                    ->boolean(),
+                TextColumn::make('recurring_rule')
+                    ->label('Frequency')
+                    ->badge()
+                    ->color(fn ($state) => match ($state) {
+                        'once' => 'gray',
+                        'weekly' => 'info',
+                        'biweekly' => 'warning',
+                        'monthly' => 'success',
+                        'quarterly' => 'primary',
+                        'yearly' => 'danger',
+                        default => 'gray',
+                    })
+                    ->formatStateUsing(function ($state) {
+                        return match ($state) {
+                            'once' => 'One Time',
+                            'biweekly' => 'Bi-Weekly',
+                            default => ucfirst($state),
+                        };
+                    })
+                    ->searchable()
+                    ->sortable(),
 
-                ToggleColumn::make('status')
+//                IconColumn::make('is_recurring')
+//                    ->label('Recurring')
+//                    ->boolean(),
+
+                ToggleColumn::make('is_paid')
                     ->label('Paid')
                     ->sortable()
                     ->onColor('success')
                     ->offColor('gray'),
             ])
             ->filters([
-
                 SelectFilter::make('type')
                     ->options([
                         'income' => 'Income',
@@ -187,7 +248,7 @@ class TransactionResource extends Resource
                             return null;
                         }
 
-                        return Carbon::create()->month((int) $month)->format('F');
+                        return Carbon::create()->month((int)$month)->format('F');
                     }),
 
                 SelectFilter::make('year')
@@ -203,7 +264,7 @@ class TransactionResource extends Resource
 
                         return collect(range($oldestYear, $lastYear))
                             ->reverse() // newest first
-                            ->mapWithKeys(fn ($year) => [$year => $year])
+                            ->mapWithKeys(fn($year) => [$year => $year])
                             ->toArray();
                     })
                     ->default(now()->year)
