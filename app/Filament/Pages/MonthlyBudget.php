@@ -6,6 +6,7 @@ use App\Filament\Resources\Transactions\TransactionResource;
 use App\Filament\Widgets\BudgetStats;
 use App\Filament\Widgets\WeeklyCashFlowStats;
 use App\Models\Transaction;
+use App\Services\RecurringTransactionService;
 use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
@@ -118,13 +119,13 @@ class MonthlyBudget extends Page implements HasTable
                 )->all(),
 
 
-                ToggleColumn::make('status')
+                ToggleColumn::make('is_paid')
                     ->label('Paid')
                     ->sortable()
                     ->onColor('success')
                     ->offColor('gray'),
 //
-//                IconColumn::make('status')
+//                IconColumn::make('is_paid')
 //                    ->label('Paid')
 //                    ->boolean(),
             ])
@@ -220,59 +221,20 @@ class MonthlyBudget extends Page implements HasTable
     {
         return [
             Action::make('roll_forward')
-                ->label('Prepare Next Month')
+                ->label('Prepare Next Period')
                 ->icon('heroicon-o-arrow-right-circle')
                 ->color('success')
                 ->requiresConfirmation()
-                ->modalHeading('Prepare Next Month')
-                ->modalDescription('Recurring transactions will be carried over to next month without creating duplicates.')
-                ->modalSubmitActionLabel('Prepare Month')
+                ->modalHeading('Prepare Next Period')
+                ->modalDescription('Recurring transactions will be carried forward based on their frequency.')
+                ->modalSubmitActionLabel('Prepare')
                 ->action(function () {
-                    $currentMonth = Carbon::create($this->year, $this->month);
-                    $nextMonth = $currentMonth->copy()->addMonth();
-                    $lastDay = $nextMonth->copy()->endOfMonth()->day;
-
-                    $transactions = Transaction::query()
-                        ->where('user_id', auth()->id())
-                        ->where('is_recurring', true)
-                        ->whereMonth('due_at', $this->month)
-                        ->whereYear('due_at', $this->year)
-                        ->get();
-
-                    foreach ($transactions as $transaction) {
-                        $day = $transaction->due_at->day;
-
-                        $newDay = min($day, $lastDay);
-
-                        $newDate = Carbon::create(
-                            $nextMonth->year,
-                            $nextMonth->month,
-                            $newDay
-                        );
-
-                        Transaction::updateOrCreate(
-                            [
-                                'user_id' => $transaction->user_id,
-                                'category_id' => $transaction->category_id,
-                                'merchant' => $transaction->merchant,
-                                'due_at' => $newDate,
-                            ],
-                            [
-                                'amount' => $transaction->amount,
-                                'type' => $transaction->type,
-                                'payment_method' => $transaction->payment_method,
-                                'notes' => null,
-                                'is_recurring' => $transaction->is_recurring,
-                                'status' => false,
-                            ]
-                        );
-                    }
-
-                    $count = $transactions->count();
+                    $count = app(RecurringTransactionService::class)
+                        ->run(auth()->id(), true);
 
                     Notification::make()
                         ->title('Next month prepared')
-                        ->body("{$count} transactions copied to {$nextMonth->format('F Y')}.")
+                        ->body("{$count} transactions created.")
                         ->success()
                         ->send();
                 }),
