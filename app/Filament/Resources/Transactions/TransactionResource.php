@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Transactions;
 
 use App\Models\Transaction;
 use Carbon\Carbon;
+use Filament\Actions\BulkAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Hidden;
@@ -11,6 +12,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -92,37 +94,12 @@ class TransactionResource extends Resource
                 ->default('once')
                 ->helperText('Automatically repeats based on selected schedule'),
 
-//            Select::make('recurring_rule')
-//                ->label('Recurrence')
-//                ->options([
-//                    null => 'One Time',
-//                    'weekly' => 'Weekly',
-//                    'biweekly' => 'Bi-Weekly',
-//                    'monthly' => 'Monthly',
-//                    'quarterly' => 'Quarterly',
-//                    'yearly' => 'Yearly',
-//                ])
-//                ->reactive()
-//                ->afterStateUpdated(function ($state, callable $set) {
-//                    $set('is_recurring', ! is_null($state));
-//                })
-//                ->helperText('Automatically repeats based on selected schedule'),
-
-//            Toggle::make('is_paid')
-//                ->label('Paid')
-//                ->default(false),
-
             Section::make(' ')
                 ->columns(1)
                 ->schema([
                     Toggle::make('is_paid')
                         ->label('Paid')
                         ->default(false),
-//                    Toggle::make('is_recurring')
-//                        ->label('Is Recurring (Income or Expense)')
-//                       ->disabled(),
-//                        ->helperText('Recurring automatically copies to the next month when preparing a new period.'),
-
                 ]),
 
             Textarea::make('notes')
@@ -179,7 +156,7 @@ class TransactionResource extends Resource
                 TextColumn::make('recurring_rule')
                     ->label('Frequency')
                     ->badge()
-                    ->color(fn ($state) => match ($state) {
+                    ->color(fn($state) => match ($state) {
                         'once' => 'gray',
                         'weekly' => 'info',
                         'biweekly' => 'warning',
@@ -197,10 +174,6 @@ class TransactionResource extends Resource
                     })
                     ->searchable()
                     ->sortable(),
-
-//                IconColumn::make('is_recurring')
-//                    ->label('Recurring')
-//                    ->boolean(),
 
                 ToggleColumn::make('is_paid')
                     ->label('Paid')
@@ -282,11 +255,32 @@ class TransactionResource extends Resource
             ->persistFiltersInSession()
             ->defaultSort('due_at')
             ->bulkActions([
+                BulkAction::make('mark_paid')
+                    ->label('Mark as Paid')
+                    ->icon('heroicon-o-check-circle')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->action(function ($records) {
+                        Transaction::whereIn('id', $records->pluck('id'))
+                            ->update([
+                                'is_paid' => true,
+                            ]);
+                    })
+                    ->deselectRecordsAfterCompletion()
+                    ->after(function ($records) {
+                        Notification::make()
+                            ->title('Transactions updated')
+                            ->body($records->count() . ' transactions marked as paid.')
+                            ->success()
+                            ->send();
+                    }),
+
                 DeleteBulkAction::make()
                     ->label('Delete Selected')
                     ->requiresConfirmation()
                     ->modalHeading('Delete Transactions')
-                    ->modalDescription('Are you sure you want to delete the selected transactions? This cannot be undone.')
+                    ->modalDescription('Are you sure you want to delete the selected transactions? This cannot be undone.'),
+
             ]);
     }
 
