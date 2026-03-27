@@ -26,7 +26,7 @@ class RecurringTransactionService
 
         foreach ($transactions as $transaction) {
 
-            if ($transaction->due_at->gt($now)) {
+            if (! $nextMonthOnly && $transaction->due_at->gt($now)) {
                 continue;
             }
 
