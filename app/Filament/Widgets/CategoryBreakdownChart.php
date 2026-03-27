@@ -8,9 +8,9 @@ use Filament\Widgets\ChartWidget;
 
 class CategoryBreakdownChart extends ChartWidget
 {
-    protected ?string $heading = 'Expenses by Category';
-
     protected int|string|array $columnSpan = 1;
+
+    protected ?string $heading = 'Expenses by Category';
 
     protected static bool $isDiscovered = false;
 
@@ -42,7 +42,7 @@ class CategoryBreakdownChart extends ChartWidget
         $labels = $data->keys()->toArray();
 
         $colors = collect($values)
-            ->map(fn ($_,$i) => "hsl(" . ($i * 40 % 360) . ", 70%, 55%)")
+            ->map(fn($_, $i) => "hsl(" . ($i * 40 % 360) . ", 70%, 55%)")
             ->toArray();
 
         return [

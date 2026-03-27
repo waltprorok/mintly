@@ -4,11 +4,12 @@ namespace App\Filament\Pages;
 
 use App\Filament\Widgets\CategoryBreakdownChart;
 use App\Filament\Widgets\CategoryBreakdownTable;
+use App\Filament\Widgets\IncomeVsExpenseChart;
 use Filament\Pages\Page;
 
 class Reports extends Page
 {
-    protected static string|null|\BackedEnum $navigationIcon= 'heroicon-o-chart-bar';
+    protected static string|null|\BackedEnum $navigationIcon = 'heroicon-o-chart-bar';
 
     protected static ?string $navigationLabel = 'Reports';
 
@@ -23,6 +24,8 @@ class Reports extends Page
         return [
             CategoryBreakdownChart::class,
             CategoryBreakdownTable::class,
+            IncomeVsExpenseChart::class,
         ];
     }
+
 }
