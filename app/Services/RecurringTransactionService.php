@@ -49,17 +49,17 @@ class RecurringTransactionService
 
                     'monthly' => tap(
                         $currentDate->copy()->addMonthNoOverflow(),
-                        fn ($d) => $d->day(min($day, $d->copy()->endOfMonth()->day))
+                        fn($d) => $d->day(min($day, $d->copy()->endOfMonth()->day))
                     ),
 
                     'quarterly' => tap(
                         $currentDate->copy()->addMonthsNoOverflow(3),
-                        fn ($d) => $d->day(min($day, $d->copy()->endOfMonth()->day))
+                        fn($d) => $d->day(min($day, $d->copy()->endOfMonth()->day))
                     ),
 
                     'yearly' => tap(
                         $currentDate->copy()->addYearNoOverflow(),
-                        fn ($d) => $d->day(min($day, $d->copy()->endOfMonth()->day))
+                        fn($d) => $d->day(min($day, $d->copy()->endOfMonth()->day))
                     ),
 
                     default => null,
@@ -87,7 +87,6 @@ class RecurringTransactionService
                         'amount' => $transaction->amount,
                         'payment_method' => $transaction->payment_method,
                         'notes' => null,
-                        'is_paid' => false,
                     ]
                 );
 
