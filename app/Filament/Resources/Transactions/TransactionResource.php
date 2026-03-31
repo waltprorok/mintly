@@ -21,6 +21,7 @@ use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\HtmlString;
 
 class TransactionResource extends Resource
 {
@@ -92,7 +93,13 @@ class TransactionResource extends Resource
                     'yearly' => 'Yearly',
                 ])
                 ->default('once')
-                ->helperText('Automatically repeats based on selected schedule'),
+                ->helperText(new HtmlString('
+                    Automatically repeats based on selected schedule.<br>
+                    Mortgage = Monthly |
+                    HOA = Quarterly |
+                    Groceries = Weekly
+
+                ')),
 
             Section::make(' ')
                 ->columns(1)
@@ -121,6 +128,20 @@ class TransactionResource extends Resource
                         : 'normal')
                     ->sortable(),
 
+                TextColumn::make('type')
+                    ->badge()
+                    ->formatStateUsing(fn($state) => ucfirst(strtolower($state)))
+                    ->color(fn($state) => match (strtolower($state)) {
+                        'income' => 'success',
+                        'expense' => 'info',
+                        default => 'gray',
+                    })
+                    ->sortable(),
+
+                TextColumn::make('category.name')
+                    ->searchable()
+                    ->sortable(),
+
                 TextColumn::make('merchant')
                     ->placeholder('Netflix')
                     ->searchable()
@@ -130,26 +151,12 @@ class TransactionResource extends Resource
                     ->money('USD')
                     ->sortable(),
 
-                TextColumn::make('category.name')
-                    ->searchable()
-                    ->sortable(),
-
                 TextColumn::make('payment_method')
                     ->formatStateUsing(fn($state) => str($state)
                         ->replace('_', ' ')
                         ->lower()
                         ->title())
                     ->searchable()
-                    ->sortable(),
-
-                TextColumn::make('type')
-                    ->badge()
-                    ->formatStateUsing(fn($state) => ucfirst(strtolower($state)))
-                    ->color(fn($state) => match (strtolower($state)) {
-                        'income' => 'success',
-                        'expense' => 'info',
-                        default => 'gray',
-                    })
                     ->sortable(),
 
                 TextColumn::make('recurring_rule')

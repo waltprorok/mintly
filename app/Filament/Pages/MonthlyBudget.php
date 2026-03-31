@@ -26,25 +26,16 @@ class MonthlyBudget extends Page implements HasTable
 {
     use InteractsWithTable;
 
-    protected string $view = 'filament.pages.monthly-budget';
-
-    protected static string|null|\BackedEnum $navigationIcon = 'heroicon-o-table-cells';
-
-    protected static ?string $slug = 'budget';
-
-    protected static bool $shouldRegisterNavigation = true;
-
-//    protected static string|null|\UnitEnum $navigationGroup = 'Mintly';
-
-    protected static ?string $navigationLabel = 'Budget Planner';
-
     protected static ?int $navigationSort = 1;
+    protected string $view = 'filament.pages.monthly-budget';
+    protected static string|null|\BackedEnum $navigationIcon = 'heroicon-o-table-cells';
+    protected static ?string $slug = 'budget';
+    protected static bool $shouldRegisterNavigation = true;
+    protected static ?string $navigationLabel = 'Budget Planner';
 
     protected static ?string $title = 'Monthly Budget';
 
-    public int $month;
-
-    public int $year;
+    public array $filters = [];
 
     public function table(Table $table): Table
     {
@@ -54,13 +45,6 @@ class MonthlyBudget extends Page implements HasTable
                     ->with('category')
                     ->where('user_id', auth()->id())
                     ->whereIn('type', ['income', 'expense'])
-                    ->select('*')
-                    ->selectRaw("
-                        CASE
-                            WHEN due_at IS NULL THEN NULL
-                            ELSE ((DAY(due_at) - 1) DIV 7) + 1
-                        END as week
-                    ")
                     ->orderByRaw("type = 'expense'")
             )
             ->defaultSort('due_at')
@@ -107,27 +91,28 @@ class MonthlyBudget extends Page implements HasTable
 
                 TextColumn::make('payment_method')
                     ->label('Payment Type')
-                    ->formatStateUsing(fn($state) => str($state)->replace('_', ' ')->title()
-                    ),
+                    ->formatStateUsing(fn($state) => str($state)->replace('_', ' ')->title()),
 
-                ...collect(range(1, 4))->map(
+                ...collect(range(1, $this->getWeeksInMonth()))->map(
                     fn($week) => TextColumn::make("week{$week}")
                         ->label("Week {$week}")
                         ->money('USD')
-                        ->getStateUsing(fn($record) => $record->week == $week ? $record->amount : null
-                        )
-                )->all(),
+                        ->getStateUsing(function ($record) use ($week) {
+                            if (! $record->due_at) {
+                                return null;
+                            }
 
+                            $weekOfMonth = $this->getWeekOfSelectedMonth($record->due_at);
+
+                            return $weekOfMonth === $week ? $record->amount : null;
+                        })
+                )->all(),
 
                 ToggleColumn::make('is_paid')
                     ->label('Paid')
                     ->sortable()
                     ->onColor('success')
                     ->offColor('gray'),
-//
-//                IconColumn::make('is_paid')
-//                    ->label('Paid')
-//                    ->boolean(),
             ])
             ->filters([
                 Filter::make('period')
@@ -153,7 +138,9 @@ class MonthlyBudget extends Page implements HasTable
                                 11 => 'November',
                                 12 => 'December',
                             ])
-                            ->default(now()->month),
+                            ->default(now()->month)
+                            ->reactive()
+                            ->afterStateUpdated(fn($state) => $this->filters['month'] = $state),
 
                         Select::make('year')
                             ->label('Year')
@@ -167,25 +154,24 @@ class MonthlyBudget extends Page implements HasTable
                                 $lastYear = now()->addMonth()->year;
 
                                 return collect(range($oldestYear, $lastYear))
-                                    ->reverse() // newest first
+                                    ->reverse()
                                     ->mapWithKeys(fn($year) => [$year => $year])
                                     ->toArray();
                             })
-                            ->default(now()->year),
+                            ->default(now()->year)
+                            ->reactive()
+                            ->afterStateUpdated(fn($state) => $this->filters['year'] = $state),
                     ])
                     ->query(function ($query, array $data) {
-                        $this->month = $data['month'] ?? now()->month;
-                        $this->year = $data['year'] ?? now()->year;
-
                         $this->dispatch(
                             'updateBudgetStats',
-                            month: $this->month,
-                            year: $this->year
+                            month: $data['month'] ?? now()->month,
+                            year: $data['year'] ?? now()->year
                         );
 
                         return $query
-                            ->whereMonth('due_at', $this->month)
-                            ->whereYear('due_at', $this->year);
+                            ->whereMonth('due_at', $data['month'] ?? now()->month)
+                            ->whereYear('due_at', $data['year'] ?? now()->year);
                     })
                     ->indicateUsing(function (array $data) {
                         $month = $data['month'] ?? now()->month;
@@ -200,7 +186,6 @@ class MonthlyBudget extends Page implements HasTable
                 Action::make('editTransaction')
                     ->icon('heroicon-o-pencil-square')
                     ->label(' ')
-//                    ->tooltip('Edit transaction')
                     ->color('blue')
                     ->modalHeading('Edit Transaction')
                     ->modalWidth('lg')
@@ -214,7 +199,6 @@ class MonthlyBudget extends Page implements HasTable
                         $record->update($data);
                     })
             ]);
-//            ->actionsColumnLabel('Action');
     }
 
     protected function getHeaderActions(): array
@@ -243,8 +227,35 @@ class MonthlyBudget extends Page implements HasTable
 
     public function mount(): void
     {
-        $this->month = now()->month;
-        $this->year = now()->year;
+        $this->filters = [
+            'month' => now()->month,
+            'year' => now()->year,
+        ];
+    }
+
+    protected function getSelectedMonth(): int
+    {
+        return $this->filters['month'] ?? now()->month;
+    }
+
+    protected function getSelectedYear(): int
+    {
+        return $this->filters['year'] ?? now()->year;
+    }
+
+    protected function getWeekOfSelectedMonth($date): int
+    {
+        return (int)ceil(Carbon::parse($date)->day / 7);
+    }
+
+    protected function getWeeksInMonth(): int
+    {
+        $days = Carbon::create(
+            $this->getSelectedYear(),
+            $this->getSelectedMonth()
+        )->daysInMonth;
+
+        return (int)ceil($days / 7);
     }
 
     protected function getHeaderWidgets(): array
