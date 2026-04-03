@@ -240,6 +240,16 @@
                 </div>
             </div>
 
+            <div class="col-md-6 col-lg-4 d-flex">
+                <div class="card p-4 shadow-sm border-0 w-100">
+                    <div class="fw-bold mb-2">Monthly Email</div>
+                    <div class="text-secondary">
+                        Get a clear snapshot of your income, expenses, and net each month—
+                        delivered straight to your inbox so you always know where you stand.
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </section>
