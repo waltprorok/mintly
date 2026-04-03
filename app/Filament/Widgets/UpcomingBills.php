@@ -9,6 +9,7 @@ use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget;
+use Illuminate\Support\HtmlString;
 
 class UpcomingBills extends TableWidget
 {
@@ -50,7 +51,9 @@ class UpcomingBills extends TableWidget
                     ->money('USD')
                     ->summarize(
                         Sum::make()
-                            ->formatStateUsing(fn($state) => "<strong>$" . number_format($state, 2) . "</strong>")
+                            ->formatStateUsing(fn($state) => new HtmlString(
+                                '<strong>$' . number_format($state, 2) . '</strong>'
+                            ))
                             ->html()
                             ->label(' ')
 //                            ->money('USD')

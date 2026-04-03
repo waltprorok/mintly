@@ -13,7 +13,7 @@ class RecurringTransactionService
 
         $targetEnd = $nextMonthOnly
             ? $nextMonth->copy()->endOfMonth()
-            : $now;
+            : $now->copy()->endOfMonth();
 
         $transactions = Transaction::query()
             ->where('user_id', $userId)
@@ -74,23 +74,36 @@ class RecurringTransactionService
                     continue;
                 }
 
-                $model = Transaction::updateOrCreate(
-                    [
-                        'user_id' => $transaction->user_id,
-                        'merchant' => $transaction->merchant,
-                        'type' => $transaction->type,
-                        'recurring_rule' => $transaction->recurring_rule,
-                        'due_at' => $nextDate,
-                    ],
-                    [
+                $week = (int) ceil($nextDate->day / 7);
+
+                $existing = Transaction::query()
+                    ->where('user_id', $transaction->user_id)
+                    ->where('merchant', $transaction->merchant)
+                    ->where('type', $transaction->type)
+                    ->whereMonth('due_at', $nextDate->month)
+                    ->whereYear('due_at', $nextDate->year)
+                    ->whereRaw('CEIL(DAY(due_at) / 7) = ?', [$week])
+                    ->first();
+
+                if ($existing) {
+                    $existing->update([
                         'category_id' => $transaction->category_id,
                         'amount' => $transaction->amount,
                         'payment_method' => $transaction->payment_method,
+                    ]);
+                } else {
+                    Transaction::create([
+                        'user_id' => $transaction->user_id,
+                        'merchant' => $transaction->merchant,
+                        'type' => $transaction->type,
+                        'due_at' => $nextDate,
+                        'category_id' => $transaction->category_id,
+                        'amount' => $transaction->amount,
+                        'payment_method' => $transaction->payment_method,
+                        'recurring_rule' => $transaction->recurring_rule,
                         'notes' => null,
-                    ]
-                );
+                    ]);
 
-                if ($model->wasRecentlyCreated) {
                     $created++;
                 }
 
