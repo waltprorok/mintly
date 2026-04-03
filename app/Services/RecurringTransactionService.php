@@ -76,14 +76,26 @@ class RecurringTransactionService
 
                 $week = (int) ceil($nextDate->day / 7);
 
-                $existing = Transaction::query()
+                $query = Transaction::query()
                     ->where('user_id', $transaction->user_id)
                     ->where('merchant', $transaction->merchant)
                     ->where('type', $transaction->type)
                     ->whereMonth('due_at', $nextDate->month)
-                    ->whereYear('due_at', $nextDate->year)
-                    ->whereRaw('CEIL(DAY(due_at) / 7) = ?', [$week])
-                    ->first();
+                    ->whereYear('due_at', $nextDate->year);
+
+                if (config('database.default') === 'sqlite') {
+                    $query->whereRaw(
+                        '((CAST(strftime("%d", due_at) AS INTEGER) - 1) / 7) + 1 = ?',
+                        [$week]
+                    );
+                } else {
+                    $query->whereRaw(
+                        'CEIL(DAY(due_at) / 7) = ?',
+                        [$week]
+                    );
+                }
+
+                $existing = $query->first();
 
                 if ($existing) {
                     $existing->update([

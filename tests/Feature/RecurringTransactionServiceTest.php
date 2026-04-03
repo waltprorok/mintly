@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Services\RecurringTransactionService;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -19,6 +20,7 @@ class RecurringTransactionServiceTest extends TestCase
     {
         parent::setUp();
 
+        Carbon::setTestNow(Carbon::create(2026, 4, 10)); // freeze time
         $this->service = new RecurringTransactionService();
     }
 
@@ -35,7 +37,7 @@ class RecurringTransactionServiceTest extends TestCase
             'user_id' => $user->id,
             'category_id' => $category->id,
             'recurring_rule' => 'monthly',
-            'due_at' => now()->subMonth(),
+            'due_at' => now()->subMonth(), // March 10
             'amount' => 100,
         ]);
 
@@ -43,15 +45,23 @@ class RecurringTransactionServiceTest extends TestCase
 
         $this->assertEquals(1, $created);
 
+        $expectedDate = now()
+            ->copy()
+            ->addMonth()
+            ->startOfMonth()
+            ->addDays(9)
+            ->format('Y-m-d H:i:s'); // ✅ SQLite-safe
+
         $this->assertDatabaseHas('transactions', [
             'user_id' => $user->id,
             'merchant' => $transaction->merchant,
             'amount' => 100,
+            'due_at' => $expectedDate,
         ]);
     }
 
     /** @test */
-    public function it_does_not_duplicate_existing_transaction()
+    public function it_does_not_duplicate_existing_transaction_in_same_week()
     {
         $user = User::factory()->create();
 
@@ -63,20 +73,16 @@ class RecurringTransactionServiceTest extends TestCase
             'user_id' => $user->id,
             'category_id' => $category->id,
             'recurring_rule' => 'monthly',
-            'due_at' => now()->subMonth(),
+            'due_at' => now()->subMonth()->startOfMonth()->addDays(4), // March 5
         ]);
 
-        $nextDate = now()
-            ->copy()
-            ->addMonth()
-            ->setDay($original->due_at->day);
+        $nextDate = now()->copy()->addMonth()->startOfMonth()->addDays(6); // May 7
 
         Transaction::factory()->create([
             'user_id' => $user->id,
             'category_id' => $category->id,
             'merchant' => $original->merchant,
             'type' => $original->type,
-            'recurring_rule' => 'monthly',
             'due_at' => $nextDate,
         ]);
 
@@ -106,12 +112,12 @@ class RecurringTransactionServiceTest extends TestCase
 
         $this->assertDatabaseHas('transactions', [
             'id' => $transaction->id,
-            'is_paid' => true, // ✅ should NOT be reset
+            'is_paid' => true,
         ]);
     }
 
     /** @test */
-    public function it_skips_future_transactions()
+    public function it_skips_future_transactions_when_not_next_month_mode()
     {
         $user = User::factory()->create();
 
