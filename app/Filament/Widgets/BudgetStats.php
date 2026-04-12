@@ -45,6 +45,7 @@ class BudgetStats extends StatsOverviewWidget
         $current = Carbon::create($year, $month);
         $previous = $current->copy()->subMonth();
 
+        // Current values
         $income = Transaction::query()
             ->where('user_id', $userId)
             ->where('type', 'income')
@@ -61,6 +62,7 @@ class BudgetStats extends StatsOverviewWidget
 
         $net = $income - $expenses;
 
+        // Previous values
         $prevIncome = Transaction::query()
             ->where('user_id', $userId)
             ->where('type', 'income')
@@ -77,6 +79,7 @@ class BudgetStats extends StatsOverviewWidget
 
         $prevNet = $prevIncome - $prevExpenses;
 
+        // Paid vs unpaid
         $paidExpenses = Transaction::query()
             ->where('user_id', $userId)
             ->where('type', 'expense')
@@ -101,36 +104,56 @@ class BudgetStats extends StatsOverviewWidget
             ? round(($unpaidExpenses / $expenses) * 100)
             : 0;
 
-        $incomeChange = $this->percentChange($income, $prevIncome);
-        $expenseChange = $this->percentChange($expenses, $prevExpenses);
-        $netChange = $this->percentChange($net, $prevNet);
+        // Trend values
+        $incomeChangeValue = $this->percentChangeValue($income, $prevIncome);
+        $expenseChangeValue = $this->percentChangeValue($expenses, $prevExpenses);
+
+        // Formatted descriptions
+        $incomeChange = $this->formatPercentChange($incomeChangeValue);
+        $expenseChange = $this->formatPercentChange($expenseChangeValue);
+        $netChange = $this->formatNetChange($net, $prevNet);
 
         return [
+            // Income (up = good)
             Stat::make('Monthly Income', '$' . number_format($income, 2))
                 ->description($incomeChange)
-                ->descriptionIcon($this->trendIcon($incomeChange))
-                ->color('success'),
+                ->descriptionIcon($incomeChangeValue < 0
+                    ? 'heroicon-m-arrow-trending-down'
+                    : 'heroicon-m-arrow-trending-up'
+                )
+                ->color($incomeChangeValue < 0 ? 'danger' : 'success'),
 
+            // Expenses (down = good)
             Stat::make('Monthly Expenses', '$' . number_format($expenses, 2))
                 ->description($expenseChange)
-                ->descriptionIcon($this->trendIcon($expenseChange))
-                ->color('danger'),
+                ->descriptionIcon($expenseChangeValue > 0
+                    ? 'heroicon-m-arrow-trending-up'
+                    : 'heroicon-m-arrow-trending-down'
+                )
+                ->color($expenseChangeValue > 0 ? 'danger' : 'success'),
 
+            // Net (use dollar change instead of %)
             Stat::make('Net This Month', '$' . number_format($net, 2))
                 ->description($netChange)
-                ->descriptionIcon($this->trendIcon($netChange))
-                ->color($net >= 0 ? 'success' : 'danger'),
+                ->descriptionIcon(($net - $prevNet) < 0
+                    ? 'heroicon-m-arrow-trending-down'
+                    : 'heroicon-m-arrow-trending-up'
+                )
+                ->color(($net - $prevNet) < 0 ? 'danger' : 'success'),
 
+            // Paid bills
             Stat::make('Bills Paid', '$' . number_format($paidExpenses, 2))
                 ->description($paidPercent . '% of expenses cleared')
                 ->descriptionIcon('heroicon-m-check-circle')
                 ->color('success'),
 
+            // Outstanding
             Stat::make('Outstanding Bills', '$' . number_format($unpaidExpenses, 2))
                 ->description($unpaidPercent . '% remaining')
                 ->descriptionIcon('heroicon-m-clock')
                 ->color('warning'),
 
+            // Progress
             Stat::make('Expense Progress', $paidPercent . '%')
                 ->description('of monthly expenses paid')
                 ->descriptionIcon('heroicon-m-chart-bar')
@@ -138,23 +161,26 @@ class BudgetStats extends StatsOverviewWidget
         ];
     }
 
-    private function percentChange($current, $previous): string
+    private function percentChangeValue($current, $previous): float
     {
         if ($previous == 0) {
-            return 'No previous data';
+            return 0;
         }
 
-        $percent = (($current - $previous) / $previous) * 100;
-
-        return number_format($percent, 1) . '% from last month';
+        return (($current - $previous) / $previous) * 100;
     }
 
-    private function trendIcon($change): string
+    private function formatPercentChange(float $value): string
     {
-        if (str_contains($change, '-')) {
-            return 'heroicon-m-arrow-trending-down';
-        }
+        return number_format($value, 1) . '% from last month';
+    }
 
-        return 'heroicon-m-arrow-trending-up';
+    private function formatNetChange($current, $previous): string
+    {
+        $diff = $current - $previous;
+
+        $prefix = $diff < 0 ? '-' : '+';
+
+        return $prefix . '$' . number_format(abs($diff), 2) . ' from last month';
     }
 }
