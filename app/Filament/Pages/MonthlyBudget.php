@@ -90,7 +90,7 @@ class MonthlyBudget extends Page implements HasTable
                     ]),
 
                 TextColumn::make('payment_method')
-                    ->label('Payment Type')
+                    ->label('Payment')
                     ->formatStateUsing(fn($state) => str($state)->replace('_', ' ')->title()),
 
                 ...collect(range(1, $this->getWeeksInMonth()))->map(
