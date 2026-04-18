@@ -5,6 +5,7 @@ namespace App\Filament\Pages;
 use App\Filament\Widgets\CategoryBreakdownChart;
 use App\Filament\Widgets\CategoryBreakdownTable;
 use App\Filament\Widgets\IncomeVsExpenseChart;
+use App\Filament\Widgets\IncomeVsExpenseTable;
 use Filament\Pages\Page;
 
 class Reports extends Page
@@ -25,6 +26,7 @@ class Reports extends Page
             CategoryBreakdownChart::class,
             CategoryBreakdownTable::class,
             IncomeVsExpenseChart::class,
+            IncomeVsExpenseTable::class,
         ];
     }
 

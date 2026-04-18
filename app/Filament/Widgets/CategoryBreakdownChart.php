@@ -39,7 +39,18 @@ class CategoryBreakdownChart extends ChartWidget
             ->sortDesc();
 
         $values = $data->values()->toArray();
-        $labels = $data->keys()->toArray();
+
+        $income = Transaction::query()
+            ->where('user_id', auth()->id())
+            ->where('type', 'income')
+            ->whereMonth('due_at', $month)
+            ->whereYear('due_at', $year)
+            ->sum('amount');
+
+        $labels = $data->map(function ($amount, $label) use ($income) {
+            $percent = $income > 0 ? round(($amount / $income) * 100, 1) : 0;
+            return "{$label} ({$percent}%)";
+        })->values()->toArray();
 
         $colors = collect($values)
             ->map(fn($_, $i) => "hsl(" . ($i * 40 % 360) . ", 70%, 55%)")
@@ -51,12 +62,6 @@ class CategoryBreakdownChart extends ChartWidget
                     'label' => 'Expenses',
                     'data' => $values,
                     'backgroundColor' => $colors,
-//                    'borderWidth' => 0,
-//                    'hoverBorderWidth' => 0,
-//                    'borderRadius' => 6,
-
-//                    'borderColor' => '#3b82f6',
-//                    'backgroundColor' => 'rgba(59,130,246,0.15)',
                     'tension' => 0.2,
                     'fill' => true,
                 ],
@@ -94,8 +99,8 @@ class CategoryBreakdownChart extends ChartWidget
         $periods = [];
 
         while ($start <= $end) {
-            $key = $start->format('Y-m'); // e.g. 2026-03
-            $label = $start->format('F Y'); // March 2026
+            $key = $start->format('Y-m');
+            $label = $start->format('F Y');
 
             $periods[$key] = $label;
 
@@ -116,5 +121,4 @@ class CategoryBreakdownChart extends ChartWidget
             'year' => $year,
         ]);
     }
-
 }
