@@ -14,7 +14,7 @@ use Livewire\Attributes\On;
 
 class IncomeVsExpenseTable extends TableWidget
 {
-    protected static ?string $heading = 'Income vs Expenses Table';
+    protected static ?string $heading = 'Income vs Expenses Breakdown';
 
     protected int|string|array $columnSpan = 1;
 
@@ -32,8 +32,8 @@ class IncomeVsExpenseTable extends TableWidget
     #[On('categoryPeriodChanged')]
     public function updatePeriod($data): void
     {
-        $this->month = (int) $data['month'];
-        $this->year = (int) $data['year'];
+        $this->month = (int)$data['month'];
+        $this->year = (int)$data['year'];
 
         $this->resetTable();
     }
@@ -66,53 +66,117 @@ class IncomeVsExpenseTable extends TableWidget
             ->sum('amount');
 
         $remaining = max(0, $income - $expenses);
+        $overspent = max(0, $expenses - $income);
 
-        $expensePercent = $income > 0 ? round(($expenses / $income) * 100, 1) : 0;
-        $remainingPercent = max(0, 100 - $expensePercent);
+        if ($income <= 0) {
+            $expensePercent = 0;
+            $remainingPercent = 0;
+        } elseif ($expenses <= $income) {
+            $expensePercent = round(($expenses / $income) * 100, 1);
+            $remainingPercent = 100 - $expensePercent;
+        } else {
+            $expensePercent = 100;
+            $remainingPercent = null;
+        }
 
-        return collect([
+        $rows = [
+            [
+                'id' => 'income',
+                'label' => 'Income',
+                'amount' => $income,
+                'percent' => 100,
+                'income' => $income,
+            ],
             [
                 'id' => 'expenses',
                 'label' => 'Expenses',
                 'amount' => $expenses,
                 'percent' => $expensePercent,
+                'income' => $income,
             ],
-            [
-                'id' => 'remaining',
-                'label' => 'Remaining',
-                'amount' => $remaining,
-                'percent' => $remainingPercent,
-            ],
-        ]);
+        ];
+
+        if ($overspent > 0) {
+            $rows[] = [
+                'id' => 'overspent',
+                'label' => 'Overspent',
+                'amount' => $overspent,
+                'percent' => null,
+                'income' => $income,
+            ];
+        }
+
+        $rows[] = [
+            'id' => 'remaining',
+            'label' => 'Remaining',
+            'amount' => $remaining,
+            'percent' => $remainingPercent,
+            'income' => $income,
+        ];
+
+        return collect($rows);
     }
 
     protected function getTableColumns(): array
     {
         return [
             TextColumn::make('label')
-                ->label('Type'),
+                ->label('Type')
+                ->formatStateUsing(function ($state, $record) {
+                    if ($record['id'] === 'overspent') {
+                        return new HtmlString("<span style='color:#ef4444;font-weight:600;'>{$state}</span>");
+                    }
+
+                    return $state;
+                }),
 
             TextColumn::make('amount')
                 ->label('Amount')
-                ->money('USD'),
+                ->formatStateUsing(function ($state, $record) {
+                    $formatted = '$' . number_format($state, 2);
+
+                    if ($record['id'] === 'overspent') {
+                        return new HtmlString("<span style='color:#ef4444;font-weight:600;'>{$formatted}</span>");
+                    }
+
+                    return $formatted;
+                }),
 
             TextColumn::make('percent')
-                ->label('Percent')
-                ->formatStateUsing(fn ($state) => $state . '%')
+                ->label('Of Income')
+                ->formatStateUsing(fn($state) => $state !== null ? $state . '%' : '—')
                 ->summarize([
                     Summarizer::make()
-                        ->label('Summary')
+                        ->label('')
                         ->formatStateUsing(function () {
                             $records = $this->getTableRecords();
+
+                            $overspent = $records->firstWhere('id', 'overspent');
+
+                            if ($overspent) {
+                                $income = $overspent['income'] ?? 1;
+                                $percentOver = $income > 0
+                                    ? round(($overspent['amount'] / $income) * 100, 1)
+                                    : 0;
+
+                                return new HtmlString(
+                                    "<strong style='color:#ef4444'>
+                                            Overspent $" . number_format($overspent['amount'], 2) . "
+                                            ({$percentOver}% over)
+                                        </strong>"
+                                );
+                            }
 
                             $expenses = $records->firstWhere('id', 'expenses')['percent'] ?? 0;
                             $remaining = $records->firstWhere('id', 'remaining')['percent'] ?? 0;
 
                             return new HtmlString(
-                                "<strong>{$expenses}% Expenses vs {$remaining}% Remaining</strong>"
+                                "<span style='color:#6b7280;'>
+                                        {$expenses}% used and {$remaining}% remaining
+                                    </span>"
                             );
                         }),
-                ]),
+                ])
         ];
     }
 

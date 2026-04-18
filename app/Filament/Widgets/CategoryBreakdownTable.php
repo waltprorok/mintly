@@ -8,6 +8,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Widgets\TableWidget;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use Illuminate\Support\HtmlString;
 use Livewire\Attributes\On;
 
 class CategoryBreakdownTable extends TableWidget
@@ -30,8 +31,8 @@ class CategoryBreakdownTable extends TableWidget
     #[On('categoryPeriodChanged')]
     public function updatePeriod($data): void
     {
-        $this->month = (int) $data['month'];
-        $this->year = (int) $data['year'];
+        $this->month = (int)$data['month'];
+        $this->year = (int)$data['year'];
 
         $this->resetTable();
     }
@@ -113,8 +114,16 @@ class CategoryBreakdownTable extends TableWidget
                                 ? round(($expenses / $income) * 100)
                                 : 0;
 
-                            return $percent . '%';
-                        }),
+                            if ($percent > 100) {
+                                return new HtmlString(
+                                    "<span style='color:#ef4444;font-weight:600;'>
+                                        {$percent}% (Over Budget)
+                                    </span>"
+                                );
+                            }
+
+                            return "{$percent}%";
+                        })
                 ]),
 
             TextColumn::make('total')
@@ -123,7 +132,19 @@ class CategoryBreakdownTable extends TableWidget
                 ->summarize([
                     Summarizer::make()
                         ->label('Total')
-                        ->formatStateUsing(fn () => '$' . number_format($this->getTotalSum(), 2)),
+                        ->formatStateUsing(function () {
+                            $total = $this->getTotalSum();
+                            $income = $this->getTotalIncome();
+                            $formatted = '$' . number_format($total, 2);
+
+                            if ($income > 0 && $total > $income) {
+                                return new HtmlString(
+                                    "<span style='color:#ef4444;font-weight:600;'>{$formatted}</span>"
+                                );
+                            }
+
+                            return $formatted;
+                        })
                 ]),
         ];
     }

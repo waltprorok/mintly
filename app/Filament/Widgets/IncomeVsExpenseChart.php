@@ -27,8 +27,8 @@ class IncomeVsExpenseChart extends ChartWidget
     #[On('categoryPeriodChanged')]
     public function updatePeriod($data): void
     {
-        $this->month = (int)$data['month'];
-        $this->year = (int)$data['year'];
+        $this->month = (int) $data['month'];
+        $this->year = (int) $data['year'];
 
         $this->dispatch('$refresh');
     }
@@ -50,20 +50,42 @@ class IncomeVsExpenseChart extends ChartWidget
             ->whereBetween('due_at', [$start, $end])
             ->sum('amount');
 
-        $expensePercent = $income > 0 ? round(($expenses / $income) * 100, 1) : 0;
-        $savingsPercent = max(0, 100 - $expensePercent);
+        $overspend = max(0, $expenses - $income);
+        // normalize chart to 100% and handle overspending
+        if ($income <= 0) {
+            $expensePercent = 0;
+            $remainingPercent = 0;
+        } elseif ($expenses <= $income) {
+            $expensePercent = round(($expenses / $income) * 100, 1);
+            $remainingPercent = 100 - $expensePercent;
+        } else {
+            // overspending → cap chart at 100%
+            $expensePercent = 100;
+            $remainingPercent = 0;
+        }
 
         return [
             'datasets' => [
                 [
-                    'data' => [$expensePercent, $savingsPercent],
+                    'data' => [$expensePercent, $remainingPercent],
                     'backgroundColor' => [
-                        'rgba(59,130,246,0.35)', // stronger blue
-                        'rgba(34,197,94,0.35)',  // stronger green
+                        // turn red when overspending
+                        $overspend > 0
+                            ? 'rgba(239,68,68,0.35)'   // red
+                            : 'rgba(59,130,246,0.35)', // blue
+
+                        $overspend > 0
+                            ? 'rgba(239,68,68,0.15)'   // faded red
+                            : 'rgba(34,197,94,0.35)',  // green
                     ],
                     'borderColor' => [
-                        'rgba(59,130,246,0.9)',
-                        'rgba(34,197,94,0.9)',
+                        $overspend > 0
+                            ? 'rgba(239,68,68,0.9)'
+                            : 'rgba(59,130,246,0.9)',
+
+                        $overspend > 0
+                            ? 'rgba(239,68,68,0.5)'
+                            : 'rgba(34,197,94,0.9)',
                     ],
                     'borderWidth' => 1,
                     'spacing' => 1,
@@ -71,8 +93,13 @@ class IncomeVsExpenseChart extends ChartWidget
                 ],
             ],
             'labels' => [
-                "Spent ({$expensePercent}%)",
-                "Remaining ({$savingsPercent}%)",
+                $overspend > 0
+                    ? 'Overspent $' . number_format($overspend, 2)
+                    : "Spent ({$expensePercent}%)",
+
+                $overspend > 0
+                    ? 'Budget Exceeded'
+                    : "Remaining ({$remainingPercent}%)",
             ],
         ];
     }
