@@ -42,25 +42,19 @@ class RecurringTransactionService
                 }
 
                 $nextDate = match ($transaction->recurring_rule) {
-
                     'weekly' => $currentDate->copy()->addWeek(),
-
                     'biweekly' => $currentDate->copy()->addWeeks(2),
-
                     'monthly' => tap(
                         $currentDate->copy()->addMonthNoOverflow(),
                         fn($d) => $d->day(min($day, $d->copy()->endOfMonth()->day))
                     ),
-
                     'quarterly' => tap(
                         $currentDate->copy()->addMonthsNoOverflow(3),
                         fn($d) => $d->day(min($day, $d->copy()->endOfMonth()->day))
                     ),
-
                     'yearly' => tap(
                         $currentDate->copy()->addYearNoOverflow(),
-                        fn($d) => $d->day(min($day, $d->copy()->endOfMonth()->day))
-                    ),
+                        fn($d) => $d->day(min($day, $d->copy()->endOfMonth()->day))),
 
                     default => null,
                 };
@@ -74,7 +68,7 @@ class RecurringTransactionService
                     continue;
                 }
 
-                $week = (int) ceil($nextDate->day / 7);
+                $week = (int)ceil($nextDate->day / 7);
 
                 $query = Transaction::query()
                     ->where('user_id', $transaction->user_id)
@@ -98,6 +92,11 @@ class RecurringTransactionService
                 $existing = $query->first();
 
                 if ($existing) {
+                    if (! $nextMonthOnly) {
+                        $currentDate = $nextDate; // move forward
+                        continue;
+                    }
+
                     $existing->update([
                         'category_id' => $transaction->category_id,
                         'amount' => $transaction->amount,
