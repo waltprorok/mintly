@@ -143,7 +143,7 @@ class BudgetStats extends StatsOverviewWidget
 
             // Paid bills
             Stat::make('Bills Paid', '$' . number_format($paidExpenses, 2))
-                ->description($paidPercent . '% of expenses cleared')
+                ->description($paidPercent . '% of expenses paid')
                 ->descriptionIcon('heroicon-m-check-circle')
                 ->color('success'),
 
