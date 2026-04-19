@@ -23,8 +23,8 @@
 
         <div class="collapse navbar-collapse" id="mainNav">
             <ul class="navbar-nav me-auto">
-                <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
                 <li class="nav-item"><a class="nav-link" href="#how-it-works">How it works</a></li>
+                <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
                 <li class="nav-item"><a class="nav-link" href="#pricing">Pricing</a></li>
                 <li class="nav-item"><a class="nav-link" href="#faq">FAQ</a></li>
             </ul>
@@ -153,6 +153,78 @@
     </div>
 </header>
 
+{{-- How It Works --}}
+<section id="how-it-works" class="py-5 bg-white border-top">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-lg-8">
+                <h2 class="fw-bold">How Mintly works</h2>
+                <p class="text-secondary mb-0">
+                    A simple 3-step system to take control of your monthly cash flow.
+                </p>
+            </div>
+        </div>
+
+        <div class="row g-4">
+
+            {{-- Step 1 --}}
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm p-4 text-center">
+                    <div class="mb-3">
+                        <div class="mb-2">
+                            <i class="bi bi-wallet2 fs-1 text-primary"></i>
+                        </div>
+                        <span class="badge bg-primary rounded-pill px-3 py-2">Step 1</span>
+                    </div>
+                    <h5 class="fw-bold">Plan your month</h5>
+                    <p class="text-secondary mb-0">
+                        Add your income, bills, and expected expenses so you know exactly what’s coming.
+                    </p>
+                </div>
+            </div>
+
+            {{-- Step 2 --}}
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm p-4 text-center">
+                    <div class="mb-3">
+                        <div class="mb-2">
+                            <i class="bi bi-list-check fs-1 text-primary"></i>
+                        </div>
+                        <span class="badge bg-primary rounded-pill px-3 py-2">Step 2</span>
+                    </div>
+                    <h5 class="fw-bold">Track as you go</h5>
+                    <p class="text-secondary mb-0">
+                        Mark transactions as paid and watch your weekly cash flow update in real time.
+                    </p>
+                </div>
+            </div>
+
+            {{-- Step 3 --}}
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm p-4 text-center">
+                    <div class="mb-3">
+                        <div class="mb-2">
+                            <i class="bi bi-graph-up-arrow fs-1 text-primary"></i>
+                        </div>
+                        <span class="badge bg-primary rounded-pill px-3 py-2">Step 3</span>
+                    </div>
+                    <h5 class="fw-bold">Understand your money</h5>
+                    <p class="text-secondary mb-0">
+                        See where your money goes, avoid overspending, and make better decisions each month.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="text-center mt-5">
+            <a href="{{ route('register') }}" class="btn btn-primary btn-lg">
+                Start planning your month
+            </a>
+        </div>
+    </div>
+</section>
+
 {{-- Features --}}
 <section id="features" class="py-5">
     <div class="container">
@@ -250,69 +322,6 @@
                 </div>
             </div>
 
-        </div>
-    </div>
-</section>
-
-{{-- How It Works --}}
-<section id="how-it-works" class="py-5 bg-white border-top">
-    <div class="container">
-        <div class="row mb-4">
-            <div class="col-lg-8">
-                <h2 class="fw-bold">How Mintly works</h2>
-                <p class="text-secondary mb-0">
-                    A simple 3-step system to take control of your monthly cash flow.
-                </p>
-            </div>
-        </div>
-
-        <div class="row g-4">
-
-            {{-- Step 1 --}}
-            <div class="col-md-4">
-                <div class="card h-100 border-0 shadow-sm p-4 text-center">
-                    <div class="mb-3">
-                        <span class="badge bg-primary rounded-pill px-3 py-2">Step 1</span>
-                    </div>
-                    <h5 class="fw-bold">Plan your month</h5>
-                    <p class="text-secondary mb-0">
-                        Add your income, bills, and expected expenses so you know exactly what’s coming.
-                    </p>
-                </div>
-            </div>
-
-            {{-- Step 2 --}}
-            <div class="col-md-4">
-                <div class="card h-100 border-0 shadow-sm p-4 text-center">
-                    <div class="mb-3">
-                        <span class="badge bg-primary rounded-pill px-3 py-2">Step 2</span>
-                    </div>
-                    <h5 class="fw-bold">Track as you go</h5>
-                    <p class="text-secondary mb-0">
-                        Mark transactions as paid and watch your weekly cash flow update in real time.
-                    </p>
-                </div>
-            </div>
-
-            {{-- Step 3 --}}
-            <div class="col-md-4">
-                <div class="card h-100 border-0 shadow-sm p-4 text-center">
-                    <div class="mb-3">
-                        <span class="badge bg-primary rounded-pill px-3 py-2">Step 3</span>
-                    </div>
-                    <h5 class="fw-bold">Understand your money</h5>
-                    <p class="text-secondary mb-0">
-                        See where your money goes, avoid overspending, and make better decisions each month.
-                    </p>
-                </div>
-            </div>
-
-        </div>
-
-        <div class="text-center mt-5">
-            <a href="{{ route('register') }}" class="btn btn-primary btn-lg">
-                Start planning your month
-            </a>
         </div>
     </div>
 </section>
