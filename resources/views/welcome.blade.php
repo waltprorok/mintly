@@ -331,28 +331,44 @@
     <div class="container">
         <div class="row mb-4">
             <div class="col-lg-8">
-                <h2 class="fw-bold">Simple pricing</h2>
-                <p class="text-secondary mb-0">Start free, upgrade when you’re ready.</p>
+                <h2 class="fw-bold">Pricing</h2>
+                <p class="text-secondary mb-0">
+                    Mintly is currently free while we’re in early access.
+                </p>
             </div>
         </div>
 
-        <div class="row g-3">
+        <div class="row g-3 justify-content-center">
+
+            {{-- Free (Active) --}}
             <div class="col-md-6 col-lg-4">
                 <div class="card h-100 border-0 shadow-sm">
                     <div class="card-body p-4">
-                        <div class="fw-bold">Free</div>
-                        <div class="display-6 fw-bold my-2">$0</div>
-                        <div class="text-secondary mb-3">Basic budgeting for getting started.</div>
+                        <span class="badge bg-success mb-2">Early Access</span>
+                        <div class="fw-bold text-uppercase small text-muted">Free Plan</div>
+                        <div class="display-5 fw-bold my-2">$0</div>
+                        <div class="text-secondary mb-3">
+                            Get full access to all features — Free
+                        </div>
                         <ul class="text-secondary">
                             <li>Categories</li>
                             <li>Transactions</li>
                             <li>Monthly summary</li>
+                            <li>Weekly cash flow</li>
                         </ul>
-                        <a href="{{ route('register') }}" class="btn btn-outline-primary w-100">Start free</a>
+                        <a href="{{ route('register') }}" class="btn btn-primary w-100 mb-2">
+                            Start free
+                        </a>
+
+                        <div class="text-secondary small">
+                            No credit card required
+                        </div>
                     </div>
                 </div>
             </div>
 
+            {{-- Future Paid Plans (Hidden for now) --}}
+            {{--
             <div class="col-md-6 col-lg-4">
                 <div class="card h-100 border-0 shadow-sm">
                     <div class="card-body p-4">
@@ -365,7 +381,9 @@
                             <li>Advanced reporting</li>
                             <li>Exports</li>
                         </ul>
-                        <a href="{{ route('register') }}" class="btn btn-primary w-100">Go Pro</a>
+                        <a href="#" class="btn btn-outline-secondary w-100 disabled">
+                            Coming soon
+                        </a>
                     </div>
                 </div>
             </div>
@@ -381,15 +399,18 @@
                             <li>Permissions</li>
                             <li>Shared categories</li>
                         </ul>
-                        <a href="{{ route('register') }}" class="btn btn-outline-primary w-100">Start Team</a>
+                        <a href="#" class="btn btn-outline-secondary w-100 disabled">
+                            Coming soon
+                        </a>
                     </div>
                 </div>
             </div>
+            --}}
         </div>
 
-        <p class="text-secondary small mt-3 mb-0">
-            (Pricing is placeholder — wire it to Stripe/Cashier when you’re ready.)
-        </p>
+{{--        <p class="text-secondary small mt-3 mb-0">--}}
+{{--            Early users will help shape the product and get access to new features first.--}}
+{{--        </p>--}}
     </div>
 </section>
 
@@ -472,6 +493,25 @@
                     <div class="accordion-body text-secondary">
                         Mintly shows category breakdowns, monthly trends, and income vs expenses over time —
                         so you can quickly understand where your money is going and make better decisions.
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="q6">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#a6">
+                        Can Mintly help me decide if I should take out a loan?
+                    </button>
+                </h2>
+                <div id="a6" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body text-secondary">
+                        Yes. Mintly includes a <strong>loan calculator</strong> that lets you estimate monthly payments,
+                        total interest, and the full cost of a loan before you commit.
+                        <br><br>
+                        You can also test different scenarios — like changing the term or adding extra payments —
+                        to see how it affects your budget and long-term cost.
+                        <br><br>
+                        This helps you make more informed decisions and understand how a new loan will impact your monthly cash flow.
                     </div>
                 </div>
             </div>
