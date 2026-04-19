@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use Filament\Actions\Action;
+use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Auth;
@@ -16,7 +17,7 @@ class Settings extends Page
 
     protected static ?string $navigationLabel = 'Account';
     protected static ?string $title = 'Settings';
-    protected static ?int $navigationSort = 99;
+    protected static ?int $navigationSort = 90;
 
     protected string $view = 'filament.pages.settings';
 
@@ -34,7 +35,7 @@ class Settings extends Page
                 ->modalSubmitActionLabel('Yes, delete my account')
 
                 ->form([
-                    \Filament\Forms\Components\TextInput::make('password')
+                    TextInput::make('password')
                         ->label('Confirm your password')
                         ->password()
                         ->required(),

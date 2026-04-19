@@ -18,7 +18,7 @@ class WelcomeMintlyUser extends Mailable
         $this->user = $user;
     }
 
-    public function build()
+    public function build(): WelcomeMintlyUser
     {
         return $this->subject('Welcome to Mintly Budget')
             ->markdown('emails.users.welcome', [
