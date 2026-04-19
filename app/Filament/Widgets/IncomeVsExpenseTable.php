@@ -172,7 +172,7 @@ class IncomeVsExpenseTable extends TableWidget
 
                             return new HtmlString(
                                 "<span style='color:#6b7280;'>
-                                        {$expenses}% used and {$remaining}% remaining
+                                        {$expenses}% used {$remaining}% remaining
                                     </span>"
                             );
                         }),
