@@ -3,11 +3,12 @@
     <div class="max-w-2xl mx-auto">
         <x-filament::section>
             <x-slot name="heading">
-                Account Settings
+                Delete Account
             </x-slot>
 
             <x-slot name="description">
-                Manage your account settings and permanently delete your account if needed.
+                Permanently delete your account if needed.
+{{--                Manage your account settings and permanently delete your account if needed.--}}
             </x-slot>
 
         </x-filament::section>

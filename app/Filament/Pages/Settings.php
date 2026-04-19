@@ -33,20 +33,18 @@ class Settings extends Page
                 ->modalHeading('Delete Account')
                 ->modalDescription('This will permanently delete your account and all associated data. This action cannot be undone.')
                 ->modalSubmitActionLabel('Yes, delete my account')
-
                 ->form([
                     TextInput::make('password')
                         ->label('Confirm your password')
                         ->password()
                         ->required(),
                 ])
-
                 ->action(function (array $data) {
 
                     $user = auth()->user();
 
                     // Validate password
-                    if (!Hash::check($data['password'], $user->password)) {
+                    if (! Hash::check($data['password'], $user->password)) {
                         Notification::make()
                             ->title('Incorrect password')
                             ->danger()
@@ -69,5 +67,11 @@ class Settings extends Page
                     return redirect('/');
                 }),
         ];
+    }
+
+    public function getTitle(): string
+    {
+        return 'Account';
+
     }
 }
