@@ -40,10 +40,16 @@ class Support extends Page implements Forms\Contracts\HasForms
                 ->required()
                 ->rows(8),
 
-            Forms\Components\FileUpload::make('screenshot')
+            Forms\Components\FileUpload::make('screenshots')
+                ->label('Screenshots')
+                ->disk('public')
                 ->image()
+                ->multiple()
+                ->maxFiles(3)
                 ->directory('support-uploads')
-                ->preserveFilenames(),
+                ->preserveFilenames()
+                ->previewable()
+                ->downloadable(),
         ];
     }
 
@@ -63,10 +69,7 @@ class Support extends Page implements Forms\Contracts\HasForms
             ->success()
             ->send();
 
-        $this->form->fill([
-            'subject' => null,
-            'message' => null,
-            'screenshot' => null,
-        ]);
+        $this->data = [];
+        $this->form->fill();
     }
 }

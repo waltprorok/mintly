@@ -74,7 +74,7 @@ class UpcomingBills extends TableWidget
                     ->onColor('success')   // green when true
                     ->offColor('gray') ,    // gray when false
             ])
-            ->defaultPaginationPageOption(5);
+            ->defaultPaginationPageOption(10);
     }
 
 }

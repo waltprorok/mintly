@@ -15,7 +15,7 @@ class IncomeExpenseChart extends ChartWidget
 
     protected static ?int $sort = 4;
 
-    public ?string $filter = '12';
+    public ?string $filter = '6';
 
     protected function getFilters(): ?array
     {
