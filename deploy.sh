@@ -26,8 +26,8 @@ php artisan event:cache
 php artisan queue:restart
 #php artisan pulse:restart
 
-sudo supervisorctl reread
-sudo supervisorctl update
-sudo supervisorctl restart all
+#sudo supervisorctl reread
+#sudo supervisorctl update
+#sudo supervisorctl restart all
 sudo supervisorctl status
 # php artisan up
