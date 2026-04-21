@@ -1,8 +1,6 @@
 <?php
 
 use App\Http\Controllers\Auth\RegisterController;
-use App\Mail\WelcomeMintlyUser;
-use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use Spatie\Honeypot\ProtectAgainstSpam;
 
@@ -16,21 +14,6 @@ use Spatie\Honeypot\ProtectAgainstSpam;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
-/*
- * TODO: Temporary code to test emails LIVE
- */
-Route::get('/test-email', function () {
-    // Grab an existing user (or fake one)
-    $user = User::first();
-    if (! $user) {
-        return 'No users found in database.';
-    }
-    Mail::to($user->email)->send(
-        new WelcomeMintlyUser($user)
-    );
-    return 'Test email sent!';
-});
 
 Route::get('/', function () {
     return view('welcome');
