@@ -17,7 +17,7 @@
     <meta name="twitter:title" content="Monthly Budget Planner & Weekly Cash Flow Tracker | Mintly">
     <meta name="twitter:description" content="Take control of your monthly budget with real-time cash flow tracking. Plan your income, track bills, and see exactly what’s left each week with Mintly.">
 
-    <meta name="google-site-verification" content="googlec22beebfe8dfcc34" />
+    <meta name="google-site-verification" content="RPPhABGHaCi4Qmbse4behpD6u3I7nrE7nxuVnXzE3mA" />
     <meta name="theme-color" content="#198754">
 
     @vite(['resources/css/bootstrap.css', 'resources/js/app.js'])
