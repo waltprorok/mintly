@@ -19,7 +19,6 @@ use Spatie\Honeypot\ProtectAgainstSpam;
 Route::get('/session-test', function () {
     session(['test' => 'working']);
     return session('test');
-
 });
 
 /*
