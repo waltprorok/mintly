@@ -17,6 +17,20 @@ use Spatie\Honeypot\ProtectAgainstSpam;
 |
 */
 
+Route::get('/filament-auth-check', function () {
+
+    return [
+
+        'auth_check' => auth()->check(),
+
+        'user' => auth()->user(),
+
+        'guard' => auth()->getDefaultDriver(),
+
+    ];
+
+});
+
 /*
  * TODO: Temporary code to test emails LIVE
  */
