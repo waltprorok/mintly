@@ -3,8 +3,21 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Mintly — Monthly Cash Flow Made Clear</title>
-    <meta name="description" content="Plan your month, track your spending, and understand your cash flow week by week with Mintly.">
+    <title>Monthly Budget Planner & Weekly Cash Flow Tracker | Mintly</title>
+    <meta name="description" content="Take control of your monthly budget with real-time cash flow tracking. Plan your income, track bills, and see exactly what’s left each week with Mintly.">
+
+    <link rel="canonical" href="https://mintlybudget.com">
+
+    <meta property="og:title" content="Monthly Budget Planner & Weekly Cash Flow Tracker | Mintly">
+    <meta property="og:description" content="Take control of your monthly budget with real-time cash flow tracking. Plan your income, track bills, and see exactly what’s left each week with Mintly.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://mintlybudget.com">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Monthly Budget Planner & Weekly Cash Flow Tracker | Mintly">
+    <meta name="twitter:description" content="Take control of your monthly budget with real-time cash flow tracking. Plan your income, track bills, and see exactly what’s left each week with Mintly.">
+
+    <meta name="theme-color" content="#198754">
 
     @vite(['resources/css/bootstrap.css', 'resources/js/app.js'])
 </head>
