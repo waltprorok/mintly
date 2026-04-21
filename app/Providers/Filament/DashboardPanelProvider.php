@@ -25,7 +25,7 @@ class DashboardPanelProvider extends PanelProvider
     {
         return $panel
             ->default()
-            ->id('dashboard')
+            ->id('app')
             ->path('dashboard')
             ->renderHook(
                 'panels::styles.before',
