@@ -46,6 +46,6 @@ class User extends Authenticatable
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return true;
+        dd('HIT PANEL CHECK', $panel->getId(), $this->id);
     }
 }
