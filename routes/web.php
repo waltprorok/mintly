@@ -16,14 +16,10 @@ use Spatie\Honeypot\ProtectAgainstSpam;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+Route::get('/session-test', function () {
+    session(['test' => 'working']);
+    return session('test');
 
-Route::get('/guard-check', function () {
-    return [
-        'web' => auth('web')->check(),
-        'default' => auth()->check(),
-        'filament' => \Filament\Facades\Filament::auth()->check(),
-        'user' => \Filament\Facades\Filament::auth()->user(),
-    ];
 });
 
 /*
