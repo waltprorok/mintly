@@ -17,18 +17,13 @@ use Spatie\Honeypot\ProtectAgainstSpam;
 |
 */
 
-Route::get('/filament-auth-check', function () {
-
+Route::get('/guard-check', function () {
     return [
-
-        'auth_check' => auth()->check(),
-
-        'user' => auth()->user(),
-
-        'guard' => auth()->getDefaultDriver(),
-
+        'web' => auth('web')->check(),
+        'default' => auth()->check(),
+        'filament' => \Filament\Facades\Filament::auth()->check(),
+        'user' => \Filament\Facades\Filament::auth()->user(),
     ];
-
 });
 
 /*
