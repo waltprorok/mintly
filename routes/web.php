@@ -16,10 +16,6 @@ use Spatie\Honeypot\ProtectAgainstSpam;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-Route::get('/session-test', function () {
-    session(['test' => 'working']);
-    return session('test');
-});
 
 /*
  * TODO: Temporary code to test emails LIVE
