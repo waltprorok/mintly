@@ -26,7 +26,6 @@ class DashboardPanelProvider extends PanelProvider
             ->default()
             ->id('app')
             ->path('dashboard')
-            ->authGuard('web')
             ->renderHook(
                 'panels::styles.before',
                 fn() => new HtmlString('
