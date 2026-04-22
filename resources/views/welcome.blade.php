@@ -39,6 +39,7 @@
             <ul class="navbar-nav me-auto">
                 <li class="nav-item"><a class="nav-link" href="#how-it-works">How it works</a></li>
                 <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+                <li class="nav-item"><a class="nav-link" href="#view-app">View App</a></li>
                 <li class="nav-item"><a class="nav-link" href="#pricing">Pricing</a></li>
                 <li class="nav-item"><a class="nav-link" href="#faq">FAQ</a></li>
             </ul>
@@ -340,6 +341,78 @@
     </div>
 </section>
 
+{{-- Screenshots --}}
+<section id="view-app" class="py-5 bg-light border-bottom">
+    <div class="container text-center">
+        <h2 class="fw-bold mb-3">Mintly in action</h2>
+        <p class="text-secondary mb-5">
+            See your money clearly — week by week.
+        </p>
+
+        @php
+            $screenshots = [
+                ['file' => '1_dashboard.png', 'label' => 'Full dashboard overview'],
+                ['file' => '2_monthly-budget.png', 'label' => 'Monthly budget planning'],
+                ['file' => '3_monthly-budget-body.png', 'label' => 'Detailed monthly breakdown'],
+                ['file' => '4_reports.png', 'label' => 'Visual reports & insights'],
+                ['file' => '5_transactions.png', 'label' => 'Transaction tracking'],
+                ['file' => '6_create-transaction.png', 'label' => 'Quick transaction entry'],
+                ['file' => '7_loan-calculator.png', 'label' => 'Loan calculator'],
+            ];
+        @endphp
+
+        <div id="screenshotCarousel"
+             class="carousel slide"
+             data-bs-ride="carousel"
+             data-bs-interval="4000">
+
+            {{-- Indicators --}}
+            <div class="carousel-indicators">
+                @foreach ($screenshots as $index => $shot)
+                    <button type="button"
+                            data-bs-target="#screenshotCarousel"
+                            data-bs-slide-to="{{ $index }}"
+                            class="{{ $index === 0 ? 'active' : '' }}">
+                    </button>
+                @endforeach
+            </div>
+
+            {{-- Slides --}}
+            <div class="carousel-inner">
+                @foreach ($screenshots as $index => $shot)
+                    <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+                        <div class="d-flex justify-content-center">
+                            <div class="card border-0 shadow-sm p-3" style="max-width: 720px; width: 100%;">
+                                <img
+                                    src="{{ asset('images/' . $shot['file']) }}"
+                                    class="img-fluid rounded mb-3"
+                                    alt="Mintly {{ $shot['label'] }}"
+                                    style="height: 320px; width: 100%; object-fit: contain; background: #f8f9fa;"
+                                >
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+
+            {{-- Controls --}}
+            <button class="carousel-control-prev opacity-25 hover-opacity-100"
+                    type="button"
+                    data-bs-target="#screenshotCarousel"
+                    data-bs-slide="prev">
+                <span class="carousel-control-prev-icon bg-primary rounded-circle p-2"></span>
+            </button>
+
+            <button class="carousel-control-next opacity-25 hover-opacity-100"
+                    type="button"
+                    data-bs-target="#screenshotCarousel"
+                    data-bs-slide="next">
+                <span class="carousel-control-next-icon bg-primary rounded-circle p-2"></span>
+            </button>
+        </div>
+    </div>
+</section>
+
 {{-- Pricing --}}
 <section id="pricing" class="py-5 bg-white border-top">
     <div class="container">
@@ -550,7 +623,9 @@
             <div class="col-12 col-md-6">
                 <div class="text-center text-md-end small">
                     <div class="d-flex flex-wrap justify-content-center justify-content-md-end gap-3 mb-1">
+                        <a class="text-decoration-none" href="#how-it-works">How it works</a>
                         <a class="text-decoration-none" href="#features">Features</a>
+                        <a class="text-decoration-none" href="#view-app">View App</a>
                         <a class="text-decoration-none" href="#pricing">Pricing</a>
                         <a class="text-decoration-none" href="#faq">FAQ</a>
                         <a class="text-decoration-none" href="{{ route('login') }}">Log in</a>
