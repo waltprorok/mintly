@@ -110,7 +110,6 @@ class MonthlyBudget extends Page implements HasTable
 
                 ToggleColumn::make('is_paid')
                     ->label('Paid')
-                    ->sortable()
                     ->onColor('success')
                     ->offColor('gray'),
             ])
