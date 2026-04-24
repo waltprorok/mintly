@@ -70,7 +70,6 @@ class UpcomingBills extends TableWidget
 
                 ToggleColumn::make('is_paid')
                     ->label('Paid')
-                    ->sortable()
                     ->onColor('success')   // green when true
                     ->offColor('gray') ,    // gray when false
             ])
