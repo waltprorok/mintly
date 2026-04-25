@@ -105,41 +105,72 @@ class BudgetStats extends StatsOverviewWidget
             : 0;
 
         // Trend values
-        $incomeChangeValue = $this->percentChangeValue($income, $prevIncome);
-        $expenseChangeValue = $this->percentChangeValue($expenses, $prevExpenses);
+//        $incomeChangeValue = $this->percentChangeValue($income, $prevIncome);
+//        $expenseChangeValue = $this->percentChangeValue($expenses, $prevExpenses);
+//        $netPercentChangeValue = $this->percentChangeValue($net, $prevNet);
 
-        // Formatted descriptions
-        $incomeChange = $this->formatPercentChange($incomeChangeValue);
-        $expenseChange = $this->formatPercentChange($expenseChangeValue);
-        $netChange = $this->formatNetChange($net, $prevNet);
+        // Dollar differences
+        $incomeDiff = $income - $prevIncome;
+        $expenseDiff = $expenses - $prevExpenses;
+        $netDiff = $net - $prevNet;
+
+        // Descriptions (NEW FORMAT)
+        $incomeChange = $this->formatFullChange($incomeDiff, $prevIncome);
+        $expenseChange = $this->formatFullChange($expenseDiff, $prevExpenses);
+        $netChange = $this->formatFullChange($netDiff, $prevNet);
+
+        // UI state (handle "no previous data")
+        $incomeIcon = null;
+        $incomeColor = 'gray';
+
+        if ($prevIncome != 0) {
+            $incomeIcon = $incomeDiff < 0
+                ? 'heroicon-m-arrow-trending-down'
+                : 'heroicon-m-arrow-trending-up';
+
+            $incomeColor = $incomeDiff < 0 ? 'danger' : 'success';
+        }
+
+        $expenseIcon = null;
+        $expenseColor = 'gray';
+
+        if ($prevExpenses != 0) {
+            $expenseIcon = $expenseDiff > 0
+                ? 'heroicon-m-arrow-trending-up'
+                : 'heroicon-m-arrow-trending-down';
+
+            $expenseColor = $expenseDiff > 0 ? 'danger' : 'success';
+        }
+
+        $netIcon = null;
+        $netColor = 'gray';
+
+        if ($prevNet != 0) {
+            $netIcon = $netDiff < 0
+                ? 'heroicon-m-arrow-trending-down'
+                : 'heroicon-m-arrow-trending-up';
+
+            $netColor = $netDiff < 0 ? 'danger' : 'success';
+        }
 
         return [
             // Income (up = good)
             Stat::make('Monthly Income', '$' . number_format($income, 2))
                 ->description($incomeChange)
-                ->descriptionIcon($incomeChangeValue < 0
-                    ? 'heroicon-m-arrow-trending-down'
-                    : 'heroicon-m-arrow-trending-up'
-                )
-                ->color($incomeChangeValue < 0 ? 'danger' : 'success'),
+                ->descriptionIcon($incomeIcon)
+                ->color($incomeColor),
 
             // Expenses (down = good)
             Stat::make('Monthly Expenses', '$' . number_format($expenses, 2))
                 ->description($expenseChange)
-                ->descriptionIcon($expenseChangeValue > 0
-                    ? 'heroicon-m-arrow-trending-up'
-                    : 'heroicon-m-arrow-trending-down'
-                )
-                ->color($expenseChangeValue > 0 ? 'danger' : 'success'),
+                ->descriptionIcon($expenseIcon)
+                ->color($expenseColor),
 
-            // Net (use dollar change instead of %)
+            // Net (now consistent with others)
             Stat::make('Net This Month', '$' . number_format($net, 2))
                 ->description($netChange)
-                ->descriptionIcon(($net - $prevNet) < 0
-                    ? 'heroicon-m-arrow-trending-down'
-                    : 'heroicon-m-arrow-trending-up'
-                )
-                ->color(($net - $prevNet) < 0 ? 'danger' : 'success'),
+                ->descriptionIcon($netIcon)
+                ->color($netColor),
 
             // Paid bills
             Stat::make('Bills Paid', '$' . number_format($paidExpenses, 2))
@@ -161,26 +192,27 @@ class BudgetStats extends StatsOverviewWidget
         ];
     }
 
-    private function percentChangeValue($current, $previous): float
+//    private function percentChangeValue($current, $previous): float
+//    {
+//        if ($previous == 0) {
+//            return 0;
+//        }
+//
+//        return (($current - $previous) / $previous) * 100;
+//    }
+
+    private function formatFullChange($diff, $previous): string
     {
         if ($previous == 0) {
-            return 0;
+            return 'No data from last month';
         }
-
-        return (($current - $previous) / $previous) * 100;
-    }
-
-    private function formatPercentChange(float $value): string
-    {
-        return number_format($value, 1) . '% from last month';
-    }
-
-    private function formatNetChange($current, $previous): string
-    {
-        $diff = $current - $previous;
 
         $prefix = $diff < 0 ? '-' : '+';
 
-        return $prefix . '$' . number_format(abs($diff), 2) . ' from last month';
+        return sprintf(
+            '%s$%s from last month',
+            $prefix,
+            number_format(abs($diff), 2)
+        );
     }
 }
