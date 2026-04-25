@@ -257,6 +257,14 @@ class MonthlyBudget extends Page implements HasTable
         return (int)ceil($days / 7);
     }
 
+    public function getSubheading(): ?string
+    {
+        return Carbon::create(
+            $this->getSelectedYear(),
+            $this->getSelectedMonth()
+        )->format('F Y');
+    }
+
     protected function getHeaderWidgets(): array
     {
         return [
