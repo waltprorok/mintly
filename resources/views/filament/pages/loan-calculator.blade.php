@@ -56,14 +56,14 @@
         }
 
         html.dark .card {
-            background: #13151b !important;
-            border: 1px solid #1f2937;
+            background: #18181b !important;
+            border: 1px solid #222223;
             color: #e5e7eb;
         }
 
         html.dark .right .card {
-            background: #13151b !important;
-            border: 1px solid #1f2937 !important;
+            background: #18181b !important;
+            border: 1px solid #222223 !important;
         }
 
         html.dark .label {
