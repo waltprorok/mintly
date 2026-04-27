@@ -40,6 +40,7 @@
                 <li class="nav-item"><a class="nav-link" href="#how-it-works">How it works</a></li>
                 <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
                 <li class="nav-item"><a class="nav-link" href="#view-app">View App</a></li>
+                <li class="nav-item"><a class="nav-link" href="https://mintlybudget.blogspot.com/" target="_blank">Blog</a></li>
                 <li class="nav-item"><a class="nav-link" href="#pricing">Pricing</a></li>
                 <li class="nav-item"><a class="nav-link" href="#faq">FAQ</a></li>
             </ul>
@@ -48,7 +49,7 @@
                 @auth
                     <a href="{{ url('/dashboard') }}" class="btn btn-outline-primary">Open App</a>
 
-                    <a class="btn btn-primary"
+                    <a class="btn btn-success"
                        href="{{ route('logout') }}"
                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                         Logout
@@ -58,8 +59,8 @@
                         @csrf
                     </form>
                 @else
-                    <a href="{{ route('login') }}" class="btn btn-outline-primary">Log in</a>
-                    <a href="{{ route('register') }}" class="btn btn-primary">Get started</a>
+                    <a href="{{ route('login') }}" class="btn btn-outline-success">Log in</a>
+                    <a href="{{ route('register') }}" class="btn btn-success">Get started</a>
                 @endauth
             </div>
         </div>
@@ -71,7 +72,7 @@
     <div class="container">
         <div class="row align-items-center g-4">
             <div class="col-lg-6">
-                <span class="badge bg-primary-subtle text-primary mb-3">Mintly • Cash Flow Planner</span>
+                <span class="badge bg-success-subtle text-success mb-3">Mintly • Cash Flow Planner</span>
 
                 <h1 class="display-5 fw-bold lh-1 mb-3">
                     Take control of your money — one week at a time.
@@ -83,7 +84,7 @@
                 </p>
 
                 <div class="d-flex flex-wrap gap-2 mb-3">
-                    <a href="{{ route('register') }}" class="btn btn-primary btn-lg">Create your account</a>
+                    <a href="{{ route('register') }}" class="btn btn-success btn-lg">Create your account</a>
                     <a href="#features" class="btn btn-outline-secondary btn-lg">See features</a>
                 </div>
 
@@ -154,8 +155,8 @@
                         </div>
 
                         <div class="d-flex gap-2">
-                            <a href="{{ route('login') }}" class="btn btn-outline-primary w-100">Log in</a>
-                            <a href="{{ route('register') }}" class="btn btn-primary w-100">Start free</a>
+                            <a href="{{ route('login') }}" class="btn btn-outline-success w-100">Log in</a>
+                            <a href="{{ route('register') }}" class="btn btn-success w-100">Start free</a>
                         </div>
                     </div>
                 </div>
@@ -187,9 +188,9 @@
                 <div class="card h-100 border-0 shadow-sm p-4 text-center">
                     <div class="mb-3">
                         <div class="mb-2">
-                            <i class="bi bi-wallet2 fs-1 text-primary"></i>
+                            <i class="bi bi-wallet2 fs-1 text-success"></i>
                         </div>
-                        <span class="badge bg-primary rounded-pill px-3 py-2">Step 1</span>
+                        <span class="badge bg-success rounded-pill px-3 py-2">Step 1</span>
                     </div>
                     <h5 class="fw-bold">Plan your month</h5>
                     <p class="text-secondary mb-0">
@@ -203,9 +204,9 @@
                 <div class="card h-100 border-0 shadow-sm p-4 text-center">
                     <div class="mb-3">
                         <div class="mb-2">
-                            <i class="bi bi-list-check fs-1 text-primary"></i>
+                            <i class="bi bi-list-check fs-1 text-success"></i>
                         </div>
-                        <span class="badge bg-primary rounded-pill px-3 py-2">Step 2</span>
+                        <span class="badge bg-success rounded-pill px-3 py-2">Step 2</span>
                     </div>
                     <h5 class="fw-bold">Track as you go</h5>
                     <p class="text-secondary mb-0">
@@ -219,9 +220,9 @@
                 <div class="card h-100 border-0 shadow-sm p-4 text-center">
                     <div class="mb-3">
                         <div class="mb-2">
-                            <i class="bi bi-graph-up-arrow fs-1 text-primary"></i>
+                            <i class="bi bi-graph-up-arrow fs-1 text-success"></i>
                         </div>
-                        <span class="badge bg-primary rounded-pill px-3 py-2">Step 3</span>
+                        <span class="badge bg-success rounded-pill px-3 py-2">Step 3</span>
                     </div>
                     <h5 class="fw-bold">Understand your money</h5>
                     <p class="text-secondary mb-0">
@@ -233,7 +234,7 @@
         </div>
 
         <div class="text-center mt-5">
-            <a href="{{ route('register') }}" class="btn btn-primary btn-lg">
+            <a href="{{ route('register') }}" class="btn btn-success btn-lg">
                 Start planning your month
             </a>
         </div>
@@ -400,14 +401,14 @@
                     type="button"
                     data-bs-target="#screenshotCarousel"
                     data-bs-slide="prev">
-                <span class="carousel-control-prev-icon bg-primary rounded-circle p-2"></span>
+                <span class="carousel-control-prev-icon bg-success rounded-circle p-2"></span>
             </button>
 
             <button class="carousel-control-next opacity-25 hover-opacity-100"
                     type="button"
                     data-bs-target="#screenshotCarousel"
                     data-bs-slide="next">
-                <span class="carousel-control-next-icon bg-primary rounded-circle p-2"></span>
+                <span class="carousel-control-next-icon bg-success rounded-circle p-2"></span>
             </button>
         </div>
     </div>
@@ -443,7 +444,7 @@
                             <li>Monthly summary</li>
                             <li>Weekly cash flow</li>
                         </ul>
-                        <a href="{{ route('register') }}" class="btn btn-primary w-100 mb-2">
+                        <a href="{{ route('register') }}" class="btn btn-success w-100 mb-2">
                             Start free
                         </a>
 
@@ -606,7 +607,7 @@
         </div>
 
         <div class="text-center mt-4">
-            <a href="{{ route('register') }}" class="btn btn-primary btn-lg">Get started with Mintly</a>
+            <a href="{{ route('register') }}" class="btn btn-success btn-lg">Get started with Mintly</a>
             <div class="text-secondary small mt-2">Create an account in under a minute.</div>
         </div>
     </div>
@@ -623,11 +624,12 @@
             <div class="col-12 col-md-6">
                 <div class="text-center text-md-end small">
                     <div class="d-flex flex-wrap justify-content-center justify-content-md-end gap-3 mb-1">
-                        <a class="text-decoration-none" href="#how-it-works">How it works</a>
-                        <a class="text-decoration-none" href="#features">Features</a>
-                        <a class="text-decoration-none" href="#view-app">View App</a>
-                        <a class="text-decoration-none" href="#pricing">Pricing</a>
-                        <a class="text-decoration-none" href="#faq">FAQ</a>
+                        <a class="text-decoration-none" href="#how-it-works">How it works</a> |
+                        <a class="text-decoration-none" href="#features">Features</a> |
+                        <a class="text-decoration-none" href="#view-app">View App</a> |
+                        <a class="text-decoration-none" href="https://mintlybudget.blogspot.com/" target="_blank">Blog</a> |
+                        <a class="text-decoration-none" href="#pricing">Pricing</a> |
+                        <a class="text-decoration-none" href="#faq">FAQ</a> |
                         <a class="text-decoration-none" href="{{ route('login') }}">Log in</a>
                     </div>
 
