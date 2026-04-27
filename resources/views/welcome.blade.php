@@ -47,7 +47,7 @@
 
             <div class="d-flex gap-2">
                 @auth
-                    <a href="{{ url('/dashboard') }}" class="btn btn-outline-primary">Open App</a>
+                    <a href="{{ url('/dashboard') }}" class="btn btn-outline-success">Open App</a>
 
                     <a class="btn btn-success"
                        href="{{ route('logout') }}"
