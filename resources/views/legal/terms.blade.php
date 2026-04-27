@@ -107,7 +107,7 @@
             <p>
                 If you have questions about these terms, please contact:
                 <br>
-                <strong>support@mintlyapp.com</strong>
+                <strong>support@mintlybudget.com</strong>
             </p>
 
         </div>

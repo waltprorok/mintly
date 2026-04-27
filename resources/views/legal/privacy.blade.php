@@ -85,7 +85,7 @@
             <p>
                 If you have questions about this Privacy Policy, contact us at:
                 <br>
-                <strong>support@mintly.app</strong>
+                <strong>support@mintlybudget.com</strong>
             </p>
 
         </div>
