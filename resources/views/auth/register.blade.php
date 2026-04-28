@@ -81,7 +81,7 @@
 
                             {{-- Submit --}}
                             <div class="d-grid mb-3">
-                                <button type="submit" class="btn btn-success rounded-3">
+                                <button type="submit" class="btn btn-primary rounded-3">
                                     Continue
                                 </button>
                             </div>
