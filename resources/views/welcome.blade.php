@@ -47,9 +47,9 @@
 
             <div class="d-flex gap-2">
                 @auth
-                    <a href="{{ url('/dashboard') }}" class="btn btn-outline-success">Open App</a>
+                    <a href="{{ url('/dashboard') }}" class="btn btn-outline-primary">Open App</a>
 
-                    <a class="btn btn-success"
+                    <a class="btn btn-primary"
                        href="{{ route('logout') }}"
                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                         Logout
@@ -59,8 +59,8 @@
                         @csrf
                     </form>
                 @else
-                    <a href="{{ route('login') }}" class="btn btn-outline-success">Log in</a>
-                    <a href="{{ route('register') }}" class="btn btn-success">Get started</a>
+                    <a href="{{ route('login') }}" class="btn btn-outline-primary">Log in</a>
+                    <a href="{{ route('register') }}" class="btn btn-primary">Get started</a>
                 @endauth
             </div>
         </div>
@@ -84,7 +84,7 @@
                 </p>
 
                 <div class="d-flex flex-wrap gap-2 mb-3">
-                    <a href="{{ route('register') }}" class="btn btn-success btn-lg">Create your account</a>
+                    <a href="{{ route('register') }}" class="btn btn-primary btn-lg">Create your account</a>
                     <a href="#features" class="btn btn-outline-secondary btn-lg">See features</a>
                 </div>
 
@@ -155,8 +155,8 @@
                         </div>
 
                         <div class="d-flex gap-2">
-                            <a href="{{ route('login') }}" class="btn btn-outline-success w-100">Log in</a>
-                            <a href="{{ route('register') }}" class="btn btn-success w-100">Start free</a>
+                            <a href="{{ route('login') }}" class="btn btn-outline-primary w-100">Log in</a>
+                            <a href="{{ route('register') }}" class="btn btn-primary w-100">Start free</a>
                         </div>
                     </div>
                 </div>
@@ -188,9 +188,9 @@
                 <div class="card h-100 border-0 shadow-sm p-4 text-center">
                     <div class="mb-3">
                         <div class="mb-2">
-                            <i class="bi bi-wallet2 fs-1 text-success"></i>
+                            <i class="bi bi-wallet2 fs-1 text-body"></i>
                         </div>
-                        <span class="badge bg-success rounded-pill px-3 py-2">Step 1</span>
+                        <span class="badge bg-primary rounded-pill px-3 py-2">Step 1</span>
                     </div>
                     <h5 class="fw-bold">Plan your month</h5>
                     <p class="text-secondary mb-0">
@@ -204,9 +204,9 @@
                 <div class="card h-100 border-0 shadow-sm p-4 text-center">
                     <div class="mb-3">
                         <div class="mb-2">
-                            <i class="bi bi-list-check fs-1 text-success"></i>
+                            <i class="bi bi-list-check fs-1 text-body"></i>
                         </div>
-                        <span class="badge bg-success rounded-pill px-3 py-2">Step 2</span>
+                        <span class="badge bg-primary rounded-pill px-3 py-2">Step 2</span>
                     </div>
                     <h5 class="fw-bold">Track as you go</h5>
                     <p class="text-secondary mb-0">
@@ -220,9 +220,9 @@
                 <div class="card h-100 border-0 shadow-sm p-4 text-center">
                     <div class="mb-3">
                         <div class="mb-2">
-                            <i class="bi bi-graph-up-arrow fs-1 text-success"></i>
+                            <i class="bi bi-graph-up-arrow fs-1 text-body"></i>
                         </div>
-                        <span class="badge bg-success rounded-pill px-3 py-2">Step 3</span>
+                        <span class="badge bg-primary rounded-pill px-3 py-2">Step 3</span>
                     </div>
                     <h5 class="fw-bold">Understand your money</h5>
                     <p class="text-secondary mb-0">
@@ -234,7 +234,7 @@
         </div>
 
         <div class="text-center mt-5">
-            <a href="{{ route('register') }}" class="btn btn-success btn-lg">
+            <a href="{{ route('register') }}" class="btn btn-outline-primary btn-lg">
                 Start planning your month
             </a>
         </div>
@@ -444,7 +444,7 @@
                             <li>Monthly summary</li>
                             <li>Weekly cash flow</li>
                         </ul>
-                        <a href="{{ route('register') }}" class="btn btn-success w-100 mb-2">
+                        <a href="{{ route('register') }}" class="btn btn-primary w-100 mb-2">
                             Start free
                         </a>
 
@@ -607,7 +607,7 @@
         </div>
 
         <div class="text-center mt-4">
-            <a href="{{ route('register') }}" class="btn btn-success btn-lg">Get started with Mintly</a>
+            <a href="{{ route('register') }}" class="btn btn-primary btn-lg">Get started with Mintly</a>
             <div class="text-secondary small mt-2">Create an account in under a minute.</div>
         </div>
     </div>
@@ -634,7 +634,7 @@
                     </div>
 
                     <div class="d-flex flex-wrap justify-content-center justify-content-md-end gap-3">
-                        <a class="text-decoration-none" href="{{ route('privacy') }}">Privacy</a>
+                        <a class="text-decoration-none" href="{{ route('privacy') }}">Privacy</a> |
                         <a class="text-decoration-none" href="{{ route('terms') }}">Terms</a>
                     </div>
                 </div>
