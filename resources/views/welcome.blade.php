@@ -3,22 +3,23 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Monthly Budget Planner & Weekly Cash Flow Tracker | Mintly</title>
-    <meta name="description" content="Take control of your monthly budget with real-time cash flow tracking. Plan your income, track bills, and see exactly what’s left each week with Mintly.">
+    <title>Mintly | Monthly Budget Planner & Cash Flow Tracker</title>
+    <meta name="description" content="Plan your monthly budget and track cash flow in real time with Mintly. Stay on top of bills, income, and spending with a simple weekly view.">
 
     <link rel="canonical" href="https://mintlybudget.com">
 
-    <meta property="og:title" content="Monthly Budget Planner & Weekly Cash Flow Tracker | Mintly">
-    <meta property="og:description" content="Take control of your monthly budget with real-time cash flow tracking. Plan your income, track bills, and see exactly what’s left each week with Mintly.">
+    <meta property="og:title" content="Mintly | Monthly Budget Planner & Cash Flow Tracker">
+    <meta property="og:description" content="Plan your monthly budget and track cash flow in real time. See what’s left each week and stay in control with Mintly.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://mintlybudget.com">
 
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Monthly Budget Planner & Weekly Cash Flow Tracker | Mintly">
-    <meta name="twitter:description" content="Take control of your monthly budget with real-time cash flow tracking. Plan your income, track bills, and see exactly what’s left each week with Mintly.">
+    <meta name="twitter:title" content="Mintly | Monthly Budget Planner & Cash Flow Tracker">
+    <meta name="twitter:description" content="Track your monthly budget and weekly cash flow with Mintly. Stay on top of your finances in real time.">
 
     <meta name="google-site-verification" content="RPPhABGHaCi4Qmbse4behpD6u3I7nrE7nxuVnXzE3mA" />
     <meta name="theme-color" content="#198754">
+    <meta name="robots" content="index, follow">
 
     @vite(['resources/css/bootstrap.css', 'resources/js/app.js'])
 </head>
@@ -40,9 +41,7 @@
                 <li class="nav-item"><a class="nav-link" href="#how-it-works">How it works</a></li>
                 <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
                 <li class="nav-item"><a class="nav-link" href="#view-app">View App</a></li>
-                <li class="nav-item"><a class="nav-link" href="https://mintlybudget.blogspot.com/" target="_blank">Blog</a></li>
                 <li class="nav-item"><a class="nav-link" href="#pricing">Pricing</a></li>
-                <li class="nav-item"><a class="nav-link" href="#faq">FAQ</a></li>
             </ul>
 
             <div class="d-flex gap-2">
@@ -507,7 +506,7 @@
     <div class="container">
         <div class="row mb-4">
             <div class="col-lg-8">
-                <h2 class="fw-bold">FAQ</h2>
+                <h2 class="fw-bold">Frequently Asked Questions</h2>
                 <p class="text-secondary mb-0">Everything you need to know about Mintly.</p>
             </div>
         </div>
@@ -614,31 +613,78 @@
 </section>
 
 {{-- Footer --}}
-<footer class="py-4">
-    <div class="container text-center text-md-start">
-        <div class="row align-items-center">
-            <div class="col-12 col-md-6 mb-3 mb-md-0 text-secondary small">
-                &copy; {{ date('Y') }} Mintly. All rights reserved.
+<footer class="bg-dark text-light pt-5 pb-4">
+    <div class="container">
+        <div class="row justify-content-end text-center text-md-start">
+
+            <!-- Features -->
+            <div class="col-12 col-md-3 mb-1">
+                <h6 class="fw-bold mb-3">Features</h6>
+                <ul class="list-unstyled small">
+                    <li><a href="#how-it-works" class="text-secondary text-decoration-none">How it works</a></li>
+                    <li><a href="#features" class="text-secondary text-decoration-none">Features</a></li>
+                    <li><a href="#view-app" class="text-secondary text-decoration-none">View App</a></li>
+                    <li><a href="#pricing" class="text-secondary text-decoration-none">Pricing</a></li>
+                    <li><a href="#faq" class="text-secondary text-decoration-none">FAQ</a></li>
+                </ul>
             </div>
 
-            <div class="col-12 col-md-6">
-                <div class="text-center text-md-end small">
-                    <div class="d-flex flex-wrap justify-content-center justify-content-md-end gap-3 mb-1">
-                        <a class="text-decoration-none" href="#how-it-works">How it works</a> |
-                        <a class="text-decoration-none" href="#features">Features</a> |
-                        <a class="text-decoration-none" href="#view-app">View App</a> |
-                        <a class="text-decoration-none" href="https://mintlybudget.blogspot.com/" target="_blank">Blog</a> |
-                        <a class="text-decoration-none" href="#pricing">Pricing</a> |
-                        <a class="text-decoration-none" href="#faq">FAQ</a> |
-                        <a class="text-decoration-none" href="{{ route('login') }}">Log in</a>
-                    </div>
+            <!-- Links -->
+            <div class="col-12 col-md-3 mb-1">
+                <h6 class="fw-bold mb-3">Links</h6>
+                <ul class="list-unstyled small">
+                    <li><a href="https://mintlybudget.blogspot.com/" target="_blank" class="text-secondary text-decoration-none">Blog</a></li>
+                    <li><a href="{{ route('login') }}" class="text-secondary text-decoration-none">Log in</a></li>
 
-                    <div class="d-flex flex-wrap justify-content-center justify-content-md-end gap-3">
-                        <a class="text-decoration-none" href="{{ route('privacy') }}">Privacy</a> |
-                        <a class="text-decoration-none" href="{{ route('terms') }}">Terms</a>
-                    </div>
-                </div>
+                </ul>
             </div>
+
+            <!-- Company -->
+            <div class="col-12 col-md-3 mb-1">
+                <h6 class="fw-bold mb-3">Company</h6>
+                <ul class="list-unstyled small">
+                    <li><a href="{{ route('terms') }}" class="text-secondary text-decoration-none">Terms Of Service</a></li>
+                    <li><a href="{{ route('privacy') }}" class="text-secondary text-decoration-none">Privacy Policy</a></li>
+                </ul>
+            </div>
+
+            <!-- Social -->
+{{--            <div class="col-md-3 mb-4">--}}
+{{--                <h6 class="fw-bold mb-3">Social</h6>--}}
+{{--                <ul class="list-unstyled small">--}}
+{{--                    <li>--}}
+{{--                        <a href="#" class="text-secondary text-decoration-none">--}}
+{{--                            <i class="bi bi-youtube me-1"></i> YouTube--}}
+{{--                        </a>--}}
+{{--                    </li>--}}
+{{--                </ul>--}}
+{{--            </div>--}}
+
+            <!-- Newsletter -->
+{{--            <div class="col-md-3 mb-4">--}}
+{{--                <h6 class="fw-bold mb-3">Sign Up For Our Newsletter</h6>--}}
+{{--                <form class="d-flex">--}}
+{{--                    <input type="email" class="form-control bg-dark border-secondary text-light"--}}
+{{--                           placeholder="Enter your email address">--}}
+{{--                    <button class="btn btn-primary ms-2">Subscribe</button>--}}
+{{--                </form>--}}
+{{--            </div>--}}
+
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-secondary">
+
+        <!-- Bottom Section -->
+        <div class="text-center">
+            <h5 class="fw-bold mb-2">
+                <span class="text-primary">{{ config('app.name') }}</span>
+            </h5>
+
+            <p class="small text-secondary mb-0">
+                Copyright © {{ date('Y') }} All Rights Reserved.
+{{--                Designed By <span class="text-primary">Music Teachers Aid, LLC</span>--}}
+            </p>
         </div>
     </div>
 </footer>
