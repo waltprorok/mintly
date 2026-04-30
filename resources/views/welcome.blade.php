@@ -618,9 +618,9 @@
         <div class="row justify-content-end text-center text-md-start">
 
             <!-- Features -->
-            <div class="col-12 col-md-3 mb-1">
+            <div class="col-12 col-md-2 mb-1">
                 <h6 class="fw-bold mb-3">Features</h6>
-                <ul class="list-unstyled small">
+                <ul class="list-unstyled">
                     <li><a href="#how-it-works" class="text-secondary text-decoration-none">How it works</a></li>
                     <li><a href="#features" class="text-secondary text-decoration-none">Features</a></li>
                     <li><a href="#view-app" class="text-secondary text-decoration-none">View App</a></li>
@@ -630,9 +630,9 @@
             </div>
 
             <!-- Links -->
-            <div class="col-12 col-md-3 mb-1">
+            <div class="col-12 col-md-2 mb-1">
                 <h6 class="fw-bold mb-3">Links</h6>
-                <ul class="list-unstyled small">
+                <ul class="list-unstyled">
                     <li><a href="https://mintlybudget.blogspot.com/" target="_blank" class="text-secondary text-decoration-none">Blog</a></li>
                     <li><a href="{{ route('login') }}" class="text-secondary text-decoration-none">Log in</a></li>
 
@@ -642,7 +642,7 @@
             <!-- Company -->
             <div class="col-12 col-md-3 mb-1">
                 <h6 class="fw-bold mb-3">Company</h6>
-                <ul class="list-unstyled small">
+                <ul class="list-unstyled">
                     <li><a href="{{ route('terms') }}" class="text-secondary text-decoration-none">Terms Of Service</a></li>
                     <li><a href="{{ route('privacy') }}" class="text-secondary text-decoration-none">Privacy Policy</a></li>
                 </ul>
