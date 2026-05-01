@@ -11,6 +11,8 @@
     <meta property="og:title" content="Mintly | Monthly Budget Planner & Cash Flow Tracker">
     <meta property="og:description" content="Plan your monthly budget and track cash flow in real time. See what’s left each week and stay in control with Mintly.">
     <meta property="og:image" content="https://mintlybudget.com/images/social-preview.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://mintlybudget.com">
 
