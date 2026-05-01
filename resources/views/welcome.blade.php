@@ -686,12 +686,11 @@
 
             <p class="small text-secondary mb-0">
                 Copyright © {{ date('Y') }} All Rights Reserved.
-{{--                Designed By <span class="text-primary">Music Teachers Aid, LLC</span>--}}
+{{--                Designed By <span class="text-primary">/span>--}}
             </p>
         </div>
     </div>
 </footer>
 
-<script src="{{ asset('js/app.js') }}"></script>
 </body>
 </html>
