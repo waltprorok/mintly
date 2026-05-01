@@ -32,7 +32,7 @@
             Mintly Budget
         </a>
 
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-label="Toggle navigation menu">
             <span class="navbar-toggler-icon"></span>
         </button>
 
@@ -372,7 +372,8 @@
                     <button type="button"
                             data-bs-target="#screenshotCarousel"
                             data-bs-slide-to="{{ $index }}"
-                            class="{{ $index === 0 ? 'active' : '' }}">
+                            class="{{ $index === 0 ? 'active' : '' }}"
+                            aria-label="Go to slide {{ $index + 1 }}">
                     </button>
                 @endforeach
             </div>
@@ -399,14 +400,16 @@
             <button class="carousel-control-prev opacity-25 hover-opacity-100"
                     type="button"
                     data-bs-target="#screenshotCarousel"
-                    data-bs-slide="prev">
+                    data-bs-slide="prev"
+                    aria-label="Previous slide">
                 <span class="carousel-control-prev-icon bg-success rounded-circle p-2"></span>
             </button>
 
             <button class="carousel-control-next opacity-25 hover-opacity-100"
                     type="button"
                     data-bs-target="#screenshotCarousel"
-                    data-bs-slide="next">
+                    data-bs-slide="next"
+                    aria-label="Next slide">
                 <span class="carousel-control-next-icon bg-success rounded-circle p-2"></span>
             </button>
         </div>
