@@ -10,12 +10,14 @@
 
     <meta property="og:title" content="Mintly | Monthly Budget Planner & Cash Flow Tracker">
     <meta property="og:description" content="Plan your monthly budget and track cash flow in real time. See what’s left each week and stay in control with Mintly.">
+    <meta property="og:image" content="{{ asset('images/social-preview.png') }}">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://mintlybudget.com">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Mintly | Monthly Budget Planner & Cash Flow Tracker">
     <meta name="twitter:description" content="Track your monthly budget and weekly cash flow with Mintly. Stay on top of your finances in real time.">
+    <meta name="twitter:image" content="{{ asset('images/social-preview.png') }}">
 
     <meta name="google-site-verification" content="RPPhABGHaCi4Qmbse4behpD6u3I7nrE7nxuVnXzE3mA" />
     <meta name="theme-color" content="#198754">
