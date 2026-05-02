@@ -672,27 +672,27 @@
                 <ul class="list-unstyled">
                     <li class="mb-2">
                         <a href="#how-it-works" class="text-secondary text-decoration-none d-flex align-items-center gap-2">
-                            <i class="bi bi-gear text-success opacity-75"></i> How it works
+                            How it works
                         </a>
                     </li>
                     <li class="mb-2">
                         <a href="#features" class="text-secondary text-decoration-none d-flex align-items-center gap-2">
-                            <i class="bi bi-star text-success opacity-75"></i> Features
+                            Features
                         </a>
                     </li>
                     <li class="mb-2">
                         <a href="#view-app" class="text-secondary text-decoration-none d-flex align-items-center gap-2">
-                            <i class="bi bi-display text-success opacity-75"></i> View App
+                            View App
                         </a>
                     </li>
                     <li class="mb-2">
                         <a href="#pricing" class="text-secondary text-decoration-none d-flex align-items-center gap-2">
-                            <i class="bi bi-tag text-success opacity-75"></i> Pricing
+                            Pricing
                         </a>
                     </li>
                     <li>
                         <a href="#faq" class="text-secondary text-decoration-none d-flex align-items-center gap-2">
-                            <i class="bi bi-question-circle text-success opacity-75"></i> FAQ
+                            FAQ
                         </a>
                     </li>
                 </ul>
@@ -704,12 +704,12 @@
                 <ul class="list-unstyled">
                     <li class="mb-2">
                         <a href="https://mintlybudget.blogspot.com/" target="_blank" class="text-secondary text-decoration-none d-flex align-items-center gap-2">
-                            <i class="bi bi-pencil-square text-success opacity-75"></i> Blog
+                            Blog
                         </a>
                     </li>
                     <li>
                         <a href="{{ route('login') }}" class="text-secondary text-decoration-none d-flex align-items-center gap-2">
-                            <i class="bi bi-box-arrow-in-right text-success opacity-75"></i> Log in
+                            Log in
                         </a>
                     </li>
                 </ul>
@@ -721,12 +721,12 @@
                 <ul class="list-unstyled">
                     <li class="mb-2">
                         <a href="{{ route('terms') }}" class="text-secondary text-decoration-none d-flex align-items-center gap-2">
-                            <i class="bi bi-shield-check text-success opacity-75"></i> Terms Of Service
+                            Terms Of Service
                         </a>
                     </li>
                     <li>
                         <a href="{{ route('privacy') }}" class="text-secondary text-decoration-none d-flex align-items-center gap-2">
-                            <i class="bi bi-lock text-success opacity-75"></i> Privacy Policy
+                            Privacy Policy
                         </a>
                     </li>
                 </ul>
