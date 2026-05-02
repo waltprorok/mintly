@@ -14,12 +14,17 @@
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Mintly">
+    <meta property="og:locale" content="en_US">
     <meta property="og:url" content="https://mintlybudget.com">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Mintly | Monthly Budget Planner & Cash Flow Tracker">
     <meta name="twitter:description" content="Track your monthly budget and weekly cash flow with Mintly. Stay on top of your finances in real time.">
     <meta name="twitter:image" content="https://mintlybudget.com/images/social-preview.png">
+    <meta name="twitter:site" content="@waltprorok">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://mintlybudget.com/images/apple-touch-icon.png" />
 
     <meta name="google-site-verification" content="RPPhABGHaCi4Qmbse4behpD6u3I7nrE7nxuVnXzE3mA" />
     <meta name="theme-color" content="#198754">
@@ -622,77 +627,125 @@
 {{-- Footer --}}
 <footer class="bg-dark text-light pt-5 pb-4">
     <div class="container">
-        <div class="row justify-content-end text-center text-md-start">
+
+        <div class="row align-items-start text-center text-md-start">
+
+            <!-- Brand -->
+            <div class="col-12 col-md-4 mb-4">
+                <div class="d-flex align-items-center justify-content-center justify-content-md-start mb-3">
+                    <img
+                        src="{{ asset('images/apple-touch-icon-520.png') }}"
+                        alt="Mintly logo"
+                        class="me-3 rounded"
+                        style="width: 60px; height: 60px;"
+                    >
+                    <h4 class="mb-0 fw-bold">{{ config('app.name') }}</h4>
+                </div>
+
+                <p class="text-secondary mb-3">
+                    Smart budgeting made simple. Track, manage, and achieve your financial goals.
+                </p>
+
+                <!-- Social -->
+{{--                <div class="d-flex gap-3 justify-content-center justify-content-md-start">--}}
+{{--                    <a href="#" class="d-flex align-items-center justify-content-center rounded-circle bg-secondary bg-opacity-25 text-light"--}}
+{{--                       style="width:40px; height:40px;">--}}
+{{--                        <i class="bi bi-twitter"></i>--}}
+{{--                    </a>--}}
+{{--                    <a href="#" class="d-flex align-items-center justify-content-center rounded-circle bg-secondary bg-opacity-25 text-light"--}}
+{{--                       style="width:40px; height:40px;">--}}
+{{--                        <i class="bi bi-facebook"></i>--}}
+{{--                    </a>--}}
+{{--                    <a href="#" class="d-flex align-items-center justify-content-center rounded-circle bg-secondary bg-opacity-25 text-light"--}}
+{{--                       style="width:40px; height:40px;">--}}
+{{--                        <i class="bi bi-instagram"></i>--}}
+{{--                    </a>--}}
+{{--                    <a href="mailto:support@mintlybudget.com" class="d-flex align-items-center justify-content-center rounded-circle bg-secondary bg-opacity-25 text-light"--}}
+{{--                       style="width:40px; height:40px;">--}}
+{{--                        <i class="bi bi-envelope"></i>--}}
+{{--                    </a>--}}
+{{--                </div>--}}
+            </div>
 
             <!-- Features -->
-            <div class="col-12 col-md-2 mb-1">
+            <div class="col-6 col-md-2 mb-4">
                 <h6 class="fw-bold mb-3">Features</h6>
                 <ul class="list-unstyled">
-                    <li><a href="#how-it-works" class="text-secondary text-decoration-none">How it works</a></li>
-                    <li><a href="#features" class="text-secondary text-decoration-none">Features</a></li>
-                    <li><a href="#view-app" class="text-secondary text-decoration-none">View App</a></li>
-                    <li><a href="#pricing" class="text-secondary text-decoration-none">Pricing</a></li>
-                    <li><a href="#faq" class="text-secondary text-decoration-none">FAQ</a></li>
+                    <li class="mb-2">
+                        <a href="#how-it-works" class="text-secondary text-decoration-none d-flex align-items-center gap-2">
+                            <i class="bi bi-gear text-success"></i> How it works
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="#features" class="text-secondary text-decoration-none d-flex align-items-center gap-2">
+                            <i class="bi bi-star text-success"></i> Features
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="#view-app" class="text-secondary text-decoration-none d-flex align-items-center gap-2">
+                            <i class="bi bi-display text-success"></i> View App
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="#pricing" class="text-secondary text-decoration-none d-flex align-items-center gap-2">
+                            <i class="bi bi-tag text-success"></i> Pricing
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#faq" class="text-secondary text-decoration-none d-flex align-items-center gap-2">
+                            <i class="bi bi-question-circle text-success"></i> FAQ
+                        </a>
+                    </li>
                 </ul>
             </div>
 
             <!-- Links -->
-            <div class="col-12 col-md-2 mb-1">
+            <div class="col-6 col-md-2 mb-4">
                 <h6 class="fw-bold mb-3">Links</h6>
                 <ul class="list-unstyled">
-                    <li><a href="https://mintlybudget.blogspot.com/" target="_blank" class="text-secondary text-decoration-none">Blog</a></li>
-                    <li><a href="{{ route('login') }}" class="text-secondary text-decoration-none">Log in</a></li>
-
+                    <li class="mb-2">
+                        <a href="https://mintlybudget.blogspot.com/" target="_blank" class="text-secondary text-decoration-none d-flex align-items-center gap-2">
+                            <i class="bi bi-pencil-square text-success"></i> Blog
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('login') }}" class="text-secondary text-decoration-none d-flex align-items-center gap-2">
+                            <i class="bi bi-box-arrow-in-right text-success"></i> Log in
+                        </a>
+                    </li>
                 </ul>
             </div>
 
             <!-- Company -->
-            <div class="col-12 col-md-3 mb-1">
+            <div class="col-12 col-md-2 mb-4">
                 <h6 class="fw-bold mb-3">Company</h6>
                 <ul class="list-unstyled">
-                    <li><a href="{{ route('terms') }}" class="text-secondary text-decoration-none">Terms Of Service</a></li>
-                    <li><a href="{{ route('privacy') }}" class="text-secondary text-decoration-none">Privacy Policy</a></li>
+                    <li class="mb-2">
+                        <a href="{{ route('terms') }}" class="text-secondary text-decoration-none d-flex align-items-center gap-2">
+                            <i class="bi bi-shield-check text-success"></i> Terms Of Service
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('privacy') }}" class="text-secondary text-decoration-none d-flex align-items-center gap-2">
+                            <i class="bi bi-lock text-success"></i> Privacy Policy
+                        </a>
+                    </li>
                 </ul>
             </div>
-
-            <!-- Social -->
-{{--            <div class="col-md-3 mb-4">--}}
-{{--                <h6 class="fw-bold mb-3">Social</h6>--}}
-{{--                <ul class="list-unstyled small">--}}
-{{--                    <li>--}}
-{{--                        <a href="#" class="text-secondary text-decoration-none">--}}
-{{--                            <i class="bi bi-youtube me-1"></i> YouTube--}}
-{{--                        </a>--}}
-{{--                    </li>--}}
-{{--                </ul>--}}
-{{--            </div>--}}
-
-            <!-- Newsletter -->
-{{--            <div class="col-md-3 mb-4">--}}
-{{--                <h6 class="fw-bold mb-3">Sign Up For Our Newsletter</h6>--}}
-{{--                <form class="d-flex">--}}
-{{--                    <input type="email" class="form-control bg-dark border-secondary text-light"--}}
-{{--                           placeholder="Enter your email address">--}}
-{{--                    <button class="btn btn-primary ms-2">Subscribe</button>--}}
-{{--                </form>--}}
-{{--            </div>--}}
 
         </div>
 
         <!-- Divider -->
-        <hr class="border-secondary">
+        <hr class="border-secondary my-4">
 
-        <!-- Bottom Section -->
+        <!-- Bottom -->
         <div class="text-center">
-            <h5 class="fw-bold mb-2">
-                <span class="text-primary">{{ config('app.name') }}</span>
-            </h5>
-
+            <h5 class="fw-bold mb-1">{{ config('app.name') }}</h5>
             <p class="small text-secondary mb-0">
                 Copyright © {{ date('Y') }} All Rights Reserved.
-{{--                Designed By <span class="text-primary">/span>--}}
             </p>
         </div>
+
     </div>
 </footer>
 
