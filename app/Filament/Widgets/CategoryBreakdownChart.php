@@ -64,6 +64,8 @@ class CategoryBreakdownChart extends ChartWidget
                     'backgroundColor' => $colors,
                     'tension' => 0.2,
                     'fill' => true,
+                    'borderColor' => 'transparent',
+                    'borderWidth' => 0,
                 ],
             ],
             'labels' => $labels,

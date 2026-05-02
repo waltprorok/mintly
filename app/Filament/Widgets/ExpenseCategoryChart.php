@@ -56,7 +56,8 @@ class ExpenseCategoryChart extends ChartWidget
                 [
                     'data' => $values,
                     'backgroundColor' => $colors,
-                    'borderWidth' => 1,
+                    'borderColor' => 'transparent',
+                    'borderWidth' => 0,
                 ],
             ],
             'labels' => $labels,
