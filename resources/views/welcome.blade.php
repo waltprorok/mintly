@@ -643,7 +643,7 @@
                 </div>
 
                 <p class="text-secondary mb-3">
-                    Smart budgeting made simple. Track, manage, and achieve your financial goals.
+                    Plan your month, track each week, and stay in control of your money.
                 </p>
 
                 <!-- Social -->
