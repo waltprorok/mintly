@@ -24,9 +24,9 @@
     <meta name="twitter:image" content="https://mintlybudget.com/images/social-preview.png">
     <meta name="twitter:site" content="@waltprorok">
 
-    <link rel="apple-touch-icon" sizes="180x180" href="https://mintlybudget.com/images/apple-touch-icon.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="https://mintlybudget.com/images/apple-touch-icon.png"/>
 
-    <meta name="google-site-verification" content="RPPhABGHaCi4Qmbse4behpD6u3I7nrE7nxuVnXzE3mA" />
+    <meta name="google-site-verification" content="RPPhABGHaCi4Qmbse4behpD6u3I7nrE7nxuVnXzE3mA"/>
     <meta name="theme-color" content="#198754">
     <meta name="robots" content="index, follow">
 
@@ -507,9 +507,9 @@
             --}}
         </div>
 
-{{--        <p class="text-secondary small mt-3 mb-0">--}}
-{{--            Early users will help shape the product and get access to new features first.--}}
-{{--        </p>--}}
+        {{--        <p class="text-secondary small mt-3 mb-0">--}}
+        {{--            Early users will help shape the product and get access to new features first.--}}
+        {{--        </p>--}}
     </div>
 </section>
 
@@ -627,11 +627,10 @@
 {{-- Footer --}}
 <footer class="bg-dark text-light pt-5 pb-4">
     <div class="container">
-
         <div class="row align-items-start text-center text-md-start">
 
             <!-- Brand -->
-            <div class="col-12 col-md-4 mb-4">
+            <div class="col-12 col-md-5 mb-4">
                 <div class="d-flex align-items-center justify-content-center justify-content-md-start mb-3">
                     <img
                         src="{{ asset('images/apple-touch-icon-520.png') }}"
@@ -647,24 +646,24 @@
                 </p>
 
                 <!-- Social -->
-{{--                <div class="d-flex gap-3 justify-content-center justify-content-md-start">--}}
-{{--                    <a href="#" class="d-flex align-items-center justify-content-center rounded-circle bg-secondary bg-opacity-25 text-light"--}}
-{{--                       style="width:40px; height:40px;">--}}
-{{--                        <i class="bi bi-twitter"></i>--}}
-{{--                    </a>--}}
-{{--                    <a href="#" class="d-flex align-items-center justify-content-center rounded-circle bg-secondary bg-opacity-25 text-light"--}}
-{{--                       style="width:40px; height:40px;">--}}
-{{--                        <i class="bi bi-facebook"></i>--}}
-{{--                    </a>--}}
-{{--                    <a href="#" class="d-flex align-items-center justify-content-center rounded-circle bg-secondary bg-opacity-25 text-light"--}}
-{{--                       style="width:40px; height:40px;">--}}
-{{--                        <i class="bi bi-instagram"></i>--}}
-{{--                    </a>--}}
-{{--                    <a href="mailto:support@mintlybudget.com" class="d-flex align-items-center justify-content-center rounded-circle bg-secondary bg-opacity-25 text-light"--}}
-{{--                       style="width:40px; height:40px;">--}}
-{{--                        <i class="bi bi-envelope"></i>--}}
-{{--                    </a>--}}
-{{--                </div>--}}
+                {{--                <div class="d-flex gap-3 justify-content-center justify-content-md-start">--}}
+                {{--                    <a href="#" class="d-flex align-items-center justify-content-center rounded-circle bg-secondary bg-opacity-25 text-light"--}}
+                {{--                       style="width:40px; height:40px;">--}}
+                {{--                        <i class="bi bi-twitter"></i>--}}
+                {{--                    </a>--}}
+                {{--                    <a href="#" class="d-flex align-items-center justify-content-center rounded-circle bg-secondary bg-opacity-25 text-light"--}}
+                {{--                       style="width:40px; height:40px;">--}}
+                {{--                        <i class="bi bi-facebook"></i>--}}
+                {{--                    </a>--}}
+                {{--                    <a href="#" class="d-flex align-items-center justify-content-center rounded-circle bg-secondary bg-opacity-25 text-light"--}}
+                {{--                       style="width:40px; height:40px;">--}}
+                {{--                        <i class="bi bi-instagram"></i>--}}
+                {{--                    </a>--}}
+                {{--                    <a href="mailto:support@mintlybudget.com" class="d-flex align-items-center justify-content-center rounded-circle bg-secondary bg-opacity-25 text-light"--}}
+                {{--                       style="width:40px; height:40px;">--}}
+                {{--                        <i class="bi bi-envelope"></i>--}}
+                {{--                    </a>--}}
+                {{--                </div>--}}
             </div>
 
             <!-- Features -->
@@ -673,27 +672,27 @@
                 <ul class="list-unstyled">
                     <li class="mb-2">
                         <a href="#how-it-works" class="text-secondary text-decoration-none d-flex align-items-center gap-2">
-                            <i class="bi bi-gear text-success"></i> How it works
+                            <i class="bi bi-gear text-success opacity-75"></i> How it works
                         </a>
                     </li>
                     <li class="mb-2">
                         <a href="#features" class="text-secondary text-decoration-none d-flex align-items-center gap-2">
-                            <i class="bi bi-star text-success"></i> Features
+                            <i class="bi bi-star text-success opacity-75"></i> Features
                         </a>
                     </li>
                     <li class="mb-2">
                         <a href="#view-app" class="text-secondary text-decoration-none d-flex align-items-center gap-2">
-                            <i class="bi bi-display text-success"></i> View App
+                            <i class="bi bi-display text-success opacity-75"></i> View App
                         </a>
                     </li>
                     <li class="mb-2">
                         <a href="#pricing" class="text-secondary text-decoration-none d-flex align-items-center gap-2">
-                            <i class="bi bi-tag text-success"></i> Pricing
+                            <i class="bi bi-tag text-success opacity-75"></i> Pricing
                         </a>
                     </li>
                     <li>
                         <a href="#faq" class="text-secondary text-decoration-none d-flex align-items-center gap-2">
-                            <i class="bi bi-question-circle text-success"></i> FAQ
+                            <i class="bi bi-question-circle text-success opacity-75"></i> FAQ
                         </a>
                     </li>
                 </ul>
@@ -705,12 +704,12 @@
                 <ul class="list-unstyled">
                     <li class="mb-2">
                         <a href="https://mintlybudget.blogspot.com/" target="_blank" class="text-secondary text-decoration-none d-flex align-items-center gap-2">
-                            <i class="bi bi-pencil-square text-success"></i> Blog
+                            <i class="bi bi-pencil-square text-success opacity-75"></i> Blog
                         </a>
                     </li>
                     <li>
                         <a href="{{ route('login') }}" class="text-secondary text-decoration-none d-flex align-items-center gap-2">
-                            <i class="bi bi-box-arrow-in-right text-success"></i> Log in
+                            <i class="bi bi-box-arrow-in-right text-success opacity-75"></i> Log in
                         </a>
                     </li>
                 </ul>
@@ -718,16 +717,16 @@
 
             <!-- Company -->
             <div class="col-12 col-md-2 mb-4">
-                <h6 class="fw-bold mb-3">Company</h6>
+                <h6 class="fw-bold mb-3">Legal</h6>
                 <ul class="list-unstyled">
                     <li class="mb-2">
                         <a href="{{ route('terms') }}" class="text-secondary text-decoration-none d-flex align-items-center gap-2">
-                            <i class="bi bi-shield-check text-success"></i> Terms Of Service
+                            <i class="bi bi-shield-check text-success opacity-75"></i> Terms Of Service
                         </a>
                     </li>
                     <li>
                         <a href="{{ route('privacy') }}" class="text-secondary text-decoration-none d-flex align-items-center gap-2">
-                            <i class="bi bi-lock text-success"></i> Privacy Policy
+                            <i class="bi bi-lock text-success opacity-75"></i> Privacy Policy
                         </a>
                     </li>
                 </ul>
@@ -736,13 +735,13 @@
         </div>
 
         <!-- Divider -->
-        <hr class="border-secondary my-4">
+        <hr class="border-secondary opacity-25 d-md-none">
 
         <!-- Bottom -->
-        <div class="text-center">
-            <h5 class="fw-bold mb-1">{{ config('app.name') }}</h5>
+        <div class="text-center mt-2">
+            <h6 class="fw-semibold mb-1">{{ config('app.name') }}</h6>
             <p class="small text-secondary mb-0">
-                Copyright © {{ date('Y') }} All Rights Reserved.
+                © {{ date('Y') }} {{ config('app.name') }}. All rights reserved.
             </p>
         </div>
 
