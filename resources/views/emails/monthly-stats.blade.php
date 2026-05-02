@@ -8,9 +8,22 @@ Here is your financial summary for **{{ $month->format('F Y') }}**:
 * **Total Expenses:** ${{ number_format($expenses, 2) }}
 * **Net:** ${{ number_format($net, 2) }}
 
-Keep tracking your finances with Mintly!
+### Insights
+
+@if($income > 0)
+- You spent **{{ $spendingPercent }}%** of your income
+@endif
+- Bills paid: **{{ $billsPaidPercent }}%**
+
+Take a moment to review your progress and plan your next month.
+
+@component('mail::button', ['url' => url('/dashboard/budget')])
+    View Your Budget
+@endcomponent
+
+Stay on top of your money and keep building better habits with {{ config('app.name') }}.
 
 Thanks,<br>
-{{ config('app.name') }}
+The {{ config('app.name') }} Team
 
 @endcomponent

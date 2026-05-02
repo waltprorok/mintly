@@ -15,14 +15,18 @@ class MonthlyStatsMail extends Mailable implements ShouldQueue
     public $expenses;
     public $net;
     public $month;
+    public $spendingPercent;
+    public $billsPaidPercent;
 
-    public function __construct($user, $income, $expenses, $net, $month)
+    public function __construct($user, $income, $expenses, $net, $month, $spendingPercent, $billsPaidPercent)
     {
         $this->user = $user;
         $this->income = $income;
         $this->expenses = $expenses;
         $this->net = $net;
         $this->month = $month;
+        $this->spendingPercent = $spendingPercent;
+        $this->billsPaidPercent = $billsPaidPercent;
     }
 
     public function build(): MonthlyStatsMail

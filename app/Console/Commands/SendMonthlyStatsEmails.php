@@ -39,8 +39,30 @@ class SendMonthlyStatsEmails extends Command
 
                 $net = $income - $expenses;
 
+                $spendingPercent = $income > 0
+                    ? round(($expenses / $income) * 100)
+                    : 0;
+
+                // Bills Paid %
+                $paidExpenses = $transactions
+                    ->where('type', 'expense')
+                    ->whereNotNull('paid_at') // adjust if using 'status' instead
+                    ->sum('amount');
+
+                $billsPaidPercent = $expenses > 0
+                    ? round(($paidExpenses / $expenses) * 100)
+                    : 0;
+
                 Mail::to($user->email)->queue(
-                    new MonthlyStatsMail($user, $income, $expenses, $net, $start)
+                    new MonthlyStatsMail(
+                        $user,
+                        $income,
+                        $expenses,
+                        $net,
+                        $start,
+                        $spendingPercent,
+                        $billsPaidPercent
+                    )
                 );
             }
         });
