@@ -738,7 +738,7 @@
         <hr class="border-secondary opacity-25 d-md-none">
 
         <!-- Bottom -->
-        <div class="text-center mt-2">
+        <div class="text-center mt-3">
             <h6 class="fw-semibold mb-1">{{ config('app.name') }}</h6>
             <p class="small text-secondary mb-0">
                 © {{ date('Y') }} {{ config('app.name') }}. All rights reserved.
