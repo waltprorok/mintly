@@ -108,6 +108,18 @@ class IncomeVsExpenseChart extends ChartWidget
         return collect($periods)->reverse()->toArray();
     }
 
+    public function updatedFilter(): void
+    {
+        [$year, $month] = $this->filter
+            ? explode('-', $this->filter)
+            : [now()->year, now()->month];
+
+        $this->dispatch('categoryPeriodChanged', [
+            'month' => (int) $month,
+            'year' => (int) $year,
+        ]);
+    }
+
     protected function getType(): string
     {
         return 'doughnut';
