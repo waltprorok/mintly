@@ -49,9 +49,7 @@ class WantsVsNeedsChart extends ChartWidget
             ->pluck('total', 'categories.spend_classification');
 
         $needs = $totals['non_discretionary'] ?? 0;
-
         $wants = $totals['discretionary'] ?? 0;
-
         $unknown = $totals['unknown'] ?? 0;
 
         $total = $needs + $wants + $unknown;
@@ -61,9 +59,17 @@ class WantsVsNeedsChart extends ChartWidget
             $wantsPercent = 0;
             $unknownPercent = 0;
         } else {
+            // Round primary values
             $needsPercent = round(($needs / $total) * 100, 1);
             $wantsPercent = round(($wants / $total) * 100, 1);
-            $unknownPercent = 100 - ($needsPercent + $wantsPercent);
+
+            // Force total to equal 100% cleanly
+            $unknownPercent = max(0, round(100 - ($needsPercent + $wantsPercent), 1));
+
+            // Clamp tiny floating noise
+            if ($unknownPercent < 0.5) {
+                $unknownPercent = 0;
+            }
         }
 
         return [
@@ -72,7 +78,7 @@ class WantsVsNeedsChart extends ChartWidget
                     'data' => [$needs, $wants, $unknown],
                     'backgroundColor' => [
                         'rgba(34,197,94,0.75)',   // Needs (green)
-                        'rgba(245, 158, 11, 0.75)',   // Wants (orange)
+                        'rgba(245,158,11,0.75)',  // Wants (orange)
                         'rgba(156,163,175,0.35)', // Unknown (gray)
                     ],
                     'spacing' => 0,
