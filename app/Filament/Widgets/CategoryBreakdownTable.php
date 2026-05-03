@@ -73,13 +73,20 @@ class CategoryBreakdownTable extends TableWidget
             ->whereYear('due_at', $this->year)
             ->with('category')
             ->get()
-            ->groupBy(fn ($record) => $record->category->name ?? 'Uncategorized')
-            ->map(function ($items, $category) use ($income) {
+            ->groupBy(function ($record) {
+                $category = $record->category;
+
+                return ($category->spend_classification ?? 'unknown') . '|' . ($category->name ?? 'Uncategorized');
+            })
+            ->map(function ($items, $key) use ($income) {
+                [$classification, $category] = explode('|', $key);
+
                 $total = $items->sum('amount');
 
                 return [
-                    'id' => md5($category),
+                    'id' => md5($key),
                     'category_name' => $category,
+                    'classification' => $classification,
                     'total' => $total,
                     'percent' => $income > 0 ? round(($total / $income) * 100) : 0,
                 ];
@@ -93,6 +100,16 @@ class CategoryBreakdownTable extends TableWidget
         return [
             TextColumn::make('category_name')
                 ->label('Category'),
+
+            TextColumn::make('classification')
+                ->label('Type')
+                ->formatStateUsing(function ($state) {
+                    return match ($state) {
+                        'non_discretionary' => new HtmlString("<span style='font-weight:300;'>Needs</span>"),
+                        'discretionary' => new HtmlString("<span style='color:#f59e0b;font-weight:600;'>Wants</span>"),
+                        default => new HtmlString("<span style='color:#9ca3af;'>Unknown</span>"),
+                    };
+                }),
 
             TextColumn::make('total')
                 ->label('Amount')

@@ -6,9 +6,9 @@ use App\Filament\Widgets\CategoryBreakdownChart;
 use App\Filament\Widgets\CategoryBreakdownTable;
 use App\Filament\Widgets\IncomeVsExpenseChart;
 use App\Filament\Widgets\IncomeVsExpenseTable;
+use App\Filament\Widgets\TopSpendingCategoriesChart;
 use App\Filament\Widgets\TransactionsOverTimeChart;
 use App\Filament\Widgets\WantsVsNeedsChart;
-use App\Filament\Widgets\WantsVsNeedsTable;
 use Filament\Pages\Page;
 
 class Reports extends Page
@@ -30,8 +30,8 @@ class Reports extends Page
             IncomeVsExpenseTable::class,
             CategoryBreakdownChart::class,
             CategoryBreakdownTable::class,
+            TopSpendingCategoriesChart::class,
             WantsVsNeedsChart::class,
-            WantsVsNeedsTable::class,
             TransactionsOverTimeChart::class,
         ];
     }

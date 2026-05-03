@@ -7,11 +7,11 @@ use Carbon\Carbon;
 use Filament\Widgets\ChartWidget;
 use Livewire\Attributes\On;
 
-class WantsVsNeedsChart extends ChartWidget
+class TopSpendingCategoriesChart extends ChartWidget
 {
     protected int|string|array $columnSpan = 1;
 
-    protected ?string $heading = 'Needs vs Wants';
+    protected ?string $heading = 'Top Spending Categories';
 
     protected static bool $isDiscovered = false;
 
@@ -38,54 +38,38 @@ class WantsVsNeedsChart extends ChartWidget
         $start = Carbon::create($this->year, $this->month)->startOfMonth();
         $end = $start->copy()->endOfMonth();
 
-        $totals = Transaction::query()
+        $data = Transaction::query()
             ->where('transactions.user_id', auth()->id())
             ->where('transactions.type', 'expense')
             ->whereBetween('transactions.due_at', [$start, $end])
             ->join('categories', 'transactions.category_id', '=', 'categories.id')
-            ->select('categories.spend_classification')
-            ->selectRaw('SUM(transactions.amount) as total')
-            ->groupBy('categories.spend_classification')
-            ->pluck('total', 'categories.spend_classification');
+            ->selectRaw('categories.name as category, SUM(transactions.amount) as total')
+            ->groupBy('categories.name')
+            ->orderByDesc('total')
+            ->limit(5)
+            ->get();
 
-        $needs = $totals['non_discretionary'] ?? 0;
+        $labels = $data->pluck('category')->toArray();
+        $values = $data->pluck('total')->toArray();
 
-        $wants = $totals['discretionary'] ?? 0;
-
-        $unknown = $totals['unknown'] ?? 0;
-
-        $total = $needs + $wants + $unknown;
-
-        if ($total <= 0) {
-            $needsPercent = 0;
-            $wantsPercent = 0;
-            $unknownPercent = 0;
-        } else {
-            $needsPercent = round(($needs / $total) * 100, 1);
-            $wantsPercent = round(($wants / $total) * 100, 1);
-            $unknownPercent = 100 - ($needsPercent + $wantsPercent);
-        }
+        // Dynamic color generation (balanced + modern)
+        $colors = collect($values)
+            ->map(fn($_, $i) => "hsl(" . ($i * 50 % 360) . ", 65%, 55%)")
+            ->toArray();
 
         return [
             'datasets' => [
                 [
-                    'data' => [$needs, $wants, $unknown],
-                    'backgroundColor' => [
-                        'rgba(34,197,94,0.75)',   // Needs (green)
-                        'rgba(245, 158, 11, 0.75)',   // Wants (orange)
-                        'rgba(156,163,175,0.35)', // Unknown (gray)
-                    ],
-                    'spacing' => 0,
+                    'label' => 'Amount',
+                    'data' => $values,
+                    'backgroundColor' => $colors,
+                    'spacing' => 4,
                     'borderRadius' => 4,
                     'borderColor' => 'transparent',
                     'borderWidth' => 0,
                 ],
             ],
-            'labels' => [
-                "Needs ({$needsPercent}%)",
-                "Wants ({$wantsPercent}%)",
-                "Unknown ({$unknownPercent}%)",
-            ],
+            'labels' => $labels,
         ];
     }
 
@@ -97,7 +81,7 @@ class WantsVsNeedsChart extends ChartWidget
     protected function getOptions(): array
     {
         return [
-            'indexAxis' => 'y',
+            'indexAxis' => 'y', // horizontal bars
             'scales' => [
                 'x' => [
                     'beginAtZero' => true,

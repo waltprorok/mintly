@@ -11,7 +11,7 @@ class TransactionsOverTimeChart extends ChartWidget
 {
     protected int|string|array $columnSpan = 'full';
 
-    protected ?string $maxHeight = '400px';
+    protected ?string $maxHeight = '425px';
 
     protected ?string $heading = 'Spending Activity by Day';
 
@@ -29,8 +29,8 @@ class TransactionsOverTimeChart extends ChartWidget
     #[On('categoryPeriodChanged')]
     public function updatePeriod($data): void
     {
-        $this->month = (int) $data['month'];
-        $this->year = (int) $data['year'];
+        $this->month = (int)$data['month'];
+        $this->year = (int)$data['year'];
 
         $this->dispatch('$refresh');
     }
@@ -56,23 +56,26 @@ class TransactionsOverTimeChart extends ChartWidget
         $colors = [];
 
         for ($day = 1; $day <= $daysInMonth; $day++) {
-            $labels[] = (string) $day;
+            $labels[] = (string)$day;
 
             $count = $results[$day] ?? 0;
             $data[] = $count;
 
             $date = Carbon::create($this->year, $this->month, $day);
 
-            // Highlight logic
-            if ($count >= 3) {
-                // High activity (red)
-                $colors[] = 'rgba(239,68,68,0.6)';
+            // Highlight logic (aligned with your UI)
+            if ($count >= 5) {
+                // Very high activity → stronger amber (attention, not danger)
+                $colors[] = 'rgba(245,158,11,0.65)';
+            } elseif ($count >= 3) {
+                // Moderate activity → soft amber
+                $colors[] = 'rgba(245,158,11,0.70)';
             } elseif ($date->isWeekend()) {
-                // Weekend (purple tint)
-                $colors[] = 'rgba(168,85,247,0.35)';
+                // Weekend → subtle muted gray (less visual noise)
+                $colors[] = 'rgba(156,163,175,0.70)';
             } else {
-                // Normal (blue)
-                $colors[] = 'rgba(59,130,246,0.3)';
+                // Normal → your standard blue
+                $colors[] = 'rgba(59,130,246,0.70)';
             }
         }
 
@@ -84,6 +87,7 @@ class TransactionsOverTimeChart extends ChartWidget
                     'backgroundColor' => $colors,
                     'borderColor' => 'rgba(59,130,246,0.9)',
                     'borderWidth' => 0,
+                    'borderRadius' => 4,
                 ],
             ],
             'labels' => $labels,
@@ -122,12 +126,12 @@ class TransactionsOverTimeChart extends ChartWidget
 
     public function getDescription(): ?string
     {
-        $start = Carbon::create($this->year, $this->month)->startOfMonth();
-        $end = $start->copy()->endOfMonth();
-
         $results = Transaction::query()
             ->where('user_id', auth()->id())
-            ->whereBetween('due_at', [$start, $end])
+            ->whereBetween('due_at', [
+                Carbon::create($this->year, $this->month)->startOfMonth(),
+                Carbon::create($this->year, $this->month)->endOfMonth(),
+            ])
             ->selectRaw('DAY(due_at) as day, COUNT(*) as count')
             ->groupBy('day')
             ->pluck('count', 'day');
@@ -139,6 +143,6 @@ class TransactionsOverTimeChart extends ChartWidget
         $max = $results->max();
         $day = $results->search($max);
 
-        return "Most active day: {$day} ({$max} transactions)";
+        return "Most active day: {$day} ({$max} transactions) — High: Red | Moderate: Amber | Weekend: Gray | Normal: Blue";
     }
 }
