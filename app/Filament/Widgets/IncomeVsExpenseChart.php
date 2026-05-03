@@ -5,7 +5,6 @@ namespace App\Filament\Widgets;
 use App\Models\Transaction;
 use Carbon\Carbon;
 use Filament\Widgets\ChartWidget;
-use Livewire\Attributes\On;
 
 class IncomeVsExpenseChart extends ChartWidget
 {
@@ -15,27 +14,20 @@ class IncomeVsExpenseChart extends ChartWidget
 
     protected static bool $isDiscovered = false;
 
-    public int $month;
-    public int $year;
+    public ?string $filter = null;
 
     public function mount(): void
     {
-        $this->month = now()->month;
-        $this->year = now()->year;
-    }
-
-    #[On('categoryPeriodChanged')]
-    public function updatePeriod($data): void
-    {
-        $this->month = (int) $data['month'];
-        $this->year = (int) $data['year'];
-
-        $this->dispatch('$refresh');
+        $this->filter = now()->format('Y-m');
     }
 
     protected function getData(): array
     {
-        $start = Carbon::create($this->year, $this->month)->startOfMonth();
+        [$year, $month] = $this->filter
+            ? explode('-', $this->filter)
+            : [now()->year, now()->month];
+
+        $start = Carbon::create($year, $month)->startOfMonth();
         $end = $start->copy()->endOfMonth();
 
         $income = Transaction::query()
@@ -51,7 +43,7 @@ class IncomeVsExpenseChart extends ChartWidget
             ->sum('amount');
 
         $overspend = max(0, $expenses - $income);
-        // normalize chart to 100% and handle overspending
+
         if ($income <= 0) {
             $expensePercent = 0;
             $remainingPercent = 0;
@@ -59,7 +51,6 @@ class IncomeVsExpenseChart extends ChartWidget
             $expensePercent = round(($expenses / $income) * 100, 1);
             $remainingPercent = 100 - $expensePercent;
         } else {
-            // overspending → cap chart at 100%
             $expensePercent = 100;
             $remainingPercent = 0;
         }
@@ -69,27 +60,18 @@ class IncomeVsExpenseChart extends ChartWidget
                 [
                     'data' => [$expensePercent, $remainingPercent],
                     'backgroundColor' => [
-                        // turn red when overspending
                         $overspend > 0
-                            ? 'rgba(239,68,68,0.35)'   // red
-                            : 'rgba(59,130,246,0.35)', // blue
+                            ? 'rgba(239,68,68,0.35)'
+                            : 'rgba(59,130,246,0.75)',
 
                         $overspend > 0
-                            ? 'rgba(239,68,68,0.15)'   // faded red
-                            : 'rgba(34,197,94,0.35)',  // green
+                            ? 'rgba(239,68,68,0.15)'
+                            : 'rgba(34,197,94,0.75)',
                     ],
-                    'borderColor' => [
-                        $overspend > 0
-                            ? 'rgba(239,68,68,0.9)'
-                            : 'rgba(59,130,246,0.9)',
-
-                        $overspend > 0
-                            ? 'rgba(239,68,68,0.5)'
-                            : 'rgba(34,197,94,0.9)',
-                    ],
-                    'borderWidth' => 1,
-                    'spacing' => 1,
-                    'borderRadius' => 3,
+                    'spacing' => 0,
+                    'borderRadius' => 0,
+                    'borderColor' => 'transparent',
+                    'borderWidth' => 0,
                 ],
             ],
             'labels' => [
@@ -102,6 +84,28 @@ class IncomeVsExpenseChart extends ChartWidget
                     : "Remaining ({$remainingPercent}%)",
             ],
         ];
+    }
+
+    protected function getFilters(): ?array
+    {
+        $oldest = Transaction::where('user_id', auth()->id())->min('due_at');
+        $newest = Transaction::where('user_id', auth()->id())->max('due_at');
+
+        $start = $oldest ? Carbon::parse($oldest)->startOfMonth() : now()->startOfMonth();
+        $end = $newest ? Carbon::parse($newest)->startOfMonth() : now()->startOfMonth();
+
+        $periods = [];
+
+        while ($start <= $end) {
+            $key = $start->format('Y-m');
+            $label = $start->format('F Y');
+
+            $periods[$key] = $label;
+
+            $start->addMonth();
+        }
+
+        return collect($periods)->reverse()->toArray();
     }
 
     protected function getType(): string

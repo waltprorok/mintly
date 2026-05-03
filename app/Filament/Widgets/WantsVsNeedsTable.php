@@ -11,11 +11,11 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\HtmlString;
 use Livewire\Attributes\On;
 
-class CategoryBreakdownTable extends TableWidget
+class WantsVsNeedsTable extends TableWidget
 {
     protected int|string|array $columnSpan = 1;
 
-    protected static ?string $heading = 'Expenses by Category Breakdown';
+    protected static ?string $heading = 'Needs vs Wants Breakdown';
 
     protected static bool $isDiscovered = false;
 
@@ -73,13 +73,20 @@ class CategoryBreakdownTable extends TableWidget
             ->whereYear('due_at', $this->year)
             ->with('category')
             ->get()
-            ->groupBy(fn ($record) => $record->category->name ?? 'Uncategorized')
-            ->map(function ($items, $category) use ($income) {
+            ->groupBy(function ($record) {
+                $category = $record->category;
+
+                return ($category->spend_classification ?? 'unknown') . '|' . ($category->name ?? 'Uncategorized');
+            })
+            ->map(function ($items, $key) use ($income) {
+                [$classification, $category] = explode('|', $key);
+
                 $total = $items->sum('amount');
 
                 return [
-                    'id' => md5($category),
+                    'id' => md5($key),
                     'category_name' => $category,
+                    'classification' => $classification,
                     'total' => $total,
                     'percent' => $income > 0 ? round(($total / $income) * 100) : 0,
                 ];
@@ -91,8 +98,19 @@ class CategoryBreakdownTable extends TableWidget
     protected function getTableColumns(): array
     {
         return [
+
             TextColumn::make('category_name')
                 ->label('Category'),
+
+            TextColumn::make('classification')
+                ->label('Type')
+                ->formatStateUsing(function ($state) {
+                    return match ($state) {
+                        'non_discretionary' => new HtmlString("<span style='color:#22c55e;font-weight:600;'>Needs</span>"),
+                        'discretionary' => new HtmlString("<span style='color:#ef4444;font-weight:600;'>Wants</span>"),
+                        default => new HtmlString("<span style='color:#9ca3af;'>Unknown</span>"),
+                    };
+                }),
 
             TextColumn::make('total')
                 ->label('Amount')

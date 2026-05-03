@@ -3,8 +3,8 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Transaction;
-use Carbon\Carbon;
 use Filament\Widgets\ChartWidget;
+use Livewire\Attributes\On;
 
 class CategoryBreakdownChart extends ChartWidget
 {
@@ -14,32 +14,44 @@ class CategoryBreakdownChart extends ChartWidget
 
     protected static bool $isDiscovered = false;
 
-    public ?string $filter = null;
+    public int $month;
+    public int $year;
 
     public function mount(): void
     {
-        $this->filter = now()->format('Y-m');
+        $this->month = now()->month;
+        $this->year = now()->year;
+    }
+
+    #[On('categoryPeriodChanged')]
+    public function updatePeriod($data): void
+    {
+        $this->month = (int) $data['month'];
+        $this->year = (int) $data['year'];
+
+        $this->dispatch('$refresh');
     }
 
     protected function getData(): array
     {
-        [$year, $month] = $this->filter
-            ? explode('-', $this->filter)
-            : [now()->year, now()->month];
+        $month = $this->month;
+        $year = $this->year;
 
+        // Aggregate in DB (faster + cleaner)
         $data = Transaction::query()
-            ->where('user_id', auth()->id())
-            ->where('type', 'expense')
-            ->whereMonth('due_at', $month)
-            ->whereYear('due_at', $year)
-            ->with('category')
-            ->get()
-            ->groupBy('category.name')
-            ->map(fn($items) => $items->sum('amount'))
-            ->sortDesc();
+            ->where('transactions.user_id', auth()->id())
+            ->where('transactions.type', 'expense')
+            ->whereMonth('transactions.due_at', $month)
+            ->whereYear('transactions.due_at', $year)
+            ->join('categories', 'transactions.category_id', '=', 'categories.id')
+            ->selectRaw('categories.name as category, SUM(transactions.amount) as total')
+            ->groupBy('categories.name')
+            ->orderByDesc('total')
+            ->pluck('total', 'category');
 
         $values = $data->values()->toArray();
 
+        // Income (for % calc)
         $income = Transaction::query()
             ->where('user_id', auth()->id())
             ->where('type', 'income')
@@ -62,8 +74,6 @@ class CategoryBreakdownChart extends ChartWidget
                     'label' => 'Expenses',
                     'data' => $values,
                     'backgroundColor' => $colors,
-                    'tension' => 0.2,
-                    'fill' => true,
                     'borderColor' => 'transparent',
                     'borderWidth' => 0,
                 ],
@@ -77,50 +87,4 @@ class CategoryBreakdownChart extends ChartWidget
         return 'doughnut';
     }
 
-    protected function getOptions(): array
-    {
-        return [
-            'scales' => [
-                'y' => [
-                    'ticks' => [
-                        'precision' => 0,
-                    ],
-                ],
-            ],
-        ];
-    }
-
-    protected function getFilters(): ?array
-    {
-        $oldest = Transaction::where('user_id', auth()->id())->min('due_at');
-        $newest = Transaction::where('user_id', auth()->id())->max('due_at');
-
-        $start = $oldest ? Carbon::parse($oldest)->startOfMonth() : now()->startOfMonth();
-        $end = $newest ? Carbon::parse($newest)->startOfMonth() : now()->startOfMonth();
-
-        $periods = [];
-
-        while ($start <= $end) {
-            $key = $start->format('Y-m');
-            $label = $start->format('F Y');
-
-            $periods[$key] = $label;
-
-            $start->addMonth();
-        }
-
-        return collect($periods)->reverse()->toArray();
-    }
-
-    public function updatedFilter(): void
-    {
-        [$year, $month] = $this->filter
-            ? explode('-', $this->filter)
-            : [now()->year, now()->month];
-
-        $this->dispatch('categoryPeriodChanged', [
-            'month' => $month,
-            'year' => $year,
-        ]);
-    }
 }
