@@ -67,8 +67,8 @@
                         @csrf
                     </form>
                 @else
-                    <a href="{{ route('login') }}" class="btn btn-outline-primary">Log in</a>
-                    <a href="{{ route('register') }}" class="btn btn-primary">Get started</a>
+                    <a href="{{ route('login') }}" class="btn btn-sm btn-outline-secondary">Log in</a>
+                    <a href="{{ route('register') }}" class="btn btn-sm btn-primary">Get started</a>
                 @endauth
             </div>
         </div>
