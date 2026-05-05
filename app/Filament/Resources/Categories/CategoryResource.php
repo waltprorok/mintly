@@ -91,12 +91,21 @@ class CategoryResource extends Resource
                 TextColumn::make('spend_classification')
                     ->label('Classification')
                     ->badge()
-                    ->color('gray')
                     ->formatStateUsing(function ($state) {
+                        $state = strtolower($state);
+                        $label = match ($state) {
+                            'discretionary' => 'Wants',
+                            'non_discretionary' => 'Needs',
+                            default => 'Unknown',
+                        };
                         return str($state)
-                            ->replace('_', '-')
-                            ->lower()
-                            ->title();
+                                ->replace('_', ' ')
+                                ->title() . " ({$label})";
+                    })
+                    ->color(fn($state) => match (strtolower($state)) {
+                        'non_discretionary' => 'primary', // Needs
+                        'discretionary' => 'warning',   // Wants
+                        default => 'gray',
                     })
                     ->sortable(),
 
