@@ -12,13 +12,13 @@ use Illuminate\Support\Facades\Mail;
 class SendMonthlyStatsEmails extends Command
 {
     protected $signature = 'app:send-monthly-stats';
-    protected $description = 'Send monthly financial stats to all users';
+    protected $description = 'Send monthly financial summary emails to active users';
 
     public function handle(): bool
     {
         $startedAt = now();
-        $start = now()->startOfMonth();
-        $end = now()->endOfMonth();
+        $start = now()->subMonth()->startOfMonth();
+        $end = now()->subMonth()->endOfMonth();
 
         $this->info("Sending monthly stats from {$start} to {$end}");
 
@@ -33,6 +33,11 @@ class SendMonthlyStatsEmails extends Command
                 $transactions = Transaction::where('user_id', $user->id)
                     ->whereBetween('due_at', [$start, $end])
                     ->get();
+
+                // Skip users with no transactions
+                if ($transactions->isEmpty()) {
+                    continue;
+                }
 
                 $income = $transactions->where('type', 'income')->sum('amount');
                 $expenses = $transactions->where('type', 'expense')->sum('amount');
@@ -66,7 +71,6 @@ class SendMonthlyStatsEmails extends Command
                 );
             }
         });
-
 
         $finishedAt = now();
         $duration = $finishedAt->diffInSeconds($startedAt);
