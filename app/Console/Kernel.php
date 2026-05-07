@@ -17,7 +17,7 @@ class Kernel extends ConsoleKernel
             ->withoutOverlapping();
 
         $schedule->command('app:send-monthly-stats')
-            ->lastDayOfMonth('01:00')
+            ->monthlyOn(1, '08:00')
             ->withoutOverlapping();
     }
 
