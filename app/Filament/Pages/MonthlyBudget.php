@@ -202,21 +202,30 @@ class MonthlyBudget extends Page implements HasTable
 
     protected function getHeaderActions(): array
     {
+        $selected = Carbon::create(
+            $this->getSelectedYear(),
+            $this->getSelectedMonth()
+        );
+
+        $nextPeriod = $selected->copy()->addMonth();
+
+        $nextPeriodLabel = $nextPeriod->format('F Y');
+
         return [
             Action::make('roll_forward')
-                ->label('Prepare Next Period')
+                ->label("Prepare {$nextPeriodLabel}")
                 ->icon('heroicon-o-arrow-right-circle')
                 ->color('success')
                 ->requiresConfirmation()
-                ->modalHeading('Prepare Next Period')
-                ->modalDescription('Recurring transactions will be carried forward based on their frequency.')
+                ->modalHeading("Prepare {$nextPeriodLabel}")
+                ->modalDescription("Recurring transactions will be carried forward into {$nextPeriodLabel} based on their frequency.")
                 ->modalSubmitActionLabel('Prepare')
-                ->action(function () {
+                ->action(function () use ($nextPeriodLabel) {
                     $count = app(RecurringTransactionService::class)
                         ->run(auth()->id(), true);
 
                     Notification::make()
-                        ->title('Next month prepared')
+                        ->title("{$nextPeriodLabel} prepared")
                         ->body("{$count} transactions created.")
                         ->success()
                         ->send();
