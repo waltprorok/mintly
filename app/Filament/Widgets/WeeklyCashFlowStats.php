@@ -9,7 +9,6 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class WeeklyCashFlowStats extends StatsOverviewWidget
 {
-//    protected int|string|array $columnSpan = 'full';
     protected static bool $isDiscovered = false;
 
     protected $listeners = ['updateBudgetStats'];
@@ -56,19 +55,39 @@ class WeeklyCashFlowStats extends StatsOverviewWidget
             ->get()
             ->keyBy('week');
 
+        $currentWeek = null;
+
+        if (
+            $this->month === now()->month &&
+            $this->year === now()->year
+        ) {
+            $currentWeek = (int) ceil(now()->day / 7);
+        }
+
         return collect(range(1, $this->getWeeksInMonth()))
-            ->map(function ($week) use ($weeks) {
+            ->map(function ($week) use ($weeks, $currentWeek) {
 
                 $income = $weeks[$week]->income ?? 0;
                 $expenses = $weeks[$week]->expenses ?? 0;
                 $net = $income - $expenses;
 
-                return Stat::make("Week {$week}", '$' . number_format($net, 2))
+                $isCurrentWeek = $week === $currentWeek;
+
+                return Stat::make(
+                    $isCurrentWeek
+                        ? "Week {$week} • Current"
+                        : "Week {$week}",
+                    '$' . number_format($net, 2)
+                )
                     ->description(
                         '+$' . number_format($income, 2) . ' / -$' . number_format($expenses, 2)
                     )
+                    ->icon(
+                        $isCurrentWeek
+                            ? 'heroicon-m-bolt'
+                            : null
+                    )
                     ->color($net >= 0 ? 'success' : 'danger');
-
             })
             ->toArray();
     }
