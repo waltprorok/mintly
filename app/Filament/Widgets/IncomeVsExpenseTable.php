@@ -4,7 +4,6 @@ namespace App\Filament\Widgets;
 
 use App\Models\Transaction;
 use Carbon\Carbon;
-use Filament\Tables\Columns\Summarizers\Summarizer;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Widgets\TableWidget;
 use Illuminate\Database\Eloquent\Builder;
@@ -72,7 +71,7 @@ class IncomeVsExpenseTable extends TableWidget
             $expensePercent = 0;
             $remainingPercent = 0;
         } elseif ($expenses <= $income) {
-            $expensePercent = round(($expenses / $income) * 100, 1);
+            $expensePercent = round(($expenses / $income) * 100);
             $remainingPercent = 100 - $expensePercent;
         } else {
             $expensePercent = 100;
@@ -97,11 +96,15 @@ class IncomeVsExpenseTable extends TableWidget
         ];
 
         if ($overspent > 0) {
+            $percentOver = $income > 0
+                ? round(($overspent / $income) * 100, 1)
+                : 0;
+
             $rows[] = [
                 'id' => 'overspent',
                 'label' => 'Overspent',
                 'amount' => $overspent,
-                'percent' => null,
+                'percent' => $percentOver,
                 'income' => $income,
             ];
         }
@@ -143,40 +146,22 @@ class IncomeVsExpenseTable extends TableWidget
                 }),
 
             TextColumn::make('percent')
-                ->label('Of Income')
-                ->formatStateUsing(fn($state) => $state !== null ? $state . '%' : '—')
-                ->summarize([
-                    Summarizer::make()
-                        ->label('')
-                        ->formatStateUsing(function () {
-                            $records = $this->getTableRecords();
+                ->label('Income Usage')
+                ->formatStateUsing(function ($state, $record) {
+                    if ($state === null) {
+                        return '—';
+                    }
 
-                            $overspent = $records->firstWhere('id', 'overspent');
+                    $formatted = $state . '%';
 
-                            if ($overspent) {
-                                $income = $overspent['income'] ?? 1;
-                                $percentOver = $income > 0
-                                    ? round(($overspent['amount'] / $income) * 100, 1)
-                                    : 0;
+                    if ($record['id'] === 'overspent') {
+                        return new HtmlString(
+                            "<span style='color:#ef4444;font-weight:600;'>{$formatted}</span>"
+                        );
+                    }
 
-                                return new HtmlString(
-                                    "<strong style='color:#ef4444'>
-                                            Overspent $" . number_format($overspent['amount'], 2) . "
-                                            ({$percentOver}% over)
-                                        </strong>"
-                                );
-                            }
-
-                            $expenses = $records->firstWhere('id', 'expenses')['percent'] ?? 0;
-                            $remaining = $records->firstWhere('id', 'remaining')['percent'] ?? 0;
-
-                            return new HtmlString(
-                                "<span style='color:#6b7280;'>
-                                        {$expenses}% used {$remaining}% remaining
-                                    </span>"
-                            );
-                        }),
-                ])
+                    return $formatted;
+                }),
         ];
     }
 
