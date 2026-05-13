@@ -92,8 +92,8 @@
                 </p>
 
                 <div class="d-flex flex-wrap gap-2 mb-3">
-                    <a href="{{ route('register') }}" class="btn btn-primary btn-lg">Create your account</a>
-                    <a href="#features" class="btn btn-outline-secondary btn-lg">See features</a>
+                    <a href="{{ route('register') }}" class="btn btn-primary">Create your account</a>
+                    <a href="#features" class="btn btn-outline-secondary">See features</a>
                 </div>
 
                 <div class="d-flex flex-wrap gap-3 text-secondary small">
