@@ -83,7 +83,6 @@ class BudgetStats extends StatsOverviewWidget
         $paidExpenses = Transaction::query()
             ->where('user_id', $userId)
             ->where('type', 'expense')
-            ->where('recurring_rule', '!=', 'once')
             ->where('is_paid', true)
             ->whereMonth('due_at', $month)
             ->whereYear('due_at', $year)
@@ -92,7 +91,6 @@ class BudgetStats extends StatsOverviewWidget
         $unpaidExpenses = Transaction::query()
             ->where('user_id', $userId)
             ->where('type', 'expense')
-            ->where('recurring_rule', '!=', 'once')
             ->where('is_paid', false)
             ->whereMonth('due_at', $month)
             ->whereYear('due_at', $year)
@@ -175,13 +173,13 @@ class BudgetStats extends StatsOverviewWidget
                 ->color($netColor),
 
             // Paid bills
-            Stat::make('Recurring Bills Paid', '$' . number_format($paidExpenses, 2))
+            Stat::make('Bills Paid', '$' . number_format($paidExpenses, 2))
                 ->description($paidPercent . '% of expenses paid')
                 ->descriptionIcon('heroicon-m-check-circle')
                 ->color('success'),
 
             // Outstanding
-            Stat::make('Outstanding Recurring Bills', '$' . number_format($unpaidExpenses, 2))
+            Stat::make('Recurring Bills', '$' . number_format($unpaidExpenses, 2))
                 ->description($unpaidPercent . '% remaining')
                 ->descriptionIcon('heroicon-m-clock')
                 ->color('warning'),
