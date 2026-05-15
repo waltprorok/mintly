@@ -101,16 +101,6 @@ class CategoryBreakdownTable extends TableWidget
             TextColumn::make('category_name')
                 ->label('Category'),
 
-            TextColumn::make('classification')
-                ->label('Type')
-                ->formatStateUsing(function ($state) {
-                    return match ($state) {
-                        'non_discretionary' => new HtmlString("<span style='font-weight:300;'>Needs</span>"),
-                        'discretionary' => new HtmlString("<span style='color:#f59e0b;font-weight:600;'>Wants</span>"),
-                        default => new HtmlString("<span style='color:#9ca3af;'>Unknown</span>"),
-                    };
-                }),
-
             TextColumn::make('total')
                 ->label('Amount')
                 ->money('USD'),
@@ -163,6 +153,16 @@ class CategoryBreakdownTable extends TableWidget
                             return $formatted;
                         })
                 ]),
+
+            TextColumn::make('classification')
+                ->label('Type')
+                ->formatStateUsing(function ($state) {
+                    return match ($state) {
+                        'non_discretionary' => new HtmlString("<span style='font-weight:300;'>Needs</span>"),
+                        'discretionary' => new HtmlString("<span style='color:#f59e0b;font-weight:600;'>Wants</span>"),
+                        default => new HtmlString("<span style='color:#9ca3af;'>Unknown</span>"),
+                    };
+                }),
         ];
     }
 

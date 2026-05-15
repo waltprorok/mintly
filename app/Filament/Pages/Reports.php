@@ -4,8 +4,10 @@ namespace App\Filament\Pages;
 
 use App\Filament\Widgets\CategoryBreakdownChart;
 use App\Filament\Widgets\CategoryBreakdownTable;
+use App\Filament\Widgets\ExpensePaymentMethodChart;
 use App\Filament\Widgets\IncomeVsExpenseChart;
 use App\Filament\Widgets\IncomeVsExpenseTable;
+use App\Filament\Widgets\MonthlySavingsRateChart;
 use App\Filament\Widgets\TopSpendingCategoriesChart;
 use App\Filament\Widgets\TransactionsOverTimeChart;
 use App\Filament\Widgets\WantsVsNeedsChart;
@@ -32,6 +34,8 @@ class Reports extends Page
             CategoryBreakdownTable::class,
             TopSpendingCategoriesChart::class,
             WantsVsNeedsChart::class,
+            ExpensePaymentMethodChart::class,
+            MonthlySavingsRateChart::class,
             TransactionsOverTimeChart::class,
         ];
     }

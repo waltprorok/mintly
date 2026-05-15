@@ -88,9 +88,18 @@ class WantsVsNeedsChart extends ChartWidget
                 ],
             ],
             'labels' => [
-                "Needs ({$needsPercent}%)",
-                "Wants ({$wantsPercent}%)",
-                "Unknown ({$unknownPercent}%)",
+                [
+                    "Needs ({$needsPercent}%)",
+                    '$' . number_format($needs, 2),
+                ],
+                [
+                    "Wants ({$wantsPercent}%)",
+                    '$' . number_format($wants, 2),
+                ],
+                [
+                    "Unknown ({$unknownPercent}%)",
+                    '$' . number_format($unknown, 2),
+                ],
             ],
         ];
     }
