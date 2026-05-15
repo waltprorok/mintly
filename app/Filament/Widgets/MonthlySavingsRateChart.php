@@ -102,7 +102,6 @@ class MonthlySavingsRateChart extends ChartWidget
                     'backgroundColor' => 'rgba(59,130,246,0.15)',
                     'tension' => 0.3,
                     'borderWidth' => 5,
-
                 ],
             ],
             'labels' => $labels,
