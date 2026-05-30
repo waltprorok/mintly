@@ -24,10 +24,15 @@ class BudgetStats extends StatsOverviewWidget
         $this->year = now()->year;
     }
 
-    public function updateBudgetStats($month, $year): void
+    public function updateBudgetStats(?int $month = null, ?int $year = null): void
     {
-        $this->month = $month;
-        $this->year = $year;
+        if ($month !== null) {
+            $this->month = $month;
+        }
+
+        if ($year !== null) {
+            $this->year = $year;
+        }
     }
 
     protected function getColumns(): int

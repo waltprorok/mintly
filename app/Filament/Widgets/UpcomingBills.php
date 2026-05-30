@@ -19,6 +19,15 @@ class UpcomingBills extends TableWidget
 
     protected static ?int $sort = 10;
 
+    protected $listeners = [
+        'updateBudgetStats' => 'refreshStats',
+    ];
+
+    public function refreshStats(): void
+    {
+        //
+    }
+
     public function table(Table $table): Table
     {
         return $table
@@ -70,8 +79,11 @@ class UpcomingBills extends TableWidget
 
                 ToggleColumn::make('is_paid')
                     ->label('Paid')
-                    ->onColor('success')   // green when true
-                    ->offColor('gray') ,    // gray when false
+                    ->onColor('success')  // green when true
+                    ->offColor('gray')   // gray when false
+                    ->afterStateUpdated(function () {
+                        $this->dispatch('updateBudgetStats');
+                    }),
             ])
             ->defaultPaginationPageOption(10);
     }
