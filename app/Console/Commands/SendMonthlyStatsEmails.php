@@ -51,7 +51,7 @@ class SendMonthlyStatsEmails extends Command
                 // Bills Paid %
                 $paidExpenses = $transactions
                     ->where('type', 'expense')
-                    ->whereNotNull('paid_at') // adjust if using 'status' instead
+                    ->where('is_paid', true)
                     ->sum('amount');
 
                 $billsPaidPercent = $expenses > 0
