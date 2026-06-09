@@ -13,7 +13,7 @@ use Illuminate\Support\HtmlString;
 
 class UpcomingBills extends TableWidget
 {
-    protected static ?string $heading = 'Upcoming Bills This Week';
+//    protected static ?string $heading = 'Upcoming Bills This Week';
 
     protected int|string|array $columnSpan = 1;
 
@@ -26,6 +26,11 @@ class UpcomingBills extends TableWidget
     public function refreshStats(): void
     {
         //
+    }
+
+    public function getTableHeading(): string
+    {
+        return 'Upcoming Bills This Week | Today ' . now()->format('M j');
     }
 
     public function table(Table $table): Table
