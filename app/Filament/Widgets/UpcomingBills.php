@@ -13,8 +13,6 @@ use Illuminate\Support\HtmlString;
 
 class UpcomingBills extends TableWidget
 {
-//    protected static ?string $heading = 'Upcoming Bills This Week';
-
     protected int|string|array $columnSpan = 1;
 
     protected static ?int $sort = 10;
