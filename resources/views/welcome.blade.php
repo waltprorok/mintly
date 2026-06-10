@@ -80,10 +80,12 @@
     <div class="container">
         <div class="row align-items-center g-4">
             <div class="col-lg-6">
-                <span class="badge bg-success-subtle text-success mb-3">Mintly • Cash Flow Planner</span>
+               <span class="badge rounded-pill px-3 py-2" style="background:#ecfdf5; color:#059669;">Mintly • Cash Flow Planner</span>
 
                 <h1 class="display-5 fw-bold lh-1 mb-3">
-                    Take control of your money — one week at a time.
+                    Take control of your
+                    <span class="text-success">cash flow</span>
+                    one week at a time.
                 </h1>
 
                 <p class="lead text-secondary mb-4">
@@ -113,7 +115,7 @@
             </div>
 
             <div class="col-lg-6">
-                <div class="card shadow-sm border-0">
+                <div class="card border-0 shadow-lg rounded-4">
                     <div class="card-body p-4">
                         <div class="d-flex align-items-center justify-content-between mb-3">
                             <div>
@@ -125,19 +127,19 @@
 
                         <div class="row g-3 mb-3">
                             <div class="col-6">
-                                <div class="p-3 rounded bg-light border">
+                                <div class="p-3 rounded-3 bg-light border" >
                                     <div class="text-secondary small">Income</div>
                                     <div class="h5 mb-0">$4,725</div>
                                 </div>
                             </div>
                             <div class="col-6">
-                                <div class="p-3 rounded bg-light border">
+                                <div class="p-3 rounded-3 border" style="background:#fef2f2;">
                                     <div class="text-secondary small">Expenses</div>
                                     <div class="h5 mb-0">$3,625</div>
                                 </div>
                             </div>
                             <div class="col-12">
-                                <div class="p-3 rounded bg-light border">
+                                <div class="p-3 rounded-3 border" style="background:#f0fdf4;">
                                     <div class="text-secondary small">Net Remaining</div>
                                     <div class="h4 mb-0 text-success">$1,099</div>
                                 </div>
@@ -161,17 +163,14 @@
                                 </div>
                             </div>
                         </div>
-
-                        <div class="d-flex gap-2">
-                            <a href="{{ route('login') }}" class="btn btn-outline-primary w-100">Log in</a>
-                            <a href="{{ route('register') }}" class="btn btn-primary w-100">Start free</a>
-                        </div>
                     </div>
                 </div>
 
-                <p class="text-center text-secondary small mt-3 mb-0">
-                    “I finally understand my monthly cash flow.” — A Mintly user
-                </p>
+                <div class="bg-light rounded-4 p-3 mt-3 text-center">
+                    <div class="small">
+                        “I finally understand my monthly cash flow and can plan ahead.”
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -646,24 +645,24 @@
                 </p>
 
                 <!-- Social -->
-{{--                <div class="d-flex gap-3 justify-content-center justify-content-md-start">--}}
-{{--                    <a href="#" class="d-flex align-items-center justify-content-center rounded-circle bg-secondary bg-opacity-25 text-light"--}}
-{{--                       style="width:40px; height:40px;">--}}
-{{--                        <i class="bi bi-twitter"></i>--}}
-{{--                    </a>--}}
-{{--                    <a href="#" class="d-flex align-items-center justify-content-center rounded-circle bg-secondary bg-opacity-25 text-light"--}}
-{{--                       style="width:40px; height:40px;">--}}
-{{--                        <i class="bi bi-facebook"></i>--}}
-{{--                    </a>--}}
-{{--                    <a href="#" class="d-flex align-items-center justify-content-center rounded-circle bg-secondary bg-opacity-25 text-light"--}}
-{{--                       style="width:40px; height:40px;">--}}
-{{--                        <i class="bi bi-instagram"></i>--}}
-{{--                    </a>--}}
-{{--                    <a href="mailto:support@mintlybudget.com" class="d-flex align-items-center justify-content-center rounded-circle bg-secondary bg-opacity-25 text-light"--}}
-{{--                       style="width:40px; height:40px;">--}}
-{{--                        <i class="bi bi-envelope"></i>--}}
-{{--                    </a>--}}
-{{--                </div>--}}
+                {{--                <div class="d-flex gap-3 justify-content-center justify-content-md-start">--}}
+                {{--                    <a href="#" class="d-flex align-items-center justify-content-center rounded-circle bg-secondary bg-opacity-25 text-light"--}}
+                {{--                       style="width:40px; height:40px;">--}}
+                {{--                        <i class="bi bi-twitter"></i>--}}
+                {{--                    </a>--}}
+                {{--                    <a href="#" class="d-flex align-items-center justify-content-center rounded-circle bg-secondary bg-opacity-25 text-light"--}}
+                {{--                       style="width:40px; height:40px;">--}}
+                {{--                        <i class="bi bi-facebook"></i>--}}
+                {{--                    </a>--}}
+                {{--                    <a href="#" class="d-flex align-items-center justify-content-center rounded-circle bg-secondary bg-opacity-25 text-light"--}}
+                {{--                       style="width:40px; height:40px;">--}}
+                {{--                        <i class="bi bi-instagram"></i>--}}
+                {{--                    </a>--}}
+                {{--                    <a href="mailto:support@mintlybudget.com" class="d-flex align-items-center justify-content-center rounded-circle bg-secondary bg-opacity-25 text-light"--}}
+                {{--                       style="width:40px; height:40px;">--}}
+                {{--                        <i class="bi bi-envelope"></i>--}}
+                {{--                    </a>--}}
+                {{--                </div>--}}
             </div>
 
             <!-- Links Wrapper -->
