@@ -12,8 +12,7 @@ class CategoryTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
-    public function it_filters_income_and_expense_categories()
+    public function test_it_filters_income_and_expense_categories()
     {
         Category::factory()->create(['type' => 'income']);
         Category::factory()->create(['type' => 'expense']);
@@ -22,8 +21,7 @@ class CategoryTest extends TestCase
         $this->assertCount(1, Category::expense()->get());
     }
 
-    /** @test */
-    public function it_filters_discretionary_and_non_discretionary_categories()
+    public function test_it_filters_discretionary_and_non_discretionary_categories()
     {
         Category::factory()->create(['spend_classification' => 'discretionary']);
         Category::factory()->create(['spend_classification' => 'non_discretionary']);
@@ -32,8 +30,7 @@ class CategoryTest extends TestCase
         $this->assertCount(1, Category::nonDiscretionary()->get());
     }
 
-    /** @test */
-    public function it_belongs_to_user()
+    public function test_it_belongs_to_user()
     {
         $user = User::factory()->create();
 
@@ -44,8 +41,7 @@ class CategoryTest extends TestCase
         $this->assertTrue($category->user->is($user));
     }
 
-    /** @test */
-    public function it_has_many_transactions()
+    public function test_it_has_many_transactions()
     {
         $category = Category::factory()->create();
 

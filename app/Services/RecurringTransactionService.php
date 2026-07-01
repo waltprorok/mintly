@@ -3,17 +3,25 @@
 namespace App\Services;
 
 use App\Models\Transaction;
+use Carbon\Carbon;
 
 class RecurringTransactionService
 {
-    public function run(int $userId, bool $nextMonthOnly = false): int
+    public function run(
+        int $userId,
+        bool $nextMonthOnly = false,
+        ?Carbon $referenceDate = null
+    ): int
     {
-        $now = now();
-        $nextMonth = $now->copy()->addMonth();
+        $referenceDate ??= now();
+
+        $now = $referenceDate;
+
+        $nextMonth = $referenceDate->copy()->addMonth();
 
         $targetEnd = $nextMonthOnly
             ? $nextMonth->copy()->endOfMonth()
-            : $now->copy()->endOfMonth();
+            : $referenceDate->copy()->endOfMonth();
 
         $transactions = Transaction::query()
             ->where('user_id', $userId)

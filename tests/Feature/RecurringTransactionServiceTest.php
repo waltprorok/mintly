@@ -24,8 +24,7 @@ class RecurringTransactionServiceTest extends TestCase
         $this->service = new RecurringTransactionService();
     }
 
-    /** @test */
-    public function it_creates_next_month_transaction_for_monthly_rule()
+    public function test_it_creates_next_month_transaction_for_monthly_rule()
     {
         $user = User::factory()->create();
 
@@ -60,8 +59,7 @@ class RecurringTransactionServiceTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function it_does_not_duplicate_existing_transaction_in_same_week()
+    public function test_it_does_not_duplicate_existing_transaction_in_same_week()
     {
         $user = User::factory()->create();
 
@@ -91,8 +89,7 @@ class RecurringTransactionServiceTest extends TestCase
         $this->assertEquals(0, $created);
     }
 
-    /** @test */
-    public function it_does_not_modify_existing_is_paid_status()
+    public function test_it_does_not_modify_existing_is_paid_status()
     {
         $user = User::factory()->create();
 
@@ -116,8 +113,7 @@ class RecurringTransactionServiceTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function it_skips_future_transactions_when_not_next_month_mode()
+    public function test_it_skips_future_transactions_when_not_next_month_mode()
     {
         $user = User::factory()->create();
 
@@ -137,8 +133,7 @@ class RecurringTransactionServiceTest extends TestCase
         $this->assertEquals(0, $created);
     }
 
-    /** @test */
-    public function it_handles_biweekly_transactions_correctly()
+    public function test_it_handles_biweekly_transactions_correctly()
     {
         $user = User::factory()->create();
 
