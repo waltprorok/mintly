@@ -221,8 +221,18 @@ class MonthlyBudget extends Page implements HasTable
                 ->modalDescription("Recurring transactions will be carried forward into {$nextPeriodLabel} based on their frequency.")
                 ->modalSubmitActionLabel('Prepare')
                 ->action(function () use ($nextPeriodLabel) {
+                    $referenceDate = Carbon::create(
+                        $this->getSelectedYear(),
+                        $this->getSelectedMonth(),
+                        1
+                    );
+
                     $count = app(RecurringTransactionService::class)
-                        ->run(auth()->id(), true);
+                        ->run(
+                            auth()->id(),
+                            true,
+                            $referenceDate
+                        );
 
                     Notification::make()
                         ->title("{$nextPeriodLabel} prepared")
