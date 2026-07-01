@@ -13,8 +13,7 @@ class TransactionTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
-    public function it_filters_income_transactions()
+    public function test_it_filters_income_transactions()
     {
         Transaction::factory()->create(['type' => 'income']);
         Transaction::factory()->create(['type' => 'expense']);
@@ -22,8 +21,7 @@ class TransactionTest extends TestCase
         $this->assertCount(1, Transaction::income()->get());
     }
 
-    /** @test */
-    public function it_filters_expense_transactions()
+    public function test_it_filters_expense_transactions()
     {
         Transaction::factory()->create(['type' => 'income']);
         Transaction::factory()->create(['type' => 'expense']);
@@ -31,8 +29,7 @@ class TransactionTest extends TestCase
         $this->assertCount(1, Transaction::expense()->get());
     }
 
-    /** @test */
-    public function it_filters_paid_and_unpaid_transactions()
+    public function test_it_filters_paid_and_unpaid_transactions()
     {
         Transaction::factory()->create(['is_paid' => true]);
         Transaction::factory()->create(['is_paid' => false]);
@@ -41,8 +38,7 @@ class TransactionTest extends TestCase
         $this->assertCount(1, Transaction::unpaid()->get());
     }
 
-    /** @test */
-    public function it_identifies_income_and_expense_helpers()
+    public function test_it_identifies_income_and_expense_helpers()
     {
         $income = Transaction::factory()->create(['type' => 'income']);
         $expense = Transaction::factory()->create(['type' => 'expense']);
@@ -54,8 +50,7 @@ class TransactionTest extends TestCase
         $this->assertFalse($expense->isIncome());
     }
 
-    /** @test */
-    public function it_casts_attributes_correctly()
+    public function test_it_casts_attributes_correctly()
     {
         $transaction = Transaction::factory()->create([
             'amount' => 123.45,
@@ -68,8 +63,7 @@ class TransactionTest extends TestCase
         $this->assertIsBool($transaction->is_paid);
     }
 
-    /** @test */
-    public function it_belongs_to_user_and_category()
+    public function test_it_belongs_to_user_and_category()
     {
         $user = User::factory()->create();
         $category = Category::factory()->create(['user_id' => $user->id]);
