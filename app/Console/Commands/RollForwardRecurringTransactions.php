@@ -11,7 +11,8 @@ use Throwable;
 class RollForwardRecurringTransactions extends Command
 {
     protected $signature = 'app:roll-forward-recurring-transactions';
-    protected $description = 'Backfill recurring transactions for all users';
+
+    protected $description = 'Prepare next month recurring transactions for all users';
 
     public function handle(): void
     {
@@ -19,30 +20,53 @@ class RollForwardRecurringTransactions extends Command
 
         $users = User::all();
 
-        $this->info("Processing {$users->count()} users");
+        $referenceDate = now()->startOfMonth();
+
+        $targetPeriod = $referenceDate
+            ->copy()
+            ->addMonthNoOverflow()
+            ->format('F Y');
+
+        $this->info(
+            "Processing {$users->count()} users for {$targetPeriod}"
+        );
 
         foreach ($users as $user) {
             try {
+                $created = $service->run(
+                    userId: $user->id,
+                    nextMonthOnly: true,
+                    referenceDate: $referenceDate,
+                );
 
-                $created = $service->run($user->id, false);
+                $this->line(
+                    "User {$user->id}: {$created} created"
+                );
 
-                $this->line("User {$user->id}: {$created} created");
-
-                Log::info('User processed', [
+                Log::info('Recurring transactions prepared', [
                     'user_id' => $user->id,
+                    'source_period' => $referenceDate->format('Y-m'),
+                    'target_period' => $referenceDate
+                        ->copy()
+                        ->addMonthNoOverflow()
+                        ->format('Y-m'),
                     'created' => $created,
                 ]);
-
             } catch (Throwable $e) {
-
-                Log::error('Recurring transaction failed for user', [
-                    'user_id' => $user->id,
-                    'error' => $e->getMessage(),
-                ]);
+                Log::error(
+                    'Recurring transaction preparation failed',
+                    [
+                        'user_id' => $user->id,
+                        'source_period' => $referenceDate->format('Y-m'),
+                        'target_period' => $referenceDate
+                            ->copy()
+                            ->addMonthNoOverflow()
+                            ->format('Y-m'),
+                        'error' => $e->getMessage(),
+                    ]
+                );
 
                 $this->error("User {$user->id} failed");
-
-                continue;
             }
         }
 

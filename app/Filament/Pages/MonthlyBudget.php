@@ -202,12 +202,14 @@ class MonthlyBudget extends Page implements HasTable
 
     protected function getHeaderActions(): array
     {
-        $selected = Carbon::create(
+        $selectedPeriod = Carbon::create(
             $this->getSelectedYear(),
             $this->getSelectedMonth()
-        );
+        )->startOfDay();
 
-        $nextPeriod = $selected->copy()->addMonth();
+        $nextPeriod = $selectedPeriod
+            ->copy()
+            ->addMonthNoOverflow();
 
         $nextPeriodLabel = $nextPeriod->format('F Y');
 
@@ -218,21 +220,16 @@ class MonthlyBudget extends Page implements HasTable
                 ->color('success')
                 ->requiresConfirmation()
                 ->modalHeading("Prepare {$nextPeriodLabel}")
-                ->modalDescription("Recurring transactions will be carried forward into {$nextPeriodLabel} based on their frequency.")
+                ->modalDescription(
+                    "Recurring transactions will be carried forward into {$nextPeriodLabel} based on their frequency."
+                )
                 ->modalSubmitActionLabel('Prepare')
-                ->action(function () use ($nextPeriodLabel) {
-                    $referenceDate = Carbon::create(
-                        $this->getSelectedYear(),
-                        $this->getSelectedMonth(),
-                        1
+                ->action(function () use ($selectedPeriod, $nextPeriodLabel) {
+                    $count = app(RecurringTransactionService::class)->run(
+                        userId: auth()->id(),
+                        nextMonthOnly: true,
+                        referenceDate: $selectedPeriod,
                     );
-
-                    $count = app(RecurringTransactionService::class)
-                        ->run(
-                            auth()->id(),
-                            true,
-                            $referenceDate
-                        );
 
                     Notification::make()
                         ->title("{$nextPeriodLabel} prepared")
