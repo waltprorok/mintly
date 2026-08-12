@@ -61,6 +61,13 @@ class RecurringTransactionService
                         )
                     ),
 
+                    'semiannually' => tap(
+                        $currentDate->copy()->addMonthsNoOverflow(6),
+                        fn(Carbon $date) => $date->day(
+                            min($day, $date->copy()->endOfMonth()->day)
+                        )
+                    ),
+
                     'yearly' => tap(
                         $currentDate->copy()->addYearNoOverflow(),
                         fn(Carbon $date) => $date->day(

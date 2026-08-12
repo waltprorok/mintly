@@ -90,6 +90,7 @@ class TransactionResource extends Resource
                     'biweekly' => 'Bi-Weekly',
                     'monthly' => 'Monthly',
                     'quarterly' => 'Quarterly',
+                    'semiannually' => 'Every Six Months',
                     'yearly' => 'Yearly',
                 ])
                 ->default('once')
