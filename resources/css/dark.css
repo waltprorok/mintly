@@ -1,9 +1,9 @@
 /* =========================================================
    MINTLY DARK MODE
-   Works with existing Bootstrap 5 markup/layout
+   Only applies when: <html data-bs-theme="dark">
    ========================================================= */
 
-:root {
+html[data-bs-theme="dark"] {
     --mintly-bg: #080d0c;
     --mintly-bg-soft: #0d1412;
     --mintly-surface: #111a17;
@@ -30,6 +30,8 @@
 
     --bs-secondary-color: var(--mintly-muted);
     --bs-border-color: var(--mintly-border);
+
+    scroll-behavior: smooth;
 }
 
 
@@ -37,11 +39,7 @@
    GLOBAL
    ========================================================= */
 
-html {
-    scroll-behavior: smooth;
-}
-
-body {
+html[data-bs-theme="dark"] body {
     background: radial-gradient(
         circle at 15% 10%,
         rgba(16, 185, 129, 0.08),
@@ -57,37 +55,36 @@ body {
     color: var(--mintly-text);
 }
 
-::selection {
+html[data-bs-theme="dark"] ::selection {
     background: rgba(52, 211, 153, 0.3);
     color: #fff;
 }
 
-.text-secondary,
-.text-muted {
+html[data-bs-theme="dark"] .text-secondary,
+html[data-bs-theme="dark"] .text-muted {
     color: var(--mintly-muted) !important;
 }
 
-.border-top,
-.border-bottom,
-.border {
+html[data-bs-theme="dark"] .border-top,
+html[data-bs-theme="dark"] .border-bottom,
+html[data-bs-theme="dark"] .border {
     border-color: var(--mintly-border) !important;
 }
 
 
 /* =========================================================
    BACKGROUND OVERRIDES
-   Allows existing bg-light / bg-white classes to stay
    ========================================================= */
 
-.bg-white {
+html[data-bs-theme="dark"] .bg-white {
     background-color: var(--mintly-bg-soft) !important;
 }
 
-.bg-light {
+html[data-bs-theme="dark"] .bg-light {
     background-color: var(--mintly-bg) !important;
 }
 
-.bg-dark {
+html[data-bs-theme="dark"] .bg-dark {
     background-color: #060a09 !important;
 }
 
@@ -96,8 +93,9 @@ body {
    NAVIGATION
    ========================================================= */
 
-.navbar {
+html[data-bs-theme="dark"] .navbar {
     background: rgba(8, 13, 12, 0.92) !important;
+
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
 
@@ -111,31 +109,33 @@ body {
     z-index: 1030;
 }
 
-.navbar-brand {
+html[data-bs-theme="dark"] .navbar-brand {
     color: #fff !important;
     letter-spacing: -0.03em;
 }
 
-.navbar-brand::first-letter {
+html[data-bs-theme="dark"] .navbar-brand::first-letter {
     color: var(--mintly-green);
 }
 
-.navbar .nav-link {
+html[data-bs-theme="dark"] .navbar .nav-link {
     color: var(--mintly-muted) !important;
+
     transition: color 0.2s ease,
     transform 0.2s ease;
 }
 
-.navbar .nav-link:hover {
+html[data-bs-theme="dark"] .navbar .nav-link:hover {
     color: var(--mintly-green-bright) !important;
     transform: translateY(-1px);
 }
+
 
 /* =========================================================
    HERO
    ========================================================= */
 
-header.bg-white {
+html[data-bs-theme="dark"] header.bg-white {
     position: relative;
     overflow: hidden;
 
@@ -156,9 +156,10 @@ header.bg-white {
     ) !important;
 }
 
-header.bg-white::before {
+html[data-bs-theme="dark"] header.bg-white::before {
     content: "";
     position: absolute;
+
     width: 420px;
     height: 420px;
 
@@ -174,34 +175,34 @@ header.bg-white::before {
     pointer-events: none;
 }
 
-header .container {
+html[data-bs-theme="dark"] header .container {
     position: relative;
     z-index: 1;
 }
 
-header h1 {
+html[data-bs-theme="dark"] header h1 {
     color: #fff;
     letter-spacing: -0.05em;
     text-wrap: balance;
 }
 
-header .display-5 {
+html[data-bs-theme="dark"] header .display-5 {
     font-size: clamp(2.7rem, 5vw, 4.5rem);
 }
 
-header .lead {
+html[data-bs-theme="dark"] header .lead {
     color: #9caeaa !important;
     max-width: 620px;
 }
 
-header .text-success {
+html[data-bs-theme="dark"] header .text-success {
     color: var(--mintly-green) !important;
 }
 
 
 /* Mintly pill */
 
-header .badge[style] {
+html[data-bs-theme="dark"] header .badge[style] {
     background: rgba(16, 185, 129, 0.1) !important;
     color: var(--mintly-green-bright) !important;
 
@@ -216,7 +217,7 @@ header .badge[style] {
    BUTTONS
    ========================================================= */
 
-.btn {
+html[data-bs-theme="dark"] .btn {
     border-radius: 0.65rem;
     font-weight: 600;
 
@@ -226,11 +227,11 @@ header .badge[style] {
     border-color 0.2s ease;
 }
 
-.btn:hover {
+html[data-bs-theme="dark"] .btn:hover {
     transform: translateY(-2px);
 }
 
-.btn-primary {
+html[data-bs-theme="dark"] .btn-primary {
     background: linear-gradient(
         135deg,
         #10b981,
@@ -238,14 +239,13 @@ header .badge[style] {
     );
 
     border-color: #10b981;
-
     color: #fff;
 
     box-shadow: 0 8px 25px rgba(16, 185, 129, 0.16);
 }
 
-.btn-primary:hover,
-.btn-primary:focus {
+html[data-bs-theme="dark"] .btn-primary:hover,
+html[data-bs-theme="dark"] .btn-primary:focus {
     background: linear-gradient(
         135deg,
         #34d399,
@@ -257,23 +257,23 @@ header .badge[style] {
     box-shadow: 0 10px 32px rgba(16, 185, 129, 0.25);
 }
 
-.btn-outline-primary {
+html[data-bs-theme="dark"] .btn-outline-primary {
     border-color: rgba(52, 211, 153, 0.5);
     color: var(--mintly-green-bright);
 }
 
-.btn-outline-primary:hover {
+html[data-bs-theme="dark"] .btn-outline-primary:hover {
     color: #06100d;
     background: var(--mintly-green);
     border-color: var(--mintly-green);
 }
 
-.btn-outline-secondary {
+html[data-bs-theme="dark"] .btn-outline-secondary {
     color: #c2cecb;
     border-color: rgba(255, 255, 255, 0.14);
 }
 
-.btn-outline-secondary:hover {
+html[data-bs-theme="dark"] .btn-outline-secondary:hover {
     background: rgba(255, 255, 255, 0.07);
     color: #fff;
     border-color: rgba(255, 255, 255, 0.25);
@@ -284,7 +284,7 @@ header .badge[style] {
    CARDS
    ========================================================= */
 
-.card {
+html[data-bs-theme="dark"] .card {
     background: linear-gradient(
         145deg,
         rgba(23, 34, 30, 0.96),
@@ -302,7 +302,7 @@ header .badge[style] {
     box-shadow 0.25s ease;
 }
 
-.card:hover {
+html[data-bs-theme="dark"] .card:hover {
     transform: translateY(-4px);
 
     border-color: rgba(52, 211, 153, 0.2) !important;
@@ -316,7 +316,7 @@ header .badge[style] {
    MONTHLY SNAPSHOT
    ========================================================= */
 
-header .card.rounded-4 {
+html[data-bs-theme="dark"] header .card.rounded-4 {
     position: relative;
 
     background: linear-gradient(
@@ -329,12 +329,11 @@ header .card.rounded-4 {
     0 0 80px rgba(16, 185, 129, 0.055) !important;
 }
 
-header .card.rounded-4::before {
+html[data-bs-theme="dark"] header .card.rounded-4::before {
     content: "";
     position: absolute;
 
     inset: 0;
-
     padding: 1px;
 
     border-radius: inherit;
@@ -357,47 +356,47 @@ header .card.rounded-4::before {
 }
 
 
-/* Override the inline light snapshot boxes */
+/* Inline light snapshot boxes */
 
-header .card .bg-light,
-header .card [style*="background:#fef2f2"],
-header .card [style*="background:#f0fdf4"] {
+html[data-bs-theme="dark"] header .card .bg-light,
+html[data-bs-theme="dark"] header .card [style*="background:#fef2f2"],
+html[data-bs-theme="dark"] header .card [style*="background:#f0fdf4"] {
     background: rgba(255, 255, 255, 0.035) !important;
     border-color: rgba(255, 255, 255, 0.07) !important;
 }
 
-header .card [style*="background:#f0fdf4"] {
+html[data-bs-theme="dark"] header .card [style*="background:#f0fdf4"] {
     background: rgba(16, 185, 129, 0.08) !important;
     border-color: rgba(52, 211, 153, 0.15) !important;
 }
 
-header .card [style*="background:#fef2f2"] {
+html[data-bs-theme="dark"] header .card [style*="background:#fef2f2"] {
     background: rgba(248, 113, 113, 0.05) !important;
 }
 
-header .card .h4,
-header .card .h5 {
+html[data-bs-theme="dark"] header .card .h4,
+html[data-bs-theme="dark"] header .card .h5 {
     color: #fff;
 }
 
 
 /* Spending list */
 
-.list-group-item {
+html[data-bs-theme="dark"] .list-group-item {
     background: rgba(255, 255, 255, 0.025);
     color: #dce5e2;
 
     border-color: rgba(255, 255, 255, 0.065);
 }
 
-.list-group-item:hover {
+html[data-bs-theme="dark"] .list-group-item:hover {
     background: rgba(52, 211, 153, 0.045);
 }
 
 
-/* testimonial */
+/* Testimonial */
 
-header .col-lg-6 > .bg-light.rounded-4 {
+html[data-bs-theme="dark"] header .col-lg-6 > .bg-light.rounded-4 {
     background: rgba(16, 185, 129, 0.05) !important;
 
     color: #a9bbb6;
@@ -410,16 +409,16 @@ header .col-lg-6 > .bg-light.rounded-4 {
    SECTIONS
    ========================================================= */
 
-section {
+html[data-bs-theme="dark"] section {
     position: relative;
 }
 
-section h2 {
+html[data-bs-theme="dark"] section h2 {
     color: #fff;
     letter-spacing: -0.035em;
 }
 
-#features {
+html[data-bs-theme="dark"] #features {
     background: radial-gradient(
         circle at 90% 15%,
         rgba(16, 185, 129, 0.05),
@@ -427,8 +426,8 @@ section h2 {
     );
 }
 
-#how-it-works,
-#pricing {
+html[data-bs-theme="dark"] #how-it-works,
+html[data-bs-theme="dark"] #pricing {
     background: linear-gradient(
         180deg,
         rgba(14, 22, 19, 0.65),
@@ -441,11 +440,11 @@ section h2 {
    HOW IT WORKS
    ========================================================= */
 
-#how-it-works .card {
+html[data-bs-theme="dark"] #how-it-works .card {
     overflow: hidden;
 }
 
-#how-it-works .card::after {
+html[data-bs-theme="dark"] #how-it-works .card::after {
     content: "";
     position: absolute;
 
@@ -462,11 +461,11 @@ section h2 {
     filter: blur(2px);
 }
 
-#how-it-works .bi {
+html[data-bs-theme="dark"] #how-it-works .bi {
     color: var(--mintly-green-bright) !important;
 }
 
-#how-it-works .badge {
+html[data-bs-theme="dark"] #how-it-works .badge {
     background: rgba(16, 185, 129, 0.14) !important;
 
     color: var(--mintly-green-bright);
@@ -479,12 +478,12 @@ section h2 {
    FEATURES
    ========================================================= */
 
-#features .card {
+html[data-bs-theme="dark"] #features .card {
     position: relative;
     overflow: hidden;
 }
 
-#features .card::before {
+html[data-bs-theme="dark"] #features .card::before {
     content: "";
 
     position: absolute;
@@ -506,15 +505,15 @@ section h2 {
     transition: opacity 0.25s ease;
 }
 
-#features .card:hover::before {
+html[data-bs-theme="dark"] #features .card:hover::before {
     opacity: 1;
 }
 
-#features .card .fw-bold {
+html[data-bs-theme="dark"] #features .card .fw-bold {
     color: #f3f8f6;
 }
 
-#features .card:hover .fw-bold {
+html[data-bs-theme="dark"] #features .card:hover .fw-bold {
     color: var(--mintly-green-bright);
 }
 
@@ -523,7 +522,7 @@ section h2 {
    SCREENSHOT CAROUSEL
    ========================================================= */
 
-#view-app {
+html[data-bs-theme="dark"] #view-app {
     background: radial-gradient(
         circle at 50% 50%,
         rgba(16, 185, 129, 0.055),
@@ -532,7 +531,7 @@ section h2 {
     var(--mintly-bg) !important;
 }
 
-#view-app .card {
+html[data-bs-theme="dark"] #view-app .card {
     background: linear-gradient(
         145deg,
         #15201c,
@@ -544,7 +543,7 @@ section h2 {
     box-shadow: 0 35px 80px rgba(0, 0, 0, 0.42) !important;
 }
 
-#view-app img {
+html[data-bs-theme="dark"] #view-app img {
     background: #0a0f0e !important;
 
     border: 1px solid rgba(255, 255, 255, 0.06);
@@ -552,11 +551,11 @@ section h2 {
     padding: 0.25rem;
 }
 
-.carousel-indicators button {
+html[data-bs-theme="dark"] .carousel-indicators button {
     background-color: rgba(255, 255, 255, 0.35) !important;
 }
 
-.carousel-indicators .active {
+html[data-bs-theme="dark"] .carousel-indicators .active {
     background-color: var(--mintly-green) !important;
 }
 
@@ -565,26 +564,26 @@ section h2 {
    PRICING
    ========================================================= */
 
-#pricing .card {
+html[data-bs-theme="dark"] #pricing .card {
     border: 1px solid rgba(52, 211, 153, 0.14) !important;
 
     box-shadow: 0 20px 55px rgba(0, 0, 0, 0.3),
     0 0 50px rgba(16, 185, 129, 0.035) !important;
 }
 
-#pricing .display-5 {
+html[data-bs-theme="dark"] #pricing .display-5 {
     color: #fff;
 }
 
-#pricing ul {
+html[data-bs-theme="dark"] #pricing ul {
     padding-left: 1.25rem;
 }
 
-#pricing li {
+html[data-bs-theme="dark"] #pricing li {
     margin-bottom: 0.55rem;
 }
 
-#pricing li::marker {
+html[data-bs-theme="dark"] #pricing li::marker {
     color: var(--mintly-green);
 }
 
@@ -593,7 +592,7 @@ section h2 {
    FAQ
    ========================================================= */
 
-.accordion {
+html[data-bs-theme="dark"] .accordion {
     --bs-accordion-bg: transparent;
     --bs-accordion-color: var(--mintly-text);
     --bs-accordion-border-color: var(--mintly-border);
@@ -606,7 +605,7 @@ section h2 {
     --bs-accordion-active-bg: rgba(16, 185, 129, 0.07);
 }
 
-.accordion-item {
+html[data-bs-theme="dark"] .accordion-item {
     background: rgba(15, 24, 21, 0.75);
 
     border-color: var(--mintly-border);
@@ -614,20 +613,20 @@ section h2 {
     overflow: hidden;
 }
 
-.accordion-button {
+html[data-bs-theme="dark"] .accordion-button {
     box-shadow: none !important;
     font-weight: 600;
 }
 
-.accordion-button:not(.collapsed) {
+html[data-bs-theme="dark"] .accordion-button:not(.collapsed) {
     border-bottom: 1px solid rgba(52, 211, 153, 0.09);
 }
 
-.accordion-button:focus {
+html[data-bs-theme="dark"] .accordion-button:focus {
     box-shadow: 0 0 0 0.2rem rgba(16, 185, 129, 0.08) !important;
 }
 
-.accordion-body {
+html[data-bs-theme="dark"] .accordion-body {
     color: var(--mintly-muted) !important;
 }
 
@@ -636,19 +635,19 @@ section h2 {
    BADGES
    ========================================================= */
 
-.bg-success-subtle {
+html[data-bs-theme="dark"] .bg-success-subtle {
     background: rgba(16, 185, 129, 0.11) !important;
 }
 
-.text-success {
+html[data-bs-theme="dark"] .text-success {
     color: var(--mintly-green) !important;
 }
 
-.bg-dark-subtle {
+html[data-bs-theme="dark"] .bg-dark-subtle {
     background: rgba(255, 255, 255, 0.07) !important;
 }
 
-.text-dark {
+html[data-bs-theme="dark"] .text-dark {
     color: #cbd7d3 !important;
 }
 
@@ -657,7 +656,7 @@ section h2 {
    FOOTER
    ========================================================= */
 
-footer {
+html[data-bs-theme="dark"] footer {
     position: relative;
 
     background: linear-gradient(
@@ -669,7 +668,7 @@ footer {
     border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-footer::before {
+html[data-bs-theme="dark"] footer::before {
     content: "";
 
     position: absolute;
@@ -688,12 +687,12 @@ footer::before {
     );
 }
 
-footer a {
+html[data-bs-theme="dark"] footer a {
     transition: color 0.2s ease,
     transform 0.2s ease;
 }
 
-footer a:hover {
+html[data-bs-theme="dark"] footer a:hover {
     color: var(--mintly-green-bright) !important;
 }
 
@@ -704,16 +703,16 @@ footer a:hover {
 
 @media (max-width: 991.98px) {
 
-    header .display-5 {
+    html[data-bs-theme="dark"] header .display-5 {
         font-size: clamp(2.5rem, 10vw, 3.8rem);
     }
 
-    .navbar-collapse {
+    html[data-bs-theme="dark"] .navbar-collapse {
         padding-top: 1rem;
         padding-bottom: 0.75rem;
     }
 
-    .navbar .d-flex.gap-2 {
+    html[data-bs-theme="dark"] .navbar .d-flex.gap-2 {
         margin-top: 0.75rem;
     }
 }
@@ -725,19 +724,19 @@ footer a:hover {
 
 @media (prefers-reduced-motion: reduce) {
 
-    html {
+    html[data-bs-theme="dark"] {
         scroll-behavior: auto;
     }
 
-    .card,
-    .btn,
-    .nav-link {
+    html[data-bs-theme="dark"] .card,
+    html[data-bs-theme="dark"] .btn,
+    html[data-bs-theme="dark"] .nav-link {
         transition: none !important;
     }
 
-    .card:hover,
-    .btn:hover,
-    .navbar .nav-link:hover {
+    html[data-bs-theme="dark"] .card:hover,
+    html[data-bs-theme="dark"] .btn:hover,
+    html[data-bs-theme="dark"] .navbar .nav-link:hover {
         transform: none;
     }
 }
