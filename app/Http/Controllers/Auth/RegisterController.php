@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Mail\WelcomeMintlyUser;
 use App\Models\User;
+use App\Notifications\NewUserRegistered;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends Controller
@@ -72,6 +74,8 @@ class RegisterController extends Controller
         ]);
 
         Mail::to($user->email)->queue(new WelcomeMintlyUser($user));
+
+        Notification::route('mail', config('support.email'))->notify(new NewUserRegistered($user));
 
         return $user;
     }
