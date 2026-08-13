@@ -1,0 +1,743 @@
+/* =========================================================
+   MINTLY DARK MODE
+   Works with existing Bootstrap 5 markup/layout
+   ========================================================= */
+
+:root {
+    --mintly-bg: #080d0c;
+    --mintly-bg-soft: #0d1412;
+    --mintly-surface: #111a17;
+    --mintly-surface-2: #15201c;
+    --mintly-border: rgba(255, 255, 255, 0.08);
+
+    --mintly-green: #34d399;
+    --mintly-green-bright: #6ee7b7;
+    --mintly-green-dark: #059669;
+
+    --mintly-text: #f1f5f4;
+    --mintly-muted: #94a3a0;
+
+    --mintly-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+
+    --bs-primary: #10b981;
+    --bs-primary-rgb: 16, 185, 129;
+
+    --bs-success: #10b981;
+    --bs-success-rgb: 16, 185, 129;
+
+    --bs-body-bg: var(--mintly-bg);
+    --bs-body-color: var(--mintly-text);
+
+    --bs-secondary-color: var(--mintly-muted);
+    --bs-border-color: var(--mintly-border);
+}
+
+
+/* =========================================================
+   GLOBAL
+   ========================================================= */
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background: radial-gradient(
+        circle at 15% 10%,
+        rgba(16, 185, 129, 0.08),
+        transparent 30rem
+    ),
+    radial-gradient(
+        circle at 90% 40%,
+        rgba(52, 211, 153, 0.05),
+        transparent 35rem
+    ),
+    var(--mintly-bg) !important;
+
+    color: var(--mintly-text);
+}
+
+::selection {
+    background: rgba(52, 211, 153, 0.3);
+    color: #fff;
+}
+
+.text-secondary,
+.text-muted {
+    color: var(--mintly-muted) !important;
+}
+
+.border-top,
+.border-bottom,
+.border {
+    border-color: var(--mintly-border) !important;
+}
+
+
+/* =========================================================
+   BACKGROUND OVERRIDES
+   Allows existing bg-light / bg-white classes to stay
+   ========================================================= */
+
+.bg-white {
+    background-color: var(--mintly-bg-soft) !important;
+}
+
+.bg-light {
+    background-color: var(--mintly-bg) !important;
+}
+
+.bg-dark {
+    background-color: #060a09 !important;
+}
+
+
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
+
+.navbar {
+    background: rgba(8, 13, 12, 0.92) !important;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    border-color: var(--mintly-border) !important;
+
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.03),
+    0 10px 30px rgba(0, 0, 0, 0.18);
+
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+}
+
+.navbar-brand {
+    color: #fff !important;
+    letter-spacing: -0.03em;
+}
+
+.navbar-brand::first-letter {
+    color: var(--mintly-green);
+}
+
+.navbar .nav-link {
+    color: var(--mintly-muted) !important;
+    transition: color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.navbar .nav-link:hover {
+    color: var(--mintly-green-bright) !important;
+    transform: translateY(-1px);
+}
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+header.bg-white {
+    position: relative;
+    overflow: hidden;
+
+    background: radial-gradient(
+        circle at 78% 35%,
+        rgba(16, 185, 129, 0.14),
+        transparent 25rem
+    ),
+    radial-gradient(
+        circle at 15% 70%,
+        rgba(16, 185, 129, 0.06),
+        transparent 30rem
+    ),
+    linear-gradient(
+        180deg,
+        #0b1210 0%,
+        #080d0c 100%
+    ) !important;
+}
+
+header.bg-white::before {
+    content: "";
+    position: absolute;
+    width: 420px;
+    height: 420px;
+
+    right: -180px;
+    top: -180px;
+
+    border: 1px solid rgba(52, 211, 153, 0.08);
+    border-radius: 50%;
+
+    box-shadow: 0 0 0 60px rgba(52, 211, 153, 0.015),
+    0 0 0 120px rgba(52, 211, 153, 0.01);
+
+    pointer-events: none;
+}
+
+header .container {
+    position: relative;
+    z-index: 1;
+}
+
+header h1 {
+    color: #fff;
+    letter-spacing: -0.05em;
+    text-wrap: balance;
+}
+
+header .display-5 {
+    font-size: clamp(2.7rem, 5vw, 4.5rem);
+}
+
+header .lead {
+    color: #9caeaa !important;
+    max-width: 620px;
+}
+
+header .text-success {
+    color: var(--mintly-green) !important;
+}
+
+
+/* Mintly pill */
+
+header .badge[style] {
+    background: rgba(16, 185, 129, 0.1) !important;
+    color: var(--mintly-green-bright) !important;
+
+    border: 1px solid rgba(52, 211, 153, 0.18);
+
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 0 25px rgba(16, 185, 129, 0.05);
+}
+
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+.btn {
+    border-radius: 0.65rem;
+    font-weight: 600;
+
+    transition: transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+.btn-primary {
+    background: linear-gradient(
+        135deg,
+        #10b981,
+        #059669
+    );
+
+    border-color: #10b981;
+
+    color: #fff;
+
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.16);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background: linear-gradient(
+        135deg,
+        #34d399,
+        #10b981
+    );
+
+    border-color: #34d399;
+
+    box-shadow: 0 10px 32px rgba(16, 185, 129, 0.25);
+}
+
+.btn-outline-primary {
+    border-color: rgba(52, 211, 153, 0.5);
+    color: var(--mintly-green-bright);
+}
+
+.btn-outline-primary:hover {
+    color: #06100d;
+    background: var(--mintly-green);
+    border-color: var(--mintly-green);
+}
+
+.btn-outline-secondary {
+    color: #c2cecb;
+    border-color: rgba(255, 255, 255, 0.14);
+}
+
+.btn-outline-secondary:hover {
+    background: rgba(255, 255, 255, 0.07);
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+
+/* =========================================================
+   CARDS
+   ========================================================= */
+
+.card {
+    background: linear-gradient(
+        145deg,
+        rgba(23, 34, 30, 0.96),
+        rgba(13, 20, 18, 0.96)
+    ) !important;
+
+    border: 1px solid var(--mintly-border) !important;
+
+    color: var(--mintly-text);
+
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22) !important;
+
+    transition: transform 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+
+    border-color: rgba(52, 211, 153, 0.2) !important;
+
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.32),
+    0 0 0 1px rgba(52, 211, 153, 0.04) !important;
+}
+
+
+/* =========================================================
+   MONTHLY SNAPSHOT
+   ========================================================= */
+
+header .card.rounded-4 {
+    position: relative;
+
+    background: linear-gradient(
+        145deg,
+        rgba(20, 31, 27, 0.98),
+        rgba(10, 16, 14, 0.98)
+    ) !important;
+
+    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.4),
+    0 0 80px rgba(16, 185, 129, 0.055) !important;
+}
+
+header .card.rounded-4::before {
+    content: "";
+    position: absolute;
+
+    inset: 0;
+
+    padding: 1px;
+
+    border-radius: inherit;
+
+    background: linear-gradient(
+        135deg,
+        rgba(52, 211, 153, 0.35),
+        transparent 30%,
+        transparent 70%,
+        rgba(52, 211, 153, 0.1)
+    );
+
+    -webkit-mask: linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+
+    pointer-events: none;
+}
+
+
+/* Override the inline light snapshot boxes */
+
+header .card .bg-light,
+header .card [style*="background:#fef2f2"],
+header .card [style*="background:#f0fdf4"] {
+    background: rgba(255, 255, 255, 0.035) !important;
+    border-color: rgba(255, 255, 255, 0.07) !important;
+}
+
+header .card [style*="background:#f0fdf4"] {
+    background: rgba(16, 185, 129, 0.08) !important;
+    border-color: rgba(52, 211, 153, 0.15) !important;
+}
+
+header .card [style*="background:#fef2f2"] {
+    background: rgba(248, 113, 113, 0.05) !important;
+}
+
+header .card .h4,
+header .card .h5 {
+    color: #fff;
+}
+
+
+/* Spending list */
+
+.list-group-item {
+    background: rgba(255, 255, 255, 0.025);
+    color: #dce5e2;
+
+    border-color: rgba(255, 255, 255, 0.065);
+}
+
+.list-group-item:hover {
+    background: rgba(52, 211, 153, 0.045);
+}
+
+
+/* testimonial */
+
+header .col-lg-6 > .bg-light.rounded-4 {
+    background: rgba(16, 185, 129, 0.05) !important;
+
+    color: #a9bbb6;
+
+    border: 1px solid rgba(52, 211, 153, 0.1);
+}
+
+
+/* =========================================================
+   SECTIONS
+   ========================================================= */
+
+section {
+    position: relative;
+}
+
+section h2 {
+    color: #fff;
+    letter-spacing: -0.035em;
+}
+
+#features {
+    background: radial-gradient(
+        circle at 90% 15%,
+        rgba(16, 185, 129, 0.05),
+        transparent 25rem
+    );
+}
+
+#how-it-works,
+#pricing {
+    background: linear-gradient(
+        180deg,
+        rgba(14, 22, 19, 0.65),
+        rgba(8, 13, 12, 0.8)
+    ) !important;
+}
+
+
+/* =========================================================
+   HOW IT WORKS
+   ========================================================= */
+
+#how-it-works .card {
+    overflow: hidden;
+}
+
+#how-it-works .card::after {
+    content: "";
+    position: absolute;
+
+    width: 90px;
+    height: 90px;
+
+    top: -45px;
+    right: -45px;
+
+    border-radius: 50%;
+
+    background: rgba(16, 185, 129, 0.08);
+
+    filter: blur(2px);
+}
+
+#how-it-works .bi {
+    color: var(--mintly-green-bright) !important;
+}
+
+#how-it-works .badge {
+    background: rgba(16, 185, 129, 0.14) !important;
+
+    color: var(--mintly-green-bright);
+
+    border: 1px solid rgba(52, 211, 153, 0.13);
+}
+
+
+/* =========================================================
+   FEATURES
+   ========================================================= */
+
+#features .card {
+    position: relative;
+    overflow: hidden;
+}
+
+#features .card::before {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    top: 0;
+    bottom: 0;
+
+    width: 2px;
+
+    background: linear-gradient(
+        transparent,
+        var(--mintly-green),
+        transparent
+    );
+
+    opacity: 0;
+
+    transition: opacity 0.25s ease;
+}
+
+#features .card:hover::before {
+    opacity: 1;
+}
+
+#features .card .fw-bold {
+    color: #f3f8f6;
+}
+
+#features .card:hover .fw-bold {
+    color: var(--mintly-green-bright);
+}
+
+
+/* =========================================================
+   SCREENSHOT CAROUSEL
+   ========================================================= */
+
+#view-app {
+    background: radial-gradient(
+        circle at 50% 50%,
+        rgba(16, 185, 129, 0.055),
+        transparent 35rem
+    ),
+    var(--mintly-bg) !important;
+}
+
+#view-app .card {
+    background: linear-gradient(
+        145deg,
+        #15201c,
+        #0b110f
+    ) !important;
+
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+
+    box-shadow: 0 35px 80px rgba(0, 0, 0, 0.42) !important;
+}
+
+#view-app img {
+    background: #0a0f0e !important;
+
+    border: 1px solid rgba(255, 255, 255, 0.06);
+
+    padding: 0.25rem;
+}
+
+.carousel-indicators button {
+    background-color: rgba(255, 255, 255, 0.35) !important;
+}
+
+.carousel-indicators .active {
+    background-color: var(--mintly-green) !important;
+}
+
+
+/* =========================================================
+   PRICING
+   ========================================================= */
+
+#pricing .card {
+    border: 1px solid rgba(52, 211, 153, 0.14) !important;
+
+    box-shadow: 0 20px 55px rgba(0, 0, 0, 0.3),
+    0 0 50px rgba(16, 185, 129, 0.035) !important;
+}
+
+#pricing .display-5 {
+    color: #fff;
+}
+
+#pricing ul {
+    padding-left: 1.25rem;
+}
+
+#pricing li {
+    margin-bottom: 0.55rem;
+}
+
+#pricing li::marker {
+    color: var(--mintly-green);
+}
+
+
+/* =========================================================
+   FAQ
+   ========================================================= */
+
+.accordion {
+    --bs-accordion-bg: transparent;
+    --bs-accordion-color: var(--mintly-text);
+    --bs-accordion-border-color: var(--mintly-border);
+
+    --bs-accordion-btn-color: #e6eeec;
+    --bs-accordion-btn-bg: var(--mintly-surface);
+
+    --bs-accordion-active-color: var(--mintly-green-bright);
+
+    --bs-accordion-active-bg: rgba(16, 185, 129, 0.07);
+}
+
+.accordion-item {
+    background: rgba(15, 24, 21, 0.75);
+
+    border-color: var(--mintly-border);
+
+    overflow: hidden;
+}
+
+.accordion-button {
+    box-shadow: none !important;
+    font-weight: 600;
+}
+
+.accordion-button:not(.collapsed) {
+    border-bottom: 1px solid rgba(52, 211, 153, 0.09);
+}
+
+.accordion-button:focus {
+    box-shadow: 0 0 0 0.2rem rgba(16, 185, 129, 0.08) !important;
+}
+
+.accordion-body {
+    color: var(--mintly-muted) !important;
+}
+
+
+/* =========================================================
+   BADGES
+   ========================================================= */
+
+.bg-success-subtle {
+    background: rgba(16, 185, 129, 0.11) !important;
+}
+
+.text-success {
+    color: var(--mintly-green) !important;
+}
+
+.bg-dark-subtle {
+    background: rgba(255, 255, 255, 0.07) !important;
+}
+
+.text-dark {
+    color: #cbd7d3 !important;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+footer {
+    position: relative;
+
+    background: linear-gradient(
+        180deg,
+        #070c0b,
+        #040706
+    ) !important;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+footer::before {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    right: 0;
+    top: 0;
+
+    height: 1px;
+
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(52, 211, 153, 0.35),
+        transparent
+    );
+}
+
+footer a {
+    transition: color 0.2s ease,
+    transform 0.2s ease;
+}
+
+footer a:hover {
+    color: var(--mintly-green-bright) !important;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 991.98px) {
+
+    header .display-5 {
+        font-size: clamp(2.5rem, 10vw, 3.8rem);
+    }
+
+    .navbar-collapse {
+        padding-top: 1rem;
+        padding-bottom: 0.75rem;
+    }
+
+    .navbar .d-flex.gap-2 {
+        margin-top: 0.75rem;
+    }
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    html {
+        scroll-behavior: auto;
+    }
+
+    .card,
+    .btn,
+    .nav-link {
+        transition: none !important;
+    }
+
+    .card:hover,
+    .btn:hover,
+    .navbar .nav-link:hover {
+        transform: none;
+    }
+}
