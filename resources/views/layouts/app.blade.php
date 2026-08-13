@@ -17,7 +17,7 @@
     <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
 
     <!-- Scripts -->
-    @vite(['resources/css/bootstrap.css', 'resources/css/dark.css', 'resources/js/app.js'])
+    @vite(['resources/css/bootstrap.css', 'resources/js/app.js'])
 </head>
 <body>
 <div id="app">
