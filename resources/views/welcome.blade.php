@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html  lang="en" data-bs-theme="dark">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -27,12 +27,12 @@
     <link rel="apple-touch-icon" sizes="180x180" href="https://mintlybudget.com/images/apple-touch-icon.png"/>
 
     <meta name="google-site-verification" content="RPPhABGHaCi4Qmbse4behpD6u3I7nrE7nxuVnXzE3mA"/>
-    <meta name="theme-color" content="#198754">
+    <meta name="theme-color" content="#080d0c">
     <meta name="robots" content="index, follow">
 
-    @vite(['resources/css/bootstrap.css', 'resources/js/app.js'])
+    @vite(['resources/css/bootstrap.css', 'resources/css/dark.css', 'resources/js/app.js'])
 </head>
-<body class="bg-light">
+<body >
 
 {{-- Top Nav --}}
 <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
@@ -67,8 +67,8 @@
                         @csrf
                     </form>
                 @else
-                    <a href="{{ route('login') }}" class="btn btn-sm btn-outline-secondary">Log in</a>
-                    <a href="{{ route('register') }}" class="btn btn-sm btn-primary">Get started</a>
+                    <a href="{{ route('login') }}" class="btn btn-sm btn-outline-secondary" tabindex="1">Log in</a>
+                    <a href="{{ route('register') }}" class="btn btn-sm btn-primary" tabindex="2">Get started</a>
                 @endauth
             </div>
         </div>
