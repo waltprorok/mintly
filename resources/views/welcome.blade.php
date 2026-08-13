@@ -30,7 +30,7 @@
     <meta name="theme-color" content="#080d0c">
     <meta name="robots" content="index, follow">
 
-    @vite(['resources/css/bootstrap.css', 'resources/css/dark.css', 'resources/js/app.js'])
+    @vite(['resources/css/bootstrap.css', 'resources/js/app.js'])
 </head>
 <body >
 
