@@ -27,9 +27,7 @@ class RollForwardRecurringTransactions extends Command
             ->addMonthNoOverflow()
             ->format('F Y');
 
-        $this->info(
-            "Processing {$users->count()} users for {$targetPeriod}"
-        );
+        $this->info("Processing {$users->count()} users for {$targetPeriod}");
 
         foreach ($users as $user) {
             try {
