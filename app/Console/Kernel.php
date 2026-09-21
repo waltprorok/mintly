@@ -12,6 +12,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
+        $schedule->command('users:send-onboarding-reminders')
+            ->dailyAt('10:00')
+            ->withoutOverlapping();
+
         $schedule->command('app:roll-forward-recurring-transactions')
             ->monthlyOn(24, '02:00')
             ->withoutOverlapping();
