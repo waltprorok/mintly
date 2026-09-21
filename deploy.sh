@@ -1,6 +1,6 @@
 #!/bin/bash
 # php artisan down
-git pull
+git pull origin master
 
 export COMPOSER_ALLOW_SUPERUSER=1
 composer install --prefer-dist --no-dev --optimize-autoloader --no-interaction
