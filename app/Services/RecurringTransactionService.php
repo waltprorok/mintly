@@ -12,7 +12,6 @@ class RecurringTransactionService
         $referenceDate ??= now();
 
         $sourceStart = $referenceDate->copy()->startOfMonth();
-        $sourceEnd = $referenceDate->copy()->endOfMonth();
 
         $targetStart = $nextMonthOnly
             ? $referenceDate->copy()->addMonthNoOverflow()->startOfMonth()
@@ -21,18 +20,25 @@ class RecurringTransactionService
         $targetEnd = $targetStart->copy()->endOfMonth();
 
         /*
-         * Only use transactions from the selected month as the source.
+         * Use the most recent recurring transaction for each recurring series.
          *
-         * For example, preparing August 2026 from July 2026 will only
-         * carry forward recurring transactions that exist in July 2026.
+         * This allows quarterly, semiannual, and yearly transactions to be
+         * carried forward even when their previous occurrence was not in
+         * the immediately preceding month.
          */
         $transactions = Transaction::query()
             ->where('user_id', $userId)
             ->whereNotNull('recurring_rule')
             ->where('recurring_rule', '!=', 'once')
-            ->whereBetween('due_at', [$sourceStart, $sourceEnd])
-            ->orderBy('due_at')
-            ->get();
+            ->where('due_at', '<=', $targetEnd)
+            ->orderByDesc('due_at')
+            ->get()
+            ->unique(fn (Transaction $transaction) => implode('|', [
+                $transaction->merchant,
+                $transaction->type,
+                $transaction->recurring_rule,
+            ]))
+            ->values();
 
         $created = 0;
 
