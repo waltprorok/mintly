@@ -7,8 +7,7 @@ use Illuminate\Support\Facades\Http;
 
 class SendNewsletterCommand extends Command
 {
-    protected $signature = 'newsletter:send
-                            {--test : Send only to the test email address}';
+    protected $signature = 'newsletter:send {--test : Send only to the test email address}';
 
     protected $description = 'Send the active Mintly Budget newsletter through Mailgun';
 
