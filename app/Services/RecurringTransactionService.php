@@ -12,6 +12,7 @@ class RecurringTransactionService
         $referenceDate ??= now();
 
         $sourceStart = $referenceDate->copy()->startOfMonth();
+        $sourceEnd = $referenceDate->copy()->endOfMonth();
 
         $targetStart = $nextMonthOnly
             ? $referenceDate->copy()->addMonthNoOverflow()->startOfMonth()
@@ -19,26 +20,57 @@ class RecurringTransactionService
 
         $targetEnd = $targetStart->copy()->endOfMonth();
 
-        /*
-         * Use the most recent recurring transaction for each recurring series.
-         *
-         * This allows quarterly, semiannual, and yearly transactions to be
-         * carried forward even when their previous occurrence was not in
-         * the immediately preceding month.
-         */
+        $quarterlyStart = $targetStart->copy()->subMonthsNoOverflow(3)->startOfMonth();
+        $quarterlyEnd = $quarterlyStart->copy()->endOfMonth();
+
+        $semiannualStart = $targetStart->copy()->subMonthsNoOverflow(6)->startOfMonth();
+        $semiannualEnd = $semiannualStart->copy()->endOfMonth();
+
+        $yearlyStart = $targetStart->copy()->subYearNoOverflow()->startOfMonth();
+        $yearlyEnd = $yearlyStart->copy()->endOfMonth();
+
         $transactions = Transaction::query()
             ->where('user_id', $userId)
             ->whereNotNull('recurring_rule')
             ->where('recurring_rule', '!=', 'once')
-            ->where('due_at', '<=', $targetEnd)
-            ->orderByDesc('due_at')
-            ->get()
-            ->unique(fn (Transaction $transaction) => implode('|', [
-                $transaction->merchant,
-                $transaction->type,
-                $transaction->recurring_rule,
-            ]))
-            ->values();
+            ->where(function ($query) use (
+                $sourceStart,
+                $sourceEnd,
+                $quarterlyStart,
+                $quarterlyEnd,
+                $semiannualStart,
+                $semiannualEnd,
+                $yearlyStart,
+                $yearlyEnd
+            ) {
+                $query
+                    ->where(function ($query) use ($sourceStart, $sourceEnd) {
+                        $query
+                            ->whereIn('recurring_rule', [
+                                'weekly',
+                                'biweekly',
+                                'monthly',
+                            ])
+                            ->whereBetween('due_at', [$sourceStart, $sourceEnd]);
+                    })
+                    ->orWhere(function ($query) use ($quarterlyStart, $quarterlyEnd) {
+                        $query
+                            ->where('recurring_rule', 'quarterly')
+                            ->whereBetween('due_at', [$quarterlyStart, $quarterlyEnd]);
+                    })
+                    ->orWhere(function ($query) use ($semiannualStart, $semiannualEnd) {
+                        $query
+                            ->where('recurring_rule', 'semiannually')
+                            ->whereBetween('due_at', [$semiannualStart, $semiannualEnd]);
+                    })
+                    ->orWhere(function ($query) use ($yearlyStart, $yearlyEnd) {
+                        $query
+                            ->where('recurring_rule', 'yearly')
+                            ->whereBetween('due_at', [$yearlyStart, $yearlyEnd]);
+                    });
+            })
+            ->orderBy('due_at')
+            ->get();
 
         $created = 0;
 
