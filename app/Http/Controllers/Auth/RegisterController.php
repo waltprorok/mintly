@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\SubscribeUserToMailgunList;
 use App\Mail\WelcomeMintlyUser;
 use App\Models\User;
 use App\Notifications\NewUserRegistered;
@@ -47,7 +48,7 @@ class RegisterController extends Controller
     /**
      * Get a validator for an incoming registration request.
      *
-     * @param  array  $data
+     * @param array $data
      * @return \Illuminate\Contracts\Validation\Validator
      */
     protected function validator(array $data)
@@ -62,7 +63,7 @@ class RegisterController extends Controller
     /**
      * Create a new user instance after a valid registration.
      *
-     * @param  array  $data
+     * @param array $data
      * @return User
      */
     protected function create(array $data)
@@ -72,10 +73,12 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
-
+        // new user welcome email
         Mail::to($user->email)->queue(new WelcomeMintlyUser($user));
-
+        // send admin an email about new user
         Notification::route('mail', config('support.email'))->notify(new NewUserRegistered($user));
+        // sign new user up for newsletter
+        SubscribeUserToMailgunList::dispatch($user);
 
         return $user;
     }
