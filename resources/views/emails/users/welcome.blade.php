@@ -8,10 +8,19 @@ We're excited to help you take control of your finances and build better money h
 
 With Mintly you can:
 
-* Track your spending
-* Set and monitor budgets
+* Organize your income and expenses into categories
+* Plan your monthly budget and see where your money is going
+* Automatically carry recurring transactions into future months
+* See your income and expenses broken down week by week
+* Track which bills have been paid and what is still coming up
 * Understand your financial habits
 * Work toward your financial goals
+
+## Next steps
+
+* [Create your categories]({{ url('/dashboard/categories') }}) to get started
+* [Add your transactions]({{ url('/dashboard/transactions') }}) in seconds
+* Instantly see insights into your spending habits
 
 Click below to get started with your dashboard.
 
@@ -19,13 +28,9 @@ Click below to get started with your dashboard.
     Go To My Dashboard
 @endcomponent
 
-Next steps:
+Questions or feedback? We're here to help.
 
-* Create your default categories to get started
-* Add your transactions in seconds
-* Instantly see insights into your spending habits
-
-If you ever need help or have feedback, we’d love to hear from you.
+[Contact the Mintly Team](mailto:{{ config('support.email') }}).
 
 Welcome aboard!
 

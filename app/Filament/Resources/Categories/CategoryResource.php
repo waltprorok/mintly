@@ -116,148 +116,7 @@ class CategoryResource extends Resource
             ])
             ->persistFiltersInSession()
             ->headerActions([
-                Action::make('install_defaults')
-                    ->label('Create Default Categories')
-                    ->icon('heroicon-o-sparkles')
-                    ->color('info')
-                    ->form([
-                        CheckboxList::make('categories')
-                            ->label('Choose Categories')
-                            ->options([
-                                // Income
-                                'Salary' => 'Salary',
-                                'Bonus' => 'Bonus',
-                                'Side Hustle' => 'Side Hustle',
-                                'Second Job' => 'Second Job',
-
-                                // Housing
-                                'Mortgage' => 'Mortgage',
-                                'Rent' => 'Rent',
-                                'Property Taxes' => 'Property Taxes',
-                                'HOA' => 'HOA',
-                                'Utilities' => 'Utilities',
-                                'Internet' => 'Internet',
-                                'Phone' => 'Phone',
-                                'Home Maintenance' => 'Home Maintenance',
-
-                                // Food
-                                'Groceries' => 'Groceries',
-                                'Dining' => 'Dining',
-
-                                // Transportation
-                                'Car Payment' => 'Car Payment',
-                                'Gas' => 'Gas',
-                                'Insurance' => 'Insurance',
-                                'Parking & Tolls' => 'Parking & Tolls',
-                                'Transportation' => 'Transportation',
-
-                                // Health
-                                'Healthcare' => 'Healthcare',
-                                'Gym' => 'Gym',
-                                'Personal Care' => 'Personal Care',
-
-                                // Financial
-                                'Credit Card Payment' => 'Credit Card Payment',
-                                'Debt Payments' => 'Debt Payments',
-                                'Student Loan' => 'Student Loan',
-                                'Taxes' => 'Taxes',
-
-                                // Lifestyle
-                                'Subscriptions' => 'Subscriptions',
-                                'Entertainment' => 'Entertainment',
-                                'Clothing' => 'Clothing',
-                                'Shopping' => 'Shopping',
-                                'Travel' => 'Travel',
-                                'Gifts & Donations' => 'Gifts & Donations',
-                                'Pets' => 'Pets',
-
-                                // Family
-                                'Childcare' => 'Childcare',
-                                'Education' => 'Education',
-
-                                // Catch-all
-                                'Miscellaneous' => 'Miscellaneous',
-                            ])
-                            ->columns(3)
-                            ->required(),
-                    ])
-                    ->action(function (array $data) {
-                        $map = [
-                            // Income
-                            'Salary' => ['income', 'unknown'],
-                            'Bonus' => ['income', 'unknown'],
-                            'Side Hustle' => ['income', 'unknown'],
-                            'Second Job' => ['income', 'unknown'],
-
-                            // Housing
-                            'Mortgage' => ['expense', 'non_discretionary'],
-                            'Rent' => ['expense', 'non_discretionary'],
-                            'Property Taxes' => ['expense', 'non_discretionary'],
-                            'HOA' => ['expense', 'non_discretionary'],
-                            'Utilities' => ['expense', 'non_discretionary'],
-                            'Internet' => ['expense', 'non_discretionary'],
-                            'Phone' => ['expense', 'non_discretionary'],
-                            'Home Maintenance' => ['expense', 'non_discretionary'],
-
-                            // Food
-                            'Groceries' => ['expense', 'non_discretionary'],
-                            'Dining' => ['expense', 'discretionary'],
-
-                            // Transportation
-                            'Car Payment' => ['expense', 'non_discretionary'],
-                            'Gas' => ['expense', 'non_discretionary'],
-                            'Insurance' => ['expense', 'non_discretionary'],
-                            'Parking & Tolls' => ['expense', 'non_discretionary'],
-                            'Transportation' => ['expense', 'non_discretionary'],
-
-                            // Health
-                            'Healthcare' => ['expense', 'non_discretionary'],
-                            'Gym' => ['expense', 'discretionary'],
-                            'Personal Care' => ['expense', 'discretionary'],
-
-                            // Financial
-                            'Credit Card Payment' => ['expense', 'non_discretionary'],
-                            'Debt Payments' => ['expense', 'non_discretionary'],
-                            'Student Loan' => ['expense', 'non_discretionary'],
-                            'Taxes' => ['expense', 'non_discretionary'],
-
-                            // Lifestyle
-                            'Subscriptions' => ['expense', 'discretionary'],
-                            'Entertainment' => ['expense', 'discretionary'],
-                            'Clothing' => ['expense', 'discretionary'],
-                            'Shopping' => ['expense', 'discretionary'],
-                            'Travel' => ['expense', 'discretionary'],
-                            'Gifts & Donations' => ['expense', 'discretionary'],
-                            'Pets' => ['expense', 'discretionary'],
-
-                            // Family
-                            'Childcare' => ['expense', 'non_discretionary'],
-                            'Education' => ['expense', 'non_discretionary'],
-
-                            // Catch-all
-                            'Miscellaneous' => ['expense', 'unknown'],
-                        ];
-
-                        foreach ($data['categories'] as $name) {
-
-                            if (! isset($map[$name])) {
-                                continue;
-                            }
-
-                            [$type, $classification] = $map[$name];
-
-                            Category::firstOrCreate(
-                                [
-                                    'user_id' => auth()->id(),
-                                    'name' => $name,
-                                ],
-                                [
-                                    'type' => $type,
-                                    'spend_classification' => $classification,
-                                ]
-                            );
-                        }
-                    }),
+                static::installDefaultsAction(),
             ])
             ->filters([
                 SelectFilter::make('type')
@@ -292,7 +151,153 @@ class CategoryResource extends Resource
                     }),
             ])
             ->defaultSort('name');
+    }
 
+    public static function installDefaultsAction(): Action
+    {
+        return Action::make('install_defaults')
+            ->label('Create Default Categories')
+            ->icon('heroicon-o-sparkles')
+            ->color('info')
+            ->modalHeading('Create Default Categories')
+            ->form([
+                CheckboxList::make('categories')
+                    ->label('Choose Categories')
+                    ->options([
+                        // Income
+                        'Salary' => 'Salary',
+                        'Bonus' => 'Bonus',
+                        'Side Hustle' => 'Side Hustle',
+                        'Second Job' => 'Second Job',
+
+                        // Housing
+                        'Mortgage' => 'Mortgage',
+                        'Rent' => 'Rent',
+                        'Property Taxes' => 'Property Taxes',
+                        'HOA' => 'HOA',
+                        'Utilities' => 'Utilities',
+                        'Internet' => 'Internet',
+                        'Phone' => 'Phone',
+                        'Home Maintenance' => 'Home Maintenance',
+
+                        // Food
+                        'Groceries' => 'Groceries',
+                        'Dining' => 'Dining',
+
+                        // Transportation
+                        'Car Payment' => 'Car Payment',
+                        'Gas' => 'Gas',
+                        'Insurance' => 'Insurance',
+                        'Parking & Tolls' => 'Parking & Tolls',
+                        'Transportation' => 'Transportation',
+
+                        // Health
+                        'Healthcare' => 'Healthcare',
+                        'Gym' => 'Gym',
+                        'Personal Care' => 'Personal Care',
+
+                        // Financial
+                        'Credit Card Payment' => 'Credit Card Payment',
+                        'Debt Payments' => 'Debt Payments',
+                        'Student Loan' => 'Student Loan',
+                        'Taxes' => 'Taxes',
+
+                        // Lifestyle
+                        'Subscriptions' => 'Subscriptions',
+                        'Entertainment' => 'Entertainment',
+                        'Clothing' => 'Clothing',
+                        'Shopping' => 'Shopping',
+                        'Travel' => 'Travel',
+                        'Gifts & Donations' => 'Gifts & Donations',
+                        'Pets' => 'Pets',
+
+                        // Family
+                        'Childcare' => 'Childcare',
+                        'Education' => 'Education',
+
+                        // Catch-all
+                        'Miscellaneous' => 'Miscellaneous',
+                    ])
+                    ->columns(3)
+                    ->required(),
+            ])
+            ->action(function (array $data) {
+                $map = [
+                    'Salary' => ['income', 'unknown'],
+                    'Bonus' => ['income', 'unknown'],
+                    'Side Hustle' => ['income', 'unknown'],
+                    'Second Job' => ['income', 'unknown'],
+
+                    'Mortgage' => ['expense', 'non_discretionary'],
+                    'Rent' => ['expense', 'non_discretionary'],
+                    'Property Taxes' => ['expense', 'non_discretionary'],
+                    'HOA' => ['expense', 'non_discretionary'],
+                    'Utilities' => ['expense', 'non_discretionary'],
+                    'Internet' => ['expense', 'non_discretionary'],
+                    'Phone' => ['expense', 'non_discretionary'],
+                    'Home Maintenance' => ['expense', 'non_discretionary'],
+
+                    'Groceries' => ['expense', 'non_discretionary'],
+                    'Dining' => ['expense', 'discretionary'],
+
+                    'Car Payment' => ['expense', 'non_discretionary'],
+                    'Gas' => ['expense', 'non_discretionary'],
+                    'Insurance' => ['expense', 'non_discretionary'],
+                    'Parking & Tolls' => ['expense', 'non_discretionary'],
+                    'Transportation' => ['expense', 'non_discretionary'],
+
+                    'Healthcare' => ['expense', 'non_discretionary'],
+                    'Gym' => ['expense', 'discretionary'],
+                    'Personal Care' => ['expense', 'discretionary'],
+
+                    'Credit Card Payment' => ['expense', 'non_discretionary'],
+                    'Debt Payments' => ['expense', 'non_discretionary'],
+                    'Student Loan' => ['expense', 'non_discretionary'],
+                    'Taxes' => ['expense', 'non_discretionary'],
+
+                    'Subscriptions' => ['expense', 'discretionary'],
+                    'Entertainment' => ['expense', 'discretionary'],
+                    'Clothing' => ['expense', 'discretionary'],
+                    'Shopping' => ['expense', 'discretionary'],
+                    'Travel' => ['expense', 'discretionary'],
+                    'Gifts & Donations' => ['expense', 'discretionary'],
+                    'Pets' => ['expense', 'discretionary'],
+
+                    'Childcare' => ['expense', 'non_discretionary'],
+                    'Education' => ['expense', 'non_discretionary'],
+
+                    'Miscellaneous' => ['expense', 'unknown'],
+                ];
+
+                foreach ($data['categories'] as $name) {
+                    if (! isset($map[$name])) {
+                        continue;
+                    }
+
+                    [$type, $classification] = $map[$name];
+
+                    Category::firstOrCreate(
+                        [
+                            'user_id' => auth()->id(),
+                            'name' => $name,
+                        ],
+                        [
+                            'type' => $type,
+                            'spend_classification' => $classification,
+                        ]
+                    );
+                }
+
+                Notification::make()
+                    ->title('Categories created')
+                    ->body('Great! Now add your first transaction.')
+                    ->success()
+                    ->send();
+
+                return redirect(
+                    \App\Filament\Resources\Transactions\TransactionResource::getUrl('create')
+                );
+            });
     }
 
     public static function getPages(): array
