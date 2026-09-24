@@ -18,10 +18,10 @@ return [
         'domain' => env('MAILGUN_DOMAIN'),
         'secret' => env('MAILGUN_SECRET'),
         'endpoint' => env('MAILGUN_ENDPOINT', 'api.mailgun.net'),
-        'scheme' => 'https',
         'newsletter_list' => env('MAILGUN_NEWSLETTER_LIST'),
         'newsletter_template' => env('MAILGUN_NEWSLETTER_TEMPLATE'),
         'newsletter_test_email' => env('MAILGUN_NEWSLETTER_TEST_EMAIL'),
+        'scheme' => 'https',
     ],
 
     'postmark' => [

@@ -35,8 +35,8 @@ class SendNewsletterCommand extends Command
             return self::FAILURE;
         }
 
-        $this->info('Newsletter Template: '.$template);
-        $this->info('Recipient: '.$recipient);
+        $this->info('Newsletter Template: ' . $template);
+        $this->info('Recipient: ' . $recipient);
 
         if (! $this->option('test')) {
             if (! $this->confirm(
@@ -50,13 +50,12 @@ class SendNewsletterCommand extends Command
 
         $response = Http::withBasicAuth('api', $secret)
             ->asMultipart()
-            ->post(
-                "https://api.mailgun.net/v3/{$domain}/messages",
+            ->post("https://api.mailgun.net/v3/{$domain}/messages",
                 [
                     [
                         'name' => 'from',
                         'contents' => config('mail.from.name')
-                            .' <'.config('mail.from.address').'>',
+                            . ' <' . config('mail.from.address') . '>',
                     ],
                     [
                         'name' => 'to',
