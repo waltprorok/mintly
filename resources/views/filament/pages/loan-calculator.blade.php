@@ -176,4 +176,16 @@
         </div>
     </div>
 
+    <div class="p-6">
+        <div class="max-w-sm rounded-xl bg-blue-500 p-6 text-white shadow-lg">
+            <h2 class="text-2xl font-bold">
+                Filament / Tailwind Test
+            </h2>
+
+            <p class="mt-2 text-sm">
+                If this is styled, Tailwind CSS is working.
+            </p>
+        </div>
+    </div>
+
 </x-filament::page>
