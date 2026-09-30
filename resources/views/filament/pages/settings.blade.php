@@ -1,6 +1,6 @@
 <x-filament-panels::page>
 
-    <div class="max-w-2xl mx-auto">
+    <div class="w-full max-w-3xl mx-auto">
         <x-filament::section>
             <x-slot name="heading">
                 Delete Account
@@ -10,7 +10,6 @@
                 Permanently delete your account if needed.
 {{--                Manage your account settings and permanently delete your account if needed.--}}
             </x-slot>
-
         </x-filament::section>
     </div>
 
