@@ -21,57 +21,52 @@ class Settings extends Page
 
     protected string $view = 'filament.pages.settings';
 
-    protected function getHeaderActions(): array
+    public function deleteAccountAction(): Action
     {
-        return [
-            Action::make('deleteAccount')
-                ->label('Delete Account')
-                ->color('danger')
-                ->icon('heroicon-o-trash')
-                ->requiresConfirmation()
-                ->modalIcon('heroicon-o-exclamation-triangle')
-                ->modalHeading('Delete Account')
-                ->modalDescription('This will permanently delete your account and all associated data. This action cannot be undone.')
-                ->modalSubmitActionLabel('Yes, delete my account')
-                ->form([
-                    TextInput::make('password')
-                        ->label('Confirm your password')
-                        ->password()
-                        ->required(),
-                ])
-                ->action(function (array $data) {
+        return Action::make('deleteAccount')
+            ->label('Delete Account')
+            ->color('danger')
+            ->icon('heroicon-o-trash')
+            ->requiresConfirmation()
+            ->modalIcon('heroicon-o-exclamation-triangle')
+            ->modalHeading('Delete Account')
+            ->modalDescription(
+                'This will permanently delete your account and all associated data. This action cannot be undone.'
+            )
+            ->modalSubmitActionLabel('Yes, delete my account')
+            ->form([
+                TextInput::make('password')
+                    ->label('Confirm your password')
+                    ->password()
+                    ->required(),
+            ])
+            ->action(function (array $data) {
+                $user = auth()->user();
 
-                    $user = auth()->user();
+                if (! Hash::check($data['password'], $user->password)) {
+                    Notification::make()
+                        ->title('Incorrect password')
+                        ->danger()
+                        ->send();
 
-                    // Validate password
-                    if (! Hash::check($data['password'], $user->password)) {
-                        Notification::make()
-                            ->title('Incorrect password')
-                            ->danger()
-                            ->send();
+                    return;
+                }
 
-                        return;
-                    }
+                // Logout first
+                Auth::logout();
 
-                    // Logout first
-                    Auth::logout();
+                // Delete user (cascades everything)
+                $user->delete();
 
-                    // Delete user (cascades everything)
-                    $user->delete();
+                session()->invalidate();
+                session()->regenerateToken();
 
-                    // Clean session
-                    session()->invalidate();
-                    session()->regenerateToken();
-
-                    // Redirect
-                    return redirect('/');
-                }),
-        ];
+                return redirect('/');
+            });
     }
 
     public function getTitle(): string
     {
         return 'Account';
-
     }
 }

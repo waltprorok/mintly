@@ -7,9 +7,17 @@
             </x-slot>
 
             <x-slot name="description">
-                Permanently delete your account if needed.
-{{--                Manage your account settings and permanently delete your account if needed.--}}
+                <div class="flex items-center justify-between gap-4">
+                    <span>
+                        Permanently delete your account if needed.
+                    </span>
+
+                    <div class="shrink-0">
+                        {{ $this->deleteAccountAction }}
+                    </div>
+                </div>
             </x-slot>
+
         </x-filament::section>
     </div>
 
