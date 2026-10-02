@@ -14,7 +14,7 @@ class SendMonthlyStatsEmails extends Command
     protected $signature = 'app:send-monthly-stats';
     protected $description = 'Send monthly financial summary emails to active users';
 
-    public function handle(): bool
+    public function handle(): int
     {
         $startedAt = now();
         $start = now()->subMonth()->startOfMonth();
@@ -73,15 +73,15 @@ class SendMonthlyStatsEmails extends Command
         });
 
         $finishedAt = now();
-        $duration = $finishedAt->diffInSeconds($startedAt);
+        $duration = $startedAt->diffInSeconds($finishedAt);
 
         $this->info('Monthly stats emails sent successfully.');
 
         Log::info('Monthly stats job finished', [
             'finished_at' => $finishedAt,
-            'duration_seconds' => $duration,
+            'duration_seconds' => round($duration, 3),
         ]);
 
-        return true;
+        return self::SUCCESS;
     }
 }

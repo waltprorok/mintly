@@ -632,7 +632,7 @@
             <div class="col-12 col-md-4 mb-4">
                 <div class="d-flex align-items-center justify-content-center justify-content-md-start mb-3">
                     <img
-                        src="{{ asset('images/apple-touch-icon-520.png') }}"
+                        src="{{ asset('images/apple-touch-icon.png') }}"
                         alt="Mintly logo"
                         class="me-3 rounded"
                         style="width: 60px; height: 60px;"

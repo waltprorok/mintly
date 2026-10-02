@@ -1,14 +1,21 @@
 <x-filament-panels::page>
 
-    <div class="max-w-2xl mx-auto">
+    <div class="w-full max-w-3xl mx-auto">
         <x-filament::section>
             <x-slot name="heading">
                 Delete Account
             </x-slot>
 
             <x-slot name="description">
-                Permanently delete your account if needed.
-{{--                Manage your account settings and permanently delete your account if needed.--}}
+                <div class="flex items-center justify-between gap-4">
+                    <span>
+                        Permanently delete your account if needed.
+                    </span>
+
+                    <div class="shrink-0">
+                        {{ $this->deleteAccountAction }}
+                    </div>
+                </div>
             </x-slot>
 
         </x-filament::section>

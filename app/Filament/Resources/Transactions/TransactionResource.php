@@ -16,14 +16,11 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Filament\Tables\Columns\Summarizers\Sum;
-use Filament\Tables\Columns\Summarizers\Summarizer;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\HtmlString;
 
 class TransactionResource extends Resource
@@ -34,8 +31,7 @@ class TransactionResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()
-            ->where('user_id', auth()->id());
+        return parent::getEloquentQuery()->where('user_id', auth()->id());
     }
 
     public static function form(Schema $schema): Schema
@@ -118,7 +114,6 @@ class TransactionResource extends Resource
                 ->nullable(),
 
         ]);
-
     }
 
     public static function table(Table $table): Table
@@ -190,32 +185,6 @@ class TransactionResource extends Resource
                     ->sortable()
                     ->onColor('success')
                     ->offColor('gray'),
-
-                TextColumn::make('amount')
-                    ->money('USD')
-                    ->sortable()
-                    ->summarize([
-                        Sum::make()
-                            ->label('Income')
-                            ->money('USD')
-                            ->query(fn (QueryBuilder $query) => $query->where('type', 'income')),
-                        Sum::make()
-                            ->label('Expenses')
-                            ->money('USD')
-                            ->query(fn (QueryBuilder $query) => $query->where('type', 'expense')),
-                        Summarizer::make()
-                            ->label('Net')
-                            ->using(function (QueryBuilder $query) {
-                                $income = (clone $query)
-                                    ->where('type', 'income')
-                                    ->sum('amount');
-                                $expenses = (clone $query)
-                                    ->where('type', 'expense')
-                                    ->sum('amount');
-                                return $income - $expenses;
-                            })
-                            ->money('USD'),
-                    ]),
             ])
             ->filters([
                 SelectFilter::make('type')
