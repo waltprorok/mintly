@@ -33,7 +33,7 @@ class MonthlyBudget extends Page implements HasTable
     protected static bool $shouldRegisterNavigation = true;
     protected static ?string $navigationLabel = 'Budget Planner';
 
-    protected static ?string $title = 'Monthly Budget';
+    protected static ?string $title = 'Budget Planner';
 
     public array $filters = [];
 

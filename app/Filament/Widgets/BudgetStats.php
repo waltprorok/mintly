@@ -10,9 +10,7 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 class BudgetStats extends StatsOverviewWidget
 {
     protected int|string|array $columnSpan = 'full';
-
     protected ?string $pollingInterval = null;
-
     protected $listeners = ['updateBudgetStats'];
 
     public int $month;

@@ -4,13 +4,16 @@ namespace App\Console\Commands;
 
 use App\Models\User;
 use App\Services\RecurringTransactionService;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class RollForwardRecurringTransactions extends Command
 {
-    protected $signature = 'app:roll-forward-recurring-transactions';
+    protected $signature = 'app:roll-forward-recurring-transactions
+                                {userId?}
+                                {--date= : Reference month, e.g. 2026-06-01}';
 
     protected $description = 'Prepare next month recurring transactions for all users';
 
@@ -18,9 +21,15 @@ class RollForwardRecurringTransactions extends Command
     {
         $service = app(RecurringTransactionService::class);
 
-        $users = User::all();
+        if ($userId = $this->argument('userId')) {
+            $users = User::whereKey($userId)->get();
+        } else {
+            $users = User::all();
+        }
 
-        $referenceDate = now()->startOfMonth();
+        $referenceDate = $this->option('date')
+            ? Carbon::parse($this->option('date'))->startOfMonth()
+            : now()->startOfMonth();
 
         $targetPeriod = $referenceDate
             ->copy()
