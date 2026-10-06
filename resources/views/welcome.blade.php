@@ -359,20 +359,21 @@
 
         @php
             $screenshots = [
-                ['file' => '1_dashboard.png', 'label' => 'Full dashboard overview'],
-                ['file' => '2_monthly-budget.png', 'label' => 'Monthly budget planning'],
-                ['file' => '3_monthly-budget-body.png', 'label' => 'Detailed monthly breakdown'],
-                ['file' => '4_reports.png', 'label' => 'Visual reports & insights'],
-                ['file' => '5_transactions.png', 'label' => 'Transaction tracking'],
-                ['file' => '6_create-transaction.png', 'label' => 'Quick transaction entry'],
-                ['file' => '7_loan-calculator.png', 'label' => 'Loan calculator'],
+                ['file' => '1-dashboard.png', 'label' => 'Full dashboard overview'],
+                ['file' => '2-budget-planner.png', 'label' => 'Monthly budget planning'],
+                ['file' => '3-budget-planner-weeks.png', 'label' => 'Detailed monthly breakdown'],
+                ['file' => '4-reports.png', 'label' => 'Visual reports & insights'],
+                ['file' => '5-transactions.png', 'label' => 'Transaction tracking'],
+                ['file' => '6-create-transaction.png', 'label' => 'Quick transaction entry'],
+                ['file' => '7-categories.png', 'label' => 'Categories'],
+                ['file' => '8-loan-calculator.png', 'label' => 'Loan calculator'],
             ];
         @endphp
 
         <div id="screenshotCarousel"
              class="carousel slide"
              data-bs-ride="carousel"
-             data-bs-interval="4000">
+             data-bs-interval="7000">
 
             {{-- Indicators --}}
             <div class="carousel-indicators">
@@ -391,12 +392,12 @@
                 @foreach ($screenshots as $index => $shot)
                     <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
                         <div class="d-flex justify-content-center">
-                            <div class="card border-0 shadow-sm p-3" style="max-width: 720px; width: 100%;">
+                            <div class="card border-0 shadow-sm p-3" style="max-width: 1020px; width: 100%;">
                                 <img
                                     src="{{ asset('images/' . $shot['file']) }}"
                                     class="img-fluid rounded mb-3"
                                     alt="Mintly {{ $shot['label'] }}"
-                                    style="height: 320px; width: 100%; object-fit: contain; background: #f8f9fa;"
+                                    style="height: 510px; width: 100%; object-fit: contain; background: #202225;"
                                 >
                             </div>
                         </div>
