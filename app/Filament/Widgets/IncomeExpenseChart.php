@@ -78,6 +78,8 @@ class IncomeExpenseChart extends ChartWidget
                     'data' => $expenseData,
                     'borderColor' => '#3b82f6',
                     'backgroundColor' => 'rgba(59,130,246,0.15)',
+                    'hoverBorderColor' => '#3b82f6',
+                    'hoverBackgroundColor' => 'rgba(59,130,246,0.25)',
                     'tension' => 0.2,
                     'borderRadius' => 6,
                     'fill' => false,
