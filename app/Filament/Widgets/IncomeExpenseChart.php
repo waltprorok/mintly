@@ -3,6 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Transaction;
+use Filament\Support\RawJs;
 use Filament\Widgets\ChartWidget;
 
 class IncomeExpenseChart extends ChartWidget
@@ -60,6 +61,31 @@ class IncomeExpenseChart extends ChartWidget
                 ->sum('amount');
         }
 
+        $expenseBorderColors = [];
+        $expenseBackgroundColors = [];
+        $expenseHoverBorderColors = [];
+        $expenseHoverBackgroundColors = [];
+
+        foreach ($expenseData as $index => $expense) {
+            $overIncome = $expense > $incomeData[$index];
+
+            $expenseBorderColors[] = $overIncome
+                ? '#ef4444'
+                : '#3b82f6';
+
+            $expenseBackgroundColors[] = $overIncome
+                ? 'rgba(239,68,68,0.15)'
+                : 'rgba(59,130,246,0.15)';
+
+            $expenseHoverBorderColors[] = $overIncome
+                ? '#ef4444'
+                : '#3b82f6';
+
+            $expenseHoverBackgroundColors[] = $overIncome
+                ? 'rgba(239,68,68,0.25)'
+                : 'rgba(59,130,246,0.25)';
+        }
+
         return [
             'datasets' => [
                 [
@@ -76,10 +102,10 @@ class IncomeExpenseChart extends ChartWidget
                 [
                     'label' => 'Expenses',
                     'data' => $expenseData,
-                    'borderColor' => '#3b82f6',
-                    'backgroundColor' => 'rgba(59,130,246,0.15)',
-                    'hoverBorderColor' => '#3b82f6',
-                    'hoverBackgroundColor' => 'rgba(59,130,246,0.25)',
+                    'borderColor' => $expenseBorderColors,
+                    'backgroundColor' => $expenseBackgroundColors,
+                    'hoverBorderColor' => $expenseHoverBorderColors,
+                    'hoverBackgroundColor' => $expenseHoverBackgroundColors,
                     'tension' => 0.2,
                     'borderRadius' => 6,
                     'fill' => false,
@@ -92,5 +118,21 @@ class IncomeExpenseChart extends ChartWidget
     protected function getType(): string
     {
         return 'bar';
+    }
+
+    protected function getOptions(): RawJs
+    {
+        return RawJs::make(<<<'JS'
+        {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        'callback': (value) => '$' + value.toLocaleString()
+                    }
+                }
+            }
+        }
+    JS);
     }
 }
