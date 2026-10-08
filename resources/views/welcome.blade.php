@@ -263,7 +263,7 @@
                     <div class="fw-bold mb-2">Default Categories</div>
                     <div class="text-secondary">
                         Start with ready-made categories for income and expenses —
-                        so you can begin tracking your money in minutes
+                        so you can begin tracking your money in minutes.
                     </div>
                 </div>
             </div>
