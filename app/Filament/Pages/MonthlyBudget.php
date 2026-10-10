@@ -7,6 +7,7 @@ use App\Filament\Widgets\BudgetStats;
 use App\Filament\Widgets\WeeklyCashFlowStats;
 use App\Models\Transaction;
 use App\Services\RecurringTransactionService;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
@@ -214,6 +215,59 @@ class MonthlyBudget extends Page implements HasTable
         $nextPeriodLabel = $nextPeriod->format('F Y');
 
         return [
+            Action::make('download_pdf')
+                ->label('Download PDF')
+                ->icon('heroicon-o-arrow-down-tray')
+                ->color('gray')
+                ->action(function () {
+                    $month = $this->getSelectedMonth();
+                    $year = $this->getSelectedYear();
+
+                    $transactions = Transaction::query()
+                        ->with('category')
+                        ->where('user_id', auth()->id())
+                        ->whereIn('type', ['income', 'expense'])
+                        ->whereMonth('due_at', $month)
+                        ->whereYear('due_at', $year)
+                        ->orderBy('due_at')
+                        ->get();
+
+                    $income = $transactions
+                        ->where('type', 'income');
+
+                    $expenses = $transactions
+                        ->where('type', 'expense');
+
+                    $incomeTotal = $income->sum('amount');
+
+                    $expenseTotal = $expenses->sum('amount');
+
+                    $net = $incomeTotal - $expenseTotal;
+
+                    $expensesByCategory = $expenses->groupBy(
+                        fn ($transaction) => $transaction->category?->name ?? 'Uncategorized'
+                    );
+
+                    $pdf = Pdf::loadView('pdf.monthly-budget', [
+                        'month' => $month,
+                        'year' => $year,
+                        'income' => $income,
+                        'expensesByCategory' => $expensesByCategory,
+                        'incomeTotal' => $incomeTotal,
+                        'expenseTotal' => $expenseTotal,
+                        'net' => $net,
+                    ])
+                        ->setPaper('letter', 'portrait');
+
+                    $period = Carbon::create($year, $month)
+                        ->format('F-Y');
+
+                    return response()->streamDownload(
+                        fn () => print($pdf->output()),
+                        "Budget-{$period}.pdf"
+                    );
+                }),
+
             Action::make('roll_forward')
                 ->label("Prepare {$nextPeriodLabel}")
                 ->icon('heroicon-o-arrow-right-circle')
