@@ -198,7 +198,7 @@
      ========================================================= --}}
 
 <div class="report-title">
-    Monthly Budget
+    {{ $title ?? 'Financial Report' }}
 </div>
 
 <div class="report-period">
