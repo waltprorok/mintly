@@ -21,7 +21,6 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
-use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -322,41 +321,6 @@ class TransactionResource extends Resource
                         }
 
                         $query->whereYear('due_at', $value);
-                    }),
-                Filter::make('date_range')
-                    ->label('Date Range')
-                    ->form([
-                        DatePicker::make('from')
-                            ->label('From'),
-
-                        DatePicker::make('until')
-                            ->label('To'),
-                    ])
-                    ->query(function (Builder $query, array $data): Builder {
-                        return $query
-                            ->when(
-                                $data['from'] ?? null,
-                                fn (Builder $query, $date) =>
-                                $query->whereDate('due_at', '>=', $date)
-                            )
-                            ->when(
-                                $data['until'] ?? null,
-                                fn (Builder $query, $date) =>
-                                $query->whereDate('due_at', '<=', $date)
-                            );
-                    })
-                    ->indicateUsing(function (array $data): array {
-                        $indicators = [];
-
-                        if ($data['from'] ?? null) {
-                            $indicators[] = 'From ' . Carbon::parse($data['from'])->format('M j, Y');
-                        }
-
-                        if ($data['until'] ?? null) {
-                            $indicators[] = 'To ' . Carbon::parse($data['until'])->format('M j, Y');
-                        }
-
-                        return $indicators;
                     }),
             ])
             ->searchable()
