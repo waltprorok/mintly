@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Transactions;
 
 use App\Models\Transaction;
+use Barryvdh\DomPDF\PDF;
 use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Actions\BulkAction;
@@ -81,7 +82,7 @@ class TransactionResource extends Resource
                         . Carbon::parse($until)->format('M j, Y')
                         : 'No transactions';
 
-                    $pdf = Pdf::loadView('pdf.transactions', [
+                    $pdf = Pdf::loadView('pdf.monthly-budget', [
                         'incomeByCategory' => $incomeByCategory,
                         'expensesByCategory' => $expensesByCategory,
                         'incomeTotal' => $incomeTotal,
