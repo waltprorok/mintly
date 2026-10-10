@@ -249,8 +249,8 @@ class MonthlyBudget extends Page implements HasTable
                     );
 
                     $pdf = Pdf::loadView('pdf.monthly-budget', [
-                        'month' => $month,
-                        'year' => $year,
+                        'title' => 'Monthly Budget',
+                        'periodLabel' => Carbon::create($year, $month)->format('F Y'),
                         'income' => $income,
                         'expensesByCategory' => $expensesByCategory,
                         'incomeTotal' => $incomeTotal,

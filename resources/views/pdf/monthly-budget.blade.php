@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
 
     <title>
-        Monthly Budget - {{ \Carbon\Carbon::create($year, $month)->format('F Y') }}
+        {{ $title ?? 'Financial Report' }} - {{ $periodLabel }}
     </title>
 
     <style>
@@ -202,7 +202,7 @@
 </div>
 
 <div class="report-period">
-    {{ \Carbon\Carbon::create($year, $month)->format('F Y') }}
+    {{ $periodLabel }}
 </div>
 
 
