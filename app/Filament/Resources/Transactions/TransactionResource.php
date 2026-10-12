@@ -3,8 +3,11 @@
 namespace App\Filament\Resources\Transactions;
 
 use App\Models\Transaction;
+use Barryvdh\DomPDF\PDF;
 use Carbon\Carbon;
+use Filament\Actions\Action;
 use Filament\Actions\BulkAction;
+use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Hidden;
@@ -32,6 +35,70 @@ class TransactionResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()->where('user_id', auth()->id());
+    }
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Action::make('downloadPdf')
+                ->label('Download PDF')
+                ->icon('heroicon-o-arrow-down-tray')
+                ->color('gray')
+                ->action(function () {
+                    $query = $this->getFilteredTableQuery();
+
+                    $transactions = (clone $query)
+                        ->with('category')
+                        ->orderBy('due_at')
+                        ->get();
+
+                    $income = $transactions
+                        ->where('type', 'income');
+
+                    $expenses = $transactions
+                        ->where('type', 'expense');
+
+                    $incomeTotal = $income->sum('amount');
+                    $expenseTotal = $expenses->sum('amount');
+                    $net = $incomeTotal - $expenseTotal;
+
+                    $incomeByCategory = $income->groupBy(
+                        fn ($transaction) =>
+                            $transaction->category?->name ?? 'Other Income'
+                    );
+
+                    $expensesByCategory = $expenses->groupBy(
+                        fn ($transaction) =>
+                            $transaction->category?->name ?? 'Uncategorized'
+                    );
+
+                    $from = $transactions->min('due_at');
+                    $until = $transactions->max('due_at');
+
+                    $periodLabel = $from && $until
+                        ? Carbon::parse($from)->format('M j, Y')
+                        . ' - '
+                        . Carbon::parse($until)->format('M j, Y')
+                        : 'No transactions';
+
+                    $pdf = Pdf::loadView('pdf.monthly-budget', [
+                        'incomeByCategory' => $incomeByCategory,
+                        'expensesByCategory' => $expensesByCategory,
+                        'incomeTotal' => $incomeTotal,
+                        'expenseTotal' => $expenseTotal,
+                        'net' => $net,
+                        'periodLabel' => $periodLabel,
+                    ])
+                        ->setPaper('letter', 'portrait');
+
+                    return response()->streamDownload(
+                        fn () => print($pdf->output()),
+                        'transactions-' . now()->format('Y-m-d') . '.pdf'
+                    );
+                }),
+
+            CreateAction::make(),
+        ];
     }
 
     public static function form(Schema $schema): Schema

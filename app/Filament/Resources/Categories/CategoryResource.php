@@ -166,10 +166,10 @@ class CategoryResource extends Resource
                     ->options([
                         // Income
                         'Salary' => 'Salary',
+                        'Paycheck' => 'Paycheck',
                         'Bonus' => 'Bonus',
                         'Side Hustle' => 'Side Hustle',
                         'Second Job' => 'Second Job',
-
                         // Housing
                         'Mortgage' => 'Mortgage',
                         'Rent' => 'Rent',
@@ -179,29 +179,26 @@ class CategoryResource extends Resource
                         'Internet' => 'Internet',
                         'Phone' => 'Phone',
                         'Home Maintenance' => 'Home Maintenance',
-
                         // Food
                         'Groceries' => 'Groceries',
                         'Dining' => 'Dining',
-
                         // Transportation
                         'Car Payment' => 'Car Payment',
                         'Gas' => 'Gas',
                         'Insurance' => 'Insurance',
+                        'Car Maintenance' => 'Car Maintenance',
                         'Parking & Tolls' => 'Parking & Tolls',
                         'Transportation' => 'Transportation',
-
                         // Health
                         'Healthcare' => 'Healthcare',
+                        'Prescriptions' => 'Prescriptions',
                         'Gym' => 'Gym',
                         'Personal Care' => 'Personal Care',
-
                         // Financial
                         'Credit Card Payment' => 'Credit Card Payment',
                         'Debt Payments' => 'Debt Payments',
                         'Student Loan' => 'Student Loan',
                         'Taxes' => 'Taxes',
-
                         // Lifestyle
                         'Subscriptions' => 'Subscriptions',
                         'Entertainment' => 'Entertainment',
@@ -210,24 +207,25 @@ class CategoryResource extends Resource
                         'Travel' => 'Travel',
                         'Gifts & Donations' => 'Gifts & Donations',
                         'Pets' => 'Pets',
-
+                        'Hobbies' => 'Hobbies',
                         // Family
                         'Childcare' => 'Childcare',
                         'Education' => 'Education',
-
                         // Catch-all
                         'Miscellaneous' => 'Miscellaneous',
                     ])
-                    ->columns(3)
+                    ->columns(4)
                     ->required(),
             ])
             ->action(function (array $data) {
                 $map = [
+                    // Income
                     'Salary' => ['income', 'unknown'],
+                    'Paycheck' => ['income', 'unknown'],
                     'Bonus' => ['income', 'unknown'],
                     'Side Hustle' => ['income', 'unknown'],
                     'Second Job' => ['income', 'unknown'],
-
+                    // Housing
                     'Mortgage' => ['expense', 'non_discretionary'],
                     'Rent' => ['expense', 'non_discretionary'],
                     'Property Taxes' => ['expense', 'non_discretionary'],
@@ -236,25 +234,27 @@ class CategoryResource extends Resource
                     'Internet' => ['expense', 'non_discretionary'],
                     'Phone' => ['expense', 'non_discretionary'],
                     'Home Maintenance' => ['expense', 'non_discretionary'],
-
+                    // Food
                     'Groceries' => ['expense', 'non_discretionary'],
                     'Dining' => ['expense', 'discretionary'],
-
+                    // Transportation
                     'Car Payment' => ['expense', 'non_discretionary'],
                     'Gas' => ['expense', 'non_discretionary'],
                     'Insurance' => ['expense', 'non_discretionary'],
+                    'Car Maintenance' => ['expense', 'non_discretionary'],
                     'Parking & Tolls' => ['expense', 'non_discretionary'],
                     'Transportation' => ['expense', 'non_discretionary'],
-
+                    // Health
                     'Healthcare' => ['expense', 'non_discretionary'],
+                    'Prescriptions' => ['expense', 'non_discretionary'],
                     'Gym' => ['expense', 'discretionary'],
                     'Personal Care' => ['expense', 'discretionary'],
-
+                    // Financial
                     'Credit Card Payment' => ['expense', 'non_discretionary'],
                     'Debt Payments' => ['expense', 'non_discretionary'],
                     'Student Loan' => ['expense', 'non_discretionary'],
                     'Taxes' => ['expense', 'non_discretionary'],
-
+                    // Lifestyle
                     'Subscriptions' => ['expense', 'discretionary'],
                     'Entertainment' => ['expense', 'discretionary'],
                     'Clothing' => ['expense', 'discretionary'],
@@ -262,10 +262,11 @@ class CategoryResource extends Resource
                     'Travel' => ['expense', 'discretionary'],
                     'Gifts & Donations' => ['expense', 'discretionary'],
                     'Pets' => ['expense', 'discretionary'],
-
+                    'Hobbies' => ['expense', 'discretionary'],
+                    // Family
                     'Childcare' => ['expense', 'non_discretionary'],
                     'Education' => ['expense', 'non_discretionary'],
-
+                    // Catch-all
                     'Miscellaneous' => ['expense', 'unknown'],
                 ];
 
