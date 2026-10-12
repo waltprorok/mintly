@@ -18,11 +18,9 @@
             color: #111827;
             line-height: 1.4;
         }
-
         /* -------------------------------------------------
          * Report Header
          * ------------------------------------------------- */
-
         .report-title {
             font-size: 20px;
             font-weight: bold;
@@ -34,11 +32,9 @@
             color: #6b7280;
             margin-bottom: 24px;
         }
-
         /* -------------------------------------------------
          * Tables
          * ------------------------------------------------- */
-
         table {
             width: 100%;
             border-collapse: collapse;
@@ -66,11 +62,9 @@
             width: 120px;
             color: #6b7280;
         }
-
         /* -------------------------------------------------
          * Main Sections
          * ------------------------------------------------- */
-
         .section-title {
             font-size: 13px;
             font-weight: bold;
@@ -94,11 +88,9 @@
         .column-header .amount {
             text-align: right;
         }
-
         /* -------------------------------------------------
          * Transactions
          * ------------------------------------------------- */
-
         .transaction-row td {
             border-bottom: 1px solid #f3f4f6;
         }
@@ -106,11 +98,9 @@
         .transaction-name {
             padding-left: 22px;
         }
-
         /* -------------------------------------------------
          * Categories
          * ------------------------------------------------- */
-
         .category-title td {
             font-weight: bold;
             padding-top: 14px;
@@ -127,11 +117,9 @@
         .category-total-label {
             padding-left: 22px;
         }
-
         /* -------------------------------------------------
          * Totals
          * ------------------------------------------------- */
-
         .section-total td {
             font-size: 12px;
             font-weight: bold;
@@ -141,11 +129,9 @@
             padding-top: 9px;
             padding-bottom: 9px;
         }
-
         /* -------------------------------------------------
          * Monthly Summary
          * ------------------------------------------------- */
-
         .summary {
             margin-top: 28px;
         }
@@ -192,11 +178,7 @@
 </head>
 
 <body>
-
-{{-- =========================================================
-     HEADER
-     ========================================================= --}}
-
+{{-- HEADER --}}
 <div class="report-title">
     {{ $title ?? 'Financial Report' }}
 </div>
@@ -204,12 +186,7 @@
 <div class="report-period">
     {{ $periodLabel }}
 </div>
-
-
-{{-- =========================================================
-     INCOME
-     ========================================================= --}}
-
+{{-- INCOME --}}
 <div class="section-title">
     Income
 </div>
@@ -223,11 +200,8 @@
         <th class="amount">Amount</th>
     </tr>
     </thead>
-
     <tbody>
-
     @forelse ($income as $transaction)
-
         <tr class="transaction-row">
             <td class="transaction-name">
                 {{ $transaction->merchant ?: ($transaction->category?->name ?? 'Income') }}
@@ -249,17 +223,13 @@
                 ${{ number_format($transaction->amount, 2) }}
             </td>
         </tr>
-
     @empty
-
         <tr>
             <td colspan="4">
                 No income transactions for this period.
             </td>
         </tr>
-
     @endforelse
-
     <tr class="section-total">
         <td colspan="3">
             Total Income
@@ -269,15 +239,9 @@
             ${{ number_format($incomeTotal, 2) }}
         </td>
     </tr>
-
     </tbody>
 </table>
-
-
-{{-- =========================================================
-     EXPENSES
-     ========================================================= --}}
-
+{{-- EXPENSES --}}
 <div class="section-title">
     Expenses
 </div>
@@ -291,21 +255,16 @@
         <th class="amount">Amount</th>
     </tr>
     </thead>
-
     <tbody>
-
     @forelse ($expensesByCategory as $category => $transactions)
-
         {{-- Category --}}
         <tr class="category-title">
             <td colspan="4">
                 {{ $category }}
             </td>
         </tr>
-
         {{-- Transactions --}}
         @foreach ($transactions as $transaction)
-
             <tr class="transaction-row">
                 <td class="transaction-name">
                     {{ $transaction->merchant ?: $category }}
@@ -327,9 +286,7 @@
                     ${{ number_format($transaction->amount, 2) }}
                 </td>
             </tr>
-
         @endforeach
-
         {{-- Category Total --}}
         <tr class="category-total">
             <td class="category-total-label" colspan="3">
@@ -340,20 +297,14 @@
                 ${{ number_format($transactions->sum('amount'), 2) }}
             </td>
         </tr>
-
     @empty
-
         <tr>
             <td colspan="4">
                 No expense transactions for this period.
             </td>
         </tr>
-
     @endforelse
-
-
     {{-- Total Expenses --}}
-
     <tr class="section-total">
         <td colspan="3">
             Total Expenses
@@ -363,17 +314,10 @@
             ${{ number_format($expenseTotal, 2) }}
         </td>
     </tr>
-
     </tbody>
 </table>
-
-
-{{-- =========================================================
-     MONTHLY SUMMARY
-     ========================================================= --}}
-
+{{-- MONTHLY SUMMARY --}}
 <table class="summary">
-
     <tr>
         <td colspan="2" class="summary-title">
             Monthly Summary
@@ -415,12 +359,7 @@
     </tr>
 
 </table>
-
-
-{{-- =========================================================
-     FOOTER
-     ========================================================= --}}
-
+{{--FOOTER  --}}
 <div class="footer">
     Generated {{ now()->format('M j, Y') }}
 </div>
