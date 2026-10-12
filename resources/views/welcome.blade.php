@@ -524,7 +524,6 @@
         </div>
 
         <div class="accordion" id="faqAccordion">
-
             <div class="accordion-item">
                 <h2 class="accordion-header" id="q1">
                     <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#a1">
@@ -557,10 +556,26 @@
             <div class="accordion-item">
                 <h2 class="accordion-header" id="q3">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#a3">
-                        Can I track bills and see what’s unpaid?
+                        Can I import transactions from my bank or credit card?
                     </button>
                 </h2>
                 <div id="a3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body text-secondary">
+                        Yes. You can import transactions using a CSV file exported from your bank or credit card.
+                        We recommend importing a full month of transactions to help establish an accurate budget.
+                        After importing, review your transactions to set their categories and recurring frequency.
+                        Mintly can then use your recurring transactions to help build future monthly budgets.
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="q4">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#a4">
+                        Can I track bills and see what’s unpaid?
+                    </button>
+                </h2>
+                <div id="a4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                     <div class="accordion-body text-secondary">
                         Yes. Mintly lets you mark transactions as paid and clearly shows outstanding amounts,
                         so you always know what’s left to cover each month.
@@ -569,12 +584,12 @@
             </div>
 
             <div class="accordion-item">
-                <h2 class="accordion-header" id="q4">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#a4">
+                <h2 class="accordion-header" id="q5">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#a5">
                         How does the weekly breakdown work?
                     </button>
                 </h2>
-                <div id="a4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div id="a5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                     <div class="accordion-body text-secondary">
                         Your income and expenses are automatically grouped by week, so you can see how each week
                         impacts your overall budget — helping you avoid running out of money before the month ends.
@@ -583,12 +598,12 @@
             </div>
 
             <div class="accordion-item">
-                <h2 class="accordion-header" id="q5">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#a5">
+                <h2 class="accordion-header" id="q6">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#a6">
                         What kind of insights can I see?
                     </button>
                 </h2>
-                <div id="a5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div id="a6" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                     <div class="accordion-body text-secondary">
                         Mintly shows category breakdowns, monthly trends, and income vs expenses over time —
                         so you can quickly understand where your money is going and make better decisions.
@@ -597,12 +612,12 @@
             </div>
 
             <div class="accordion-item">
-                <h2 class="accordion-header" id="q6">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#a6">
+                <h2 class="accordion-header" id="q7">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#a7">
                         Can Mintly help me decide if I should take out a loan?
                     </button>
                 </h2>
-                <div id="a6" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div id="a7" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                     <div class="accordion-body text-secondary">
                         Yes. Mintly includes a <strong>loan calculator</strong> that lets you estimate monthly payments,
                         total interest, and the full cost of a loan before you commit.

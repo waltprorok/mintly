@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Transactions;
 
+use App\Models\Category;
 use App\Models\Transaction;
 use Barryvdh\DomPDF\PDF;
 use Carbon\Carbon;
@@ -219,7 +220,7 @@ class TransactionResource extends Resource
 
                 TextColumn::make('merchant')
                     ->placeholder('Netflix')
-                    ->limit(30)
+                    ->limit(20)
                     ->tooltip(fn ($state) => $state)
                     ->searchable()
                     ->sortable(),
@@ -359,6 +360,39 @@ class TransactionResource extends Resource
                     ->requiresConfirmation()
                     ->modalHeading('Delete Transactions')
                     ->modalDescription('Are you sure you want to delete the selected transactions? This cannot be undone.'),
+
+                BulkAction::make('update_category')
+                    ->label('Set Category')
+                    ->icon('heroicon-o-tag')
+                    ->color('primary')
+                    ->form([
+                        Select::make('category_id')
+                            ->label('Category')
+                            ->options(
+                                fn () => Category::query()
+                                    ->where('user_id', auth()->id())
+                                    ->orderBy('name')
+                                    ->pluck('name', 'id')
+                                    ->toArray()
+                            )
+                            ->searchable()
+                            ->required(),
+                    ])
+                    ->action(function ($records, array $data) {
+                        Transaction::query()
+                            ->whereIn('id', $records->pluck('id'))
+                            ->where('user_id', auth()->id())
+                            ->update([
+                                'category_id' => $data['category_id'],
+                            ]);
+
+                        Notification::make()
+                            ->title('Categories updated')
+                            ->body($records->count() . ' transactions updated.')
+                            ->success()
+                            ->send();
+                    })
+                    ->deselectRecordsAfterCompletion(),
 
             ]);
     }
