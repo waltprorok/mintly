@@ -183,7 +183,8 @@
             <div class="col-lg-8">
                 <h2 class="fw-bold">How Mintly works</h2>
                 <p class="text-secondary mb-0">
-                    A simple 3-step system to take control of your monthly cash flow.
+                    A simple 3-step system to set up your budget, manage your monthly cash flow,
+                    and understand where your money is going.
                 </p>
             </div>
         </div>
@@ -195,13 +196,15 @@
                 <div class="card h-100 border-0 shadow-sm p-4 text-center">
                     <div class="mb-3">
                         <div class="mb-2">
-                            <i class="bi bi-wallet2 fs-1 text-body"></i>
+                            <i class="bi bi-file-earmark-arrow-up fs-1 text-body"></i>
                         </div>
                         <span class="badge bg-primary rounded-pill px-3 py-2">Step 1</span>
                     </div>
-                    <h5 class="fw-bold">Plan your month</h5>
+                    <h5 class="fw-bold">Build your budget</h5>
                     <p class="text-secondary mb-0">
-                        Add your income, bills, and expected expenses so you know exactly what’s coming.
+                        Import transactions from your bank or credit card using a CSV file,
+                        or add them manually. Review your categories and recurring frequency
+                        to quickly establish your monthly budget.
                     </p>
                 </div>
             </div>
@@ -217,7 +220,8 @@
                     </div>
                     <h5 class="fw-bold">Track as you go</h5>
                     <p class="text-secondary mb-0">
-                        Mark transactions as paid and watch your weekly cash flow update in real time.
+                        Mark transactions as paid, keep up with upcoming expenses,
+                        and watch your weekly cash flow throughout the month.
                     </p>
                 </div>
             </div>
@@ -233,7 +237,8 @@
                     </div>
                     <h5 class="fw-bold">Understand your money</h5>
                     <p class="text-secondary mb-0">
-                        See where your money goes, avoid overspending, and make better decisions each month.
+                        See where your money goes, identify spending habits,
+                        and make better financial decisions each month.
                     </p>
                 </div>
             </div>
@@ -242,7 +247,7 @@
 
         <div class="text-center mt-5">
             <a href="{{ route('register') }}" class="btn btn-outline-primary btn-lg">
-                Start planning your month
+                Start building your budget
             </a>
         </div>
     </div>
