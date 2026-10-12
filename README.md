@@ -7,8 +7,8 @@ Personal Budget App
     Composer 2
     Laravel  11
     Database MySQL 8.0
-    NodeJS   18.20.8
-    NPM      10.8.2
+    NodeJS   22.23.3
+    NPM      10.9.9
 
 ### Getting started
 

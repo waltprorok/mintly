@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Transactions\Pages;
 
+use App\Filament\Actions\ImportTransactionsCsvAction;
 use App\Filament\Resources\Transactions\TransactionResource;
 use App\Filament\Widgets\TransactionOverview;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -20,6 +21,8 @@ class ListTransactions extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
+            ImportTransactionsCsvAction::make(),
+
             Action::make('downloadPdf')
                 ->label('Download PDF')
                 ->icon('heroicon-o-arrow-down-tray')

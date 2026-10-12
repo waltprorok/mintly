@@ -9,6 +9,8 @@ We're excited to help you take control of your finances and build better money h
 With Mintly you can:
 
 * Organize your income and expenses into categories
+* Import transactions from your bank or credit card using a CSV file
+* Quickly review imported transactions and set their categories and recurring frequency
 * Plan your monthly budget and see where your money is going
 * Automatically carry recurring transactions into future months
 * See your income and expenses broken down week by week
@@ -19,7 +21,8 @@ With Mintly you can:
 ## Next steps
 
 * [Create your categories]({{ url('/dashboard/categories') }}) to get started
-* [Add your transactions]({{ url('/dashboard/transactions') }}) in seconds
+* [Import your transactions]({{ url('/dashboard/transactions') }}) from a bank or credit card CSV, or add them manually
+* Review your imported transactions to set their categories and recurring frequency
 * Instantly see insights into your spending habits
 
 Click below to get started with your dashboard.

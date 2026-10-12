@@ -184,7 +184,7 @@ class MonthlyBudget extends Page implements HasTable
             ->recordUrl(null)
             ->actions([
                 Action::make('editTransaction')
-                    ->icon('heroicon-o-pencil-square')
+                    ->icon(' ')
                     ->label(' ')
                     ->color('blue')
                     ->modalHeading('Edit Transaction')
@@ -275,7 +275,7 @@ class MonthlyBudget extends Page implements HasTable
                 ->requiresConfirmation()
                 ->modalHeading("Prepare {$nextPeriodLabel}")
                 ->modalDescription(
-                    "Recurring transactions will be carried forward into {$nextPeriodLabel} based on their frequency."
+                    "Recurring transactions will be carried forward into {$nextPeriodLabel} based on their frequency. *Not one time purchases"
                 )
                 ->modalSubmitActionLabel('Prepare')
                 ->action(function () use ($selectedPeriod, $nextPeriodLabel) {

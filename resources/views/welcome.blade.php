@@ -183,7 +183,8 @@
             <div class="col-lg-8">
                 <h2 class="fw-bold">How Mintly works</h2>
                 <p class="text-secondary mb-0">
-                    A simple 3-step system to take control of your monthly cash flow.
+                    A simple 3-step system to set up your budget, manage your monthly cash flow,
+                    and understand where your money is going.
                 </p>
             </div>
         </div>
@@ -195,13 +196,15 @@
                 <div class="card h-100 border-0 shadow-sm p-4 text-center">
                     <div class="mb-3">
                         <div class="mb-2">
-                            <i class="bi bi-wallet2 fs-1 text-body"></i>
+                            <i class="bi bi-file-earmark-arrow-up fs-1 text-body"></i>
                         </div>
                         <span class="badge bg-primary rounded-pill px-3 py-2">Step 1</span>
                     </div>
-                    <h5 class="fw-bold">Plan your month</h5>
+                    <h5 class="fw-bold">Build your budget</h5>
                     <p class="text-secondary mb-0">
-                        Add your income, bills, and expected expenses so you know exactly what’s coming.
+                        Import transactions from your bank or credit card using a CSV file,
+                        or add them manually. Review your categories and recurring frequency
+                        to quickly establish your monthly budget.
                     </p>
                 </div>
             </div>
@@ -217,7 +220,8 @@
                     </div>
                     <h5 class="fw-bold">Track as you go</h5>
                     <p class="text-secondary mb-0">
-                        Mark transactions as paid and watch your weekly cash flow update in real time.
+                        Mark transactions as paid, keep up with upcoming expenses,
+                        and watch your weekly cash flow throughout the month.
                     </p>
                 </div>
             </div>
@@ -233,7 +237,8 @@
                     </div>
                     <h5 class="fw-bold">Understand your money</h5>
                     <p class="text-secondary mb-0">
-                        See where your money goes, avoid overspending, and make better decisions each month.
+                        See where your money goes, identify spending habits,
+                        and make better financial decisions each month.
                     </p>
                 </div>
             </div>
@@ -242,7 +247,7 @@
 
         <div class="text-center mt-5">
             <a href="{{ route('register') }}" class="btn btn-outline-primary btn-lg">
-                Start planning your month
+                Start building your budget
             </a>
         </div>
     </div>
@@ -524,7 +529,6 @@
         </div>
 
         <div class="accordion" id="faqAccordion">
-
             <div class="accordion-item">
                 <h2 class="accordion-header" id="q1">
                     <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#a1">
@@ -557,10 +561,26 @@
             <div class="accordion-item">
                 <h2 class="accordion-header" id="q3">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#a3">
-                        Can I track bills and see what’s unpaid?
+                        Can I import transactions from my bank or credit card?
                     </button>
                 </h2>
                 <div id="a3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body text-secondary">
+                        Yes. You can import transactions using a CSV file exported from your bank or credit card.
+                        We recommend importing a full month of transactions to help establish an accurate budget.
+                        After importing, review your transactions to set their categories and recurring frequency.
+                        Mintly can then use your recurring transactions to help build future monthly budgets.
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="q4">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#a4">
+                        Can I track bills and see what’s unpaid?
+                    </button>
+                </h2>
+                <div id="a4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                     <div class="accordion-body text-secondary">
                         Yes. Mintly lets you mark transactions as paid and clearly shows outstanding amounts,
                         so you always know what’s left to cover each month.
@@ -569,12 +589,12 @@
             </div>
 
             <div class="accordion-item">
-                <h2 class="accordion-header" id="q4">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#a4">
+                <h2 class="accordion-header" id="q5">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#a5">
                         How does the weekly breakdown work?
                     </button>
                 </h2>
-                <div id="a4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div id="a5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                     <div class="accordion-body text-secondary">
                         Your income and expenses are automatically grouped by week, so you can see how each week
                         impacts your overall budget — helping you avoid running out of money before the month ends.
@@ -583,12 +603,12 @@
             </div>
 
             <div class="accordion-item">
-                <h2 class="accordion-header" id="q5">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#a5">
+                <h2 class="accordion-header" id="q6">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#a6">
                         What kind of insights can I see?
                     </button>
                 </h2>
-                <div id="a5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div id="a6" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                     <div class="accordion-body text-secondary">
                         Mintly shows category breakdowns, monthly trends, and income vs expenses over time —
                         so you can quickly understand where your money is going and make better decisions.
@@ -597,12 +617,12 @@
             </div>
 
             <div class="accordion-item">
-                <h2 class="accordion-header" id="q6">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#a6">
+                <h2 class="accordion-header" id="q7">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#a7">
                         Can Mintly help me decide if I should take out a loan?
                     </button>
                 </h2>
-                <div id="a6" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div id="a7" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                     <div class="accordion-body text-secondary">
                         Yes. Mintly includes a <strong>loan calculator</strong> that lets you estimate monthly payments,
                         total interest, and the full cost of a loan before you commit.
