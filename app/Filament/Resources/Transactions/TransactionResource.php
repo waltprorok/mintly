@@ -65,13 +65,11 @@ class TransactionResource extends Resource
                     $net = $incomeTotal - $expenseTotal;
 
                     $incomeByCategory = $income->groupBy(
-                        fn ($transaction) =>
-                            $transaction->category?->name ?? 'Other Income'
+                        fn($transaction) => $transaction->category?->name ?? 'Other Income'
                     );
 
                     $expensesByCategory = $expenses->groupBy(
-                        fn ($transaction) =>
-                            $transaction->category?->name ?? 'Uncategorized'
+                        fn($transaction) => $transaction->category?->name ?? 'Uncategorized'
                     );
 
                     $from = $transactions->min('due_at');
@@ -94,7 +92,7 @@ class TransactionResource extends Resource
                         ->setPaper('letter', 'portrait');
 
                     return response()->streamDownload(
-                        fn () => print($pdf->output()),
+                        fn() => print($pdf->output()),
                         'transactions-' . now()->format('Y-m-d') . '.pdf'
                     );
                 }),
@@ -209,7 +207,7 @@ class TransactionResource extends Resource
                 SelectColumn::make('category_id')
                     ->label('Category')
                     ->options(
-                        fn () => \App\Models\Category::query()
+                        fn() => \App\Models\Category::query()
                             ->where('user_id', auth()->id())
                             ->orderBy('name')
                             ->pluck('name', 'id')
@@ -221,7 +219,7 @@ class TransactionResource extends Resource
                 TextColumn::make('merchant')
                     ->placeholder('Netflix')
                     ->limit(20)
-                    ->tooltip(fn ($state) => $state)
+                    ->tooltip(fn($state) => $state)
                     ->searchable()
                     ->sortable(),
 
@@ -335,32 +333,6 @@ class TransactionResource extends Resource
             ->persistFiltersInSession()
             ->defaultSort('due_at')
             ->bulkActions([
-                BulkAction::make('mark_paid')
-                    ->label('Mark as Paid')
-                    ->icon('heroicon-o-check-circle')
-                    ->color('success')
-                    ->requiresConfirmation()
-                    ->action(function ($records) {
-                        Transaction::whereIn('id', $records->pluck('id'))
-                            ->update([
-                                'is_paid' => true,
-                            ]);
-                    })
-                    ->deselectRecordsAfterCompletion()
-                    ->after(function ($records) {
-                        Notification::make()
-                            ->title('Transactions updated')
-                            ->body($records->count() . ' transactions marked as paid.')
-                            ->success()
-                            ->send();
-                    }),
-
-                DeleteBulkAction::make()
-                    ->label('Delete Selected')
-                    ->requiresConfirmation()
-                    ->modalHeading('Delete Transactions')
-                    ->modalDescription('Are you sure you want to delete the selected transactions? This cannot be undone.'),
-
                 BulkAction::make('update_category')
                     ->label('Set Category')
                     ->icon('heroicon-o-tag')
@@ -369,7 +341,7 @@ class TransactionResource extends Resource
                         Select::make('category_id')
                             ->label('Category')
                             ->options(
-                                fn () => Category::query()
+                                fn() => Category::query()
                                     ->where('user_id', auth()->id())
                                     ->orderBy('name')
                                     ->pluck('name', 'id')
@@ -429,6 +401,31 @@ class TransactionResource extends Resource
                     })
                     ->deselectRecordsAfterCompletion(),
 
+                BulkAction::make('mark_paid')
+                    ->label('Mark as Paid')
+                    ->icon('heroicon-o-check-circle')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->action(function ($records) {
+                        Transaction::whereIn('id', $records->pluck('id'))
+                            ->update([
+                                'is_paid' => true,
+                            ]);
+                    })
+                    ->deselectRecordsAfterCompletion()
+                    ->after(function ($records) {
+                        Notification::make()
+                            ->title('Transactions updated')
+                            ->body($records->count() . ' transactions marked as paid.')
+                            ->success()
+                            ->send();
+                    }),
+
+                DeleteBulkAction::make()
+                    ->label('Delete Selected')
+                    ->requiresConfirmation()
+                    ->modalHeading('Delete Transactions')
+                    ->modalDescription('Are you sure you want to delete the selected transactions? This cannot be undone.'),
             ]);
     }
 
