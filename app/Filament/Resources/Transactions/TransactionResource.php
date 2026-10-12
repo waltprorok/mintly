@@ -394,6 +394,41 @@ class TransactionResource extends Resource
                     })
                     ->deselectRecordsAfterCompletion(),
 
+                BulkAction::make('update_frequency')
+                    ->label('Set Frequency')
+                    ->icon('heroicon-o-arrow-path')
+                    ->color('primary')
+                    ->form([
+                        Select::make('recurring_rule')
+                            ->label('Frequency')
+                            ->options([
+                                'once' => 'One Time',
+                                'weekly' => 'Weekly',
+                                'biweekly' => 'Bi-Weekly',
+                                'monthly' => 'Monthly',
+                                'quarterly' => 'Quarterly',
+                                'semiannually' => 'Every Six Months',
+                                'yearly' => 'Yearly',
+                            ])
+                            ->required(),
+                    ])
+                    ->action(function ($records, array $data) {
+                        Transaction::query()
+                            ->whereIn('id', $records->pluck('id'))
+                            ->where('user_id', auth()->id())
+                            ->update([
+                                'recurring_rule' => $data['recurring_rule'],
+                                'is_recurring' => $data['recurring_rule'] !== 'once',
+                            ]);
+
+                        Notification::make()
+                            ->title('Frequency updated')
+                            ->body($records->count() . ' transactions updated.')
+                            ->success()
+                            ->send();
+                    })
+                    ->deselectRecordsAfterCompletion(),
+
             ]);
     }
 
