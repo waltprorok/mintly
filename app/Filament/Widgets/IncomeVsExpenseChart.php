@@ -18,7 +18,13 @@ class IncomeVsExpenseChart extends ChartWidget
 
     public function mount(): void
     {
-        $this->filter = now()->format('Y-m');
+        $newest = Transaction::query()
+            ->where('user_id', auth()->id())
+            ->max('due_at');
+
+        $this->filter = $newest
+            ? Carbon::parse($newest)->format('Y-m')
+            : now()->format('Y-m');
     }
 
     protected function getData(): array

@@ -20,15 +20,28 @@ class WantsVsNeedsChart extends ChartWidget
 
     public function mount(): void
     {
+        $newest = Transaction::query()
+            ->where('user_id', auth()->id())
+            ->max('due_at');
+
+        if ($newest) {
+            $date = Carbon::parse($newest);
+
+            $this->month = $date->month;
+            $this->year = $date->year;
+
+            return;
+        }
+
         $this->month = now()->month;
         $this->year = now()->year;
     }
 
     #[On('categoryPeriodChanged')]
-    public function updatePeriod($data): void
+    public function updatePeriod(array $data): void
     {
-        $this->month = (int) $data['month'];
-        $this->year = (int) $data['year'];
+        $this->month = (int) ($data['month'] ?? now()->month);
+        $this->year = (int) ($data['year'] ?? now()->year);
 
         $this->dispatch('$refresh');
     }
