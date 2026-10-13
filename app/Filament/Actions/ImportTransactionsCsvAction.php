@@ -39,6 +39,9 @@ class ImportTransactionsCsvAction
                 FileUpload::make('file')
                     ->label('CSV File')
                     ->validationAttribute('CSV file')
+                    ->helperText(
+                        '🔒 Your CSV is processed securely and removed from temporary storage after importing.'
+                    )
                     ->disk('local')
                     ->directory('transaction-imports')
                     ->acceptedFileTypes([
