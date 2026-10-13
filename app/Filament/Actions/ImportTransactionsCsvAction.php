@@ -7,6 +7,7 @@ use App\Services\TransactionCsvImporter;
 use Filament\Actions\Action;
 use Filament\Forms\Components\FileUpload;
 use Filament\Notifications\Notification;
+use Filament\Support\Enums\Width;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification as LaravelNotification;
 use Illuminate\Support\Facades\Storage;
@@ -20,15 +21,24 @@ class ImportTransactionsCsvAction
             ->label('Import CSV')
             ->icon('heroicon-o-arrow-up-tray')
             ->color('gray')
+            // Modal
             ->modalHeading('Import Transactions')
+            ->modalIcon('heroicon-o-arrow-up-tray')
+            ->modalIconColor('primary')
+            ->modalWidth(Width::ThreeExtraLarge)
             ->modalDescription(
-                'Upload a CSV exported from your bank or credit card.
-                We recommend importing a full month of transactions to create an accurate budget foundation.
-                Once imported, review your transactions to set their categories and recurring frequencies.'
+                'Import transactions from your bank or credit card to quickly build your budget.'
             )
+            ->modalContent(
+                fn () => view('filament.modals.import-transactions-csv')
+            )
+            ->modalSubmitActionLabel('Import Transactions')
+            ->modalCancelActionLabel('Cancel')
+            ->stickyModalFooter()
             ->form([
                 FileUpload::make('file')
                     ->label('CSV File')
+                    ->validationAttribute('CSV file')
                     ->disk('local')
                     ->directory('transaction-imports')
                     ->acceptedFileTypes([
