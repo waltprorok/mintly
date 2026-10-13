@@ -20,6 +20,7 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Filament\Support\Enums\Size;
 use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
@@ -218,7 +219,7 @@ class TransactionResource extends Resource
 
                 TextColumn::make('merchant')
                     ->placeholder('Netflix')
-                    ->limit(20)
+                    ->limit(24)
                     ->tooltip(fn($state) => $state)
                     ->searchable()
                     ->sortable(),
@@ -332,11 +333,12 @@ class TransactionResource extends Resource
             ->searchable()
             ->persistFiltersInSession()
             ->defaultSort('due_at')
-            ->bulkActions([
+            ->toolbarActions([
                 BulkAction::make('update_category')
                     ->label('Set Category')
                     ->icon('heroicon-o-tag')
-                    ->color('primary')
+                    ->color('gray')
+                    ->size(Size::Small)
                     ->form([
                         Select::make('category_id')
                             ->label('Category')
@@ -369,7 +371,8 @@ class TransactionResource extends Resource
                 BulkAction::make('update_frequency')
                     ->label('Set Frequency')
                     ->icon('heroicon-o-arrow-path')
-                    ->color('primary')
+                    ->color('gray')
+                    ->size(Size::Small)
                     ->form([
                         Select::make('recurring_rule')
                             ->label('Frequency')
@@ -404,7 +407,8 @@ class TransactionResource extends Resource
                 BulkAction::make('mark_paid')
                     ->label('Mark as Paid')
                     ->icon('heroicon-o-check-circle')
-                    ->color('success')
+                    ->color('primary')
+                    ->size(Size::Small)
                     ->requiresConfirmation()
                     ->action(function ($records) {
                         Transaction::whereIn('id', $records->pluck('id'))
@@ -422,7 +426,8 @@ class TransactionResource extends Resource
                     }),
 
                 DeleteBulkAction::make()
-                    ->label('Delete Selected')
+                    ->label('Delete')
+                    ->size(Size::Small)
                     ->requiresConfirmation()
                     ->modalHeading('Delete Transactions')
                     ->modalDescription('Are you sure you want to delete the selected transactions? This cannot be undone.'),

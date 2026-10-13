@@ -2,11 +2,13 @@
 
 namespace App\Filament\Actions;
 
+use App\Notifications\TransactionCsvImportFailed;
 use App\Services\TransactionCsvImporter;
 use Filament\Actions\Action;
 use Filament\Forms\Components\FileUpload;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification as LaravelNotification;
 use Illuminate\Support\Facades\Storage;
 use Throwable;
 
@@ -20,7 +22,9 @@ class ImportTransactionsCsvAction
             ->color('gray')
             ->modalHeading('Import Transactions')
             ->modalDescription(
-                'Upload a CSV exported from your bank or credit card. We recommend importing a full month of transactions to create an accurate budget foundation. Once imported, review your transactions to set their categories and recurring frequencies.'
+                'Upload a CSV exported from your bank or credit card.
+                We recommend importing a full month of transactions to create an accurate budget foundation.
+                Once imported, review your transactions to set their categories and recurring frequencies.'
             )
             ->form([
                 FileUpload::make('file')
@@ -30,7 +34,13 @@ class ImportTransactionsCsvAction
                     ->acceptedFileTypes([
                         'text/csv',
                         'text/plain',
+                        'application/csv',
+                        'text/comma-separated-values',
                         'application/vnd.ms-excel',
+                        'application/octet-stream',
+                    ])
+                    ->rules([
+                        'extensions:csv',
                     ])
                     ->required(),
             ])
@@ -60,16 +70,40 @@ class ImportTransactionsCsvAction
 
                     $notification->send();
                 } catch (Throwable $exception) {
+                    $user = auth()->user();
+
                     Log::error('Transaction CSV import failed.', [
-                        'user_id' => auth()->id(),
+                        'user_id' => $user->id,
                         'file' => $data['file'],
                         'path' => $path,
                         'exception' => $exception->getMessage(),
+                        'exception_file' => $exception->getFile(),
+                        'exception_line' => $exception->getLine(),
                     ]);
+
+                    try {
+                        LaravelNotification::route('mail', config('support.email'))
+                            ->notify(
+                                new TransactionCsvImportFailed(
+                                    user: $user,
+                                    exception: $exception,
+                                    filePath: $path,
+                                    originalFileName: basename($data['file']),
+                                )
+                            );
+                    } catch (Throwable $mailException) {
+                        Log::error('Unable to send CSV import failure notification.', [
+                            'user_id' => $user->id,
+                            'exception' => $mailException->getMessage(),
+                        ]);
+                    }
 
                     Notification::make()
                         ->title('Transaction import failed')
-                        ->body('There was a problem importing the CSV file. Please verify the file format and try again.')
+                        ->body(
+                            'There was a problem importing the CSV file. ' .
+                            'The issue has been sent to support for review.'
+                        )
                         ->danger()
                         ->send();
                 } finally {

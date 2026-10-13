@@ -69,25 +69,28 @@ class TransactionsOverTimeChart extends ChartWidget
         $colors = [];
 
         for ($day = 1; $day <= $daysInMonth; $day++) {
-            $labels[] = (string)$day;
+            $labels[] = (string) $day;
 
             $count = $results[$day] ?? 0;
             $data[] = $count;
 
-            $date = Carbon::create($this->year, $this->month, $day);
+            $date = Carbon::create(
+                $this->year,
+                $this->month,
+                $day
+            );
 
-            // Highlight logic (aligned with your UI)
             if ($count >= 5) {
-                // Very high activity → stronger amber (attention, not danger)
-                $colors[] = 'rgba(245,158,11,0.65)';
+                // High activity → Red
+                $colors[] = 'rgba(239,68,68,0.70)';
             } elseif ($count >= 3) {
-                // Moderate activity → soft amber
+                // Moderate activity → Amber
                 $colors[] = 'rgba(245,158,11,0.70)';
             } elseif ($date->isWeekend()) {
-                // Weekend → subtle muted gray (less visual noise)
+                // Weekend → Gray
                 $colors[] = 'rgba(156,163,175,0.70)';
             } else {
-                // Normal → your standard blue
+                // Normal → Blue
                 $colors[] = 'rgba(59,130,246,0.70)';
             }
         }

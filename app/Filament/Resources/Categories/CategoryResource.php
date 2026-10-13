@@ -171,6 +171,7 @@ class CategoryResource extends Resource
                         'Side Hustle' => 'Side Hustle',
                         'Second Job' => 'Second Job',
                         // Housing
+                        'House' => 'House',
                         'Mortgage' => 'Mortgage',
                         'Rent' => 'Rent',
                         'Property Taxes' => 'Property Taxes',
@@ -199,15 +200,18 @@ class CategoryResource extends Resource
                         'Debt Payments' => 'Debt Payments',
                         'Student Loan' => 'Student Loan',
                         'Taxes' => 'Taxes',
+                        'Fees & Charges' => 'Fees & Charges',
                         // Lifestyle
                         'Subscriptions' => 'Subscriptions',
                         'Entertainment' => 'Entertainment',
                         'Clothing' => 'Clothing',
                         'Shopping' => 'Shopping',
+                        'Household' => 'Household',
                         'Travel' => 'Travel',
                         'Gifts & Donations' => 'Gifts & Donations',
                         'Pets' => 'Pets',
                         'Hobbies' => 'Hobbies',
+                        'One Time Purchase' => 'One Time Purchase',
                         // Family
                         'Childcare' => 'Childcare',
                         'Education' => 'Education',
@@ -226,6 +230,7 @@ class CategoryResource extends Resource
                     'Side Hustle' => ['income', 'unknown'],
                     'Second Job' => ['income', 'unknown'],
                     // Housing
+                    'House' => ['expense', 'non_discretionary'],
                     'Mortgage' => ['expense', 'non_discretionary'],
                     'Rent' => ['expense', 'non_discretionary'],
                     'Property Taxes' => ['expense', 'non_discretionary'],
@@ -254,15 +259,18 @@ class CategoryResource extends Resource
                     'Debt Payments' => ['expense', 'non_discretionary'],
                     'Student Loan' => ['expense', 'non_discretionary'],
                     'Taxes' => ['expense', 'non_discretionary'],
+                    'Fees & Charges' => ['expense', 'non_discretionary'],
                     // Lifestyle
                     'Subscriptions' => ['expense', 'discretionary'],
                     'Entertainment' => ['expense', 'discretionary'],
                     'Clothing' => ['expense', 'discretionary'],
                     'Shopping' => ['expense', 'discretionary'],
+                    'Household' => ['expense', 'discretionary'],
                     'Travel' => ['expense', 'discretionary'],
                     'Gifts & Donations' => ['expense', 'discretionary'],
                     'Pets' => ['expense', 'discretionary'],
                     'Hobbies' => ['expense', 'discretionary'],
+                    'One Time Purchase' => ['expense', 'discretionary'],
                     // Family
                     'Childcare' => ['expense', 'non_discretionary'],
                     'Education' => ['expense', 'non_discretionary'],
