@@ -367,8 +367,8 @@ class TransactionResource extends Resource
                             ->body($records->count() . ' transactions updated.')
                             ->success()
                             ->send();
-                    })
-                    ->deselectRecordsAfterCompletion(),
+                    }),
+//                    ->deselectRecordsAfterCompletion(),
 
                 BulkAction::make('update_frequency')
                     ->label('Set Frequency')
@@ -404,8 +404,8 @@ class TransactionResource extends Resource
                             ->body($records->count() . ' transactions updated.')
                             ->success()
                             ->send();
-                    })
-                    ->deselectRecordsAfterCompletion(),
+                    }),
+//                    ->deselectRecordsAfterCompletion(),
 
                 BulkAction::make('mark_paid')
                     ->label('Mark as Paid')
