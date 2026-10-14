@@ -321,10 +321,7 @@ class TransactionCsvImporter
         ];
     }
 
-    private function normalizeRow(
-        array $row,
-        array $layout,
-    ): ?array
+    private function normalizeRow(array $row, array $layout): ?array
     {
         $description = trim(
             (string)($row[$layout['description']] ?? '')
@@ -410,11 +407,7 @@ class TransactionCsvImporter
         ];
     }
 
-    private function determineTransactionType(
-        array $row,
-        array $layout,
-        float $amount,
-    ): string
+    private function determineTransactionType(array $row, array $layout, float $amount): string
     {
         /*
          * Bank exports with explicit CREDIT / DEBIT indicators.
@@ -455,11 +448,7 @@ class TransactionCsvImporter
             : 'income';
     }
 
-    private function resolveCategory(
-        int        $userId,
-        Collection $categories,
-        array      $transaction,
-    ): ?Category
+    private function resolveCategory(int $userId, Collection $categories, array $transaction): ?Category
     {
         /*
          * 1. Try an exact category supplied by the CSV.
@@ -522,9 +511,7 @@ class TransactionCsvImporter
         return $previous?->category;
     }
 
-    private function mapExternalCategory(
-        string $category
-    ): ?string
+    private function mapExternalCategory(string $category): ?string
     {
         return match (Str::lower(trim($category))) {
             'groceries' => 'Groceries',
@@ -556,9 +543,7 @@ class TransactionCsvImporter
             ->toString();
     }
 
-    private function merchantKey(
-        ?string $merchant
-    ): string
+    private function merchantKey(?string $merchant): string
     {
         return Str::of($merchant ?? '')
             ->lower()
@@ -580,9 +565,7 @@ class TransactionCsvImporter
             ) === 1;
     }
 
-    private function looksLikeNumber(
-        mixed $value
-    ): bool
+    private function looksLikeNumber(mixed $value): bool
     {
         if ($value === null || trim((string)$value) === '') {
             return false;
@@ -602,9 +585,7 @@ class TransactionCsvImporter
         return is_numeric($value);
     }
 
-    private function parseNumber(
-        mixed $value
-    ): float
+    private function parseNumber(mixed $value): float
     {
         if ($value === null) {
             throw new RuntimeException(
@@ -641,9 +622,7 @@ class TransactionCsvImporter
             : $amount;
     }
 
-    private function parseDate(
-        mixed $value
-    ): Carbon
+    private function parseDate(mixed $value): Carbon
     {
         if (! $value) {
             throw new RuntimeException(
@@ -661,10 +640,7 @@ class TransactionCsvImporter
         }
     }
 
-    private function findAmountColumn(
-        Collection $sample,
-        array      $columns,
-    ): string
+    private function findAmountColumn(Collection $sample, array $columns): string
     {
         if (count($columns) === 1) {
             return $columns[0];
@@ -699,10 +675,7 @@ class TransactionCsvImporter
         return $columns[0];
     }
 
-    private function findDescriptionColumn(
-        Collection $sample,
-        array      $columns,
-    ): ?string
+    private function findDescriptionColumn(Collection $sample, array $columns): ?string
     {
         $bestColumn = null;
         $bestLength = 0;
@@ -733,10 +706,7 @@ class TransactionCsvImporter
         return $bestColumn;
     }
 
-    private function isDuplicate(
-        int   $userId,
-        array $transaction,
-    ): bool
+    private function isDuplicate(int $userId, array $transaction): bool
     {
         return Transaction::query()
             ->where('user_id', $userId)
