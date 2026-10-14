@@ -427,13 +427,20 @@ class TransactionResource extends Resource
                             ->success()
                             ->send();
                     }),
-
                 DeleteBulkAction::make()
                     ->label('Delete')
                     ->size(Size::Small)
                     ->requiresConfirmation()
                     ->modalHeading('Delete Transactions')
-                    ->modalDescription('Are you sure you want to delete the selected transactions? This cannot be undone.'),
+                    ->modalDescription('Are you sure you want to delete the selected transactions? This cannot be undone.')
+                    ->successNotification(null)
+                    ->after(function ($records) {
+                        Notification::make()
+                            ->title('Transactions deleted')
+                            ->body($records->count() . ' transactions deleted successfully.')
+                            ->success()
+                            ->send();
+                    }),
             ]);
     }
 
