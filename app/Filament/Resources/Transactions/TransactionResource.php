@@ -21,6 +21,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\Size;
+use Filament\Support\Enums\Width;
 use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
@@ -339,6 +340,7 @@ class TransactionResource extends Resource
                     ->icon('heroicon-o-tag')
                     ->color('gray')
                     ->size(Size::Small)
+                    ->modalWidth(Width::Medium)
                     ->form([
                         Select::make('category_id')
                             ->label('Category')
@@ -373,6 +375,7 @@ class TransactionResource extends Resource
                     ->icon('heroicon-o-arrow-path')
                     ->color('gray')
                     ->size(Size::Small)
+                    ->modalWidth(Width::Medium)
                     ->form([
                         Select::make('recurring_rule')
                             ->label('Frequency')

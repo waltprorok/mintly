@@ -43,6 +43,13 @@ class TransactionCsvImporter
                 continue;
             }
 
+            // Skip transactions already imported
+            if ($this->isDuplicate($userId, $normalized)) {
+                $duplicates++;
+
+                continue;
+            }
+
             $category = $this->resolveCategory(
                 userId: $userId,
                 categories: $categories,
@@ -51,12 +58,6 @@ class TransactionCsvImporter
 
             if (! $category) {
                 $unmatched++;
-            }
-
-            if ($this->isDuplicate($userId, $normalized)) {
-                $duplicates++;
-
-                continue;
             }
 
             Transaction::create([
@@ -102,7 +103,7 @@ class TransactionCsvImporter
         }
 
         $headers = array_map(
-            fn ($header) => trim((string) $header),
+            fn($header) => trim((string)$header),
             $headers
         );
 
@@ -131,7 +132,7 @@ class TransactionCsvImporter
              */
             if (
                 collect($row)
-                    ->filter(fn ($value) => trim((string) $value) !== '')
+                    ->filter(fn($value) => trim((string)$value) !== '')
                     ->isEmpty()
             ) {
                 continue;
@@ -162,7 +163,7 @@ class TransactionCsvImporter
         foreach ($headers as $header) {
             $values = $sample
                 ->pluck($header)
-                ->filter(fn ($value) => trim((string) $value) !== '');
+                ->filter(fn($value) => trim((string)$value) !== '');
 
             if ($values->isEmpty()) {
                 continue;
@@ -172,7 +173,7 @@ class TransactionCsvImporter
              * Numeric detection first.
              */
             $numericMatches = $values->filter(
-                fn ($value) => $this->looksLikeNumber($value)
+                fn($value) => $this->looksLikeNumber($value)
             )->count();
 
             if ($numericMatches / $values->count() >= 0.70) {
@@ -185,7 +186,7 @@ class TransactionCsvImporter
              * Date detection second.
              */
             $dateMatches = $values->filter(
-                fn ($value) => $this->looksLikeDate($value)
+                fn($value) => $this->looksLikeDate($value)
             )->count();
 
             if ($dateMatches / $values->count() >= 0.70) {
@@ -199,7 +200,7 @@ class TransactionCsvImporter
              */
             $directionMatches = $values->filter(function ($value) {
                 return in_array(
-                    Str::upper(trim((string) $value)),
+                    Str::upper(trim((string)$value)),
                     [
                         'DEBIT',
                         'CREDIT',
@@ -219,7 +220,7 @@ class TransactionCsvImporter
              */
             $typeMatches = $values->filter(function ($value) {
                 return in_array(
-                    Str::upper(trim((string) $value)),
+                    Str::upper(trim((string)$value)),
                     [
                         'SALE',
                         'PAYMENT',
@@ -292,10 +293,9 @@ class TransactionCsvImporter
          * Header names are only hints here, not requirements.
          */
         $categoryColumn = collect($headers)->first(
-            fn ($header) =>
-            str_contains(
+            fn($header) => str_contains(
                 Str::lower($header),
-                'categor'
+                'category'
             )
         );
 
@@ -324,9 +324,10 @@ class TransactionCsvImporter
     private function normalizeRow(
         array $row,
         array $layout,
-    ): ?array {
+    ): ?array
+    {
         $description = trim(
-            (string) ($row[$layout['description']] ?? '')
+            (string)($row[$layout['description']] ?? '')
         );
 
         $amount = $this->parseNumber(
@@ -342,7 +343,7 @@ class TransactionCsvImporter
         if ($layout['transaction_type']) {
             $transactionType = Str::upper(
                 trim(
-                    (string) (
+                    (string)(
                         $row[$layout['transaction_type']]
                         ?? ''
                     )
@@ -396,7 +397,7 @@ class TransactionCsvImporter
 
             'external_category' => $layout['category']
                 ? trim(
-                    (string) (
+                    (string)(
                         $row[$layout['category']]
                         ?? ''
                     )
@@ -413,14 +414,15 @@ class TransactionCsvImporter
         array $row,
         array $layout,
         float $amount,
-    ): string {
+    ): string
+    {
         /*
          * Bank exports with explicit CREDIT / DEBIT indicators.
          */
         if ($layout['direction']) {
             $direction = Str::upper(
                 trim(
-                    (string) (
+                    (string)(
                         $row[$layout['direction']]
                         ?? ''
                     )
@@ -454,17 +456,17 @@ class TransactionCsvImporter
     }
 
     private function resolveCategory(
-        int $userId,
+        int        $userId,
         Collection $categories,
-        array $transaction,
-    ): ?Category {
+        array      $transaction,
+    ): ?Category
+    {
         /*
          * 1. Try an exact category supplied by the CSV.
          */
         if ($transaction['external_category']) {
             $category = $categories->first(
-                fn (Category $category) =>
-                    strcasecmp(
+                fn(Category $category) => strcasecmp(
                         trim($category->name),
                         trim($transaction['external_category'])
                     ) === 0
@@ -486,8 +488,7 @@ class TransactionCsvImporter
 
             if ($mappedName) {
                 $category = $categories->first(
-                    fn (Category $category) =>
-                        strcasecmp(
+                    fn(Category $category) => strcasecmp(
                             trim($category->name),
                             $mappedName
                         ) === 0
@@ -514,8 +515,7 @@ class TransactionCsvImporter
             ->latest('due_at')
             ->get()
             ->first(
-                fn (Transaction $existing) =>
-                    $this->merchantKey($existing->merchant)
+                fn(Transaction $existing) => $this->merchantKey($existing->merchant)
                     === $merchantKey
             );
 
@@ -524,7 +524,8 @@ class TransactionCsvImporter
 
     private function mapExternalCategory(
         string $category
-    ): ?string {
+    ): ?string
+    {
         return match (Str::lower(trim($category))) {
             'groceries' => 'Groceries',
             'gas' => 'Gas',
@@ -557,7 +558,8 @@ class TransactionCsvImporter
 
     private function merchantKey(
         ?string $merchant
-    ): string {
+    ): string
+    {
         return Str::of($merchant ?? '')
             ->lower()
             ->replaceMatches('/[^a-z0-9]+/', '')
@@ -580,8 +582,9 @@ class TransactionCsvImporter
 
     private function looksLikeNumber(
         mixed $value
-    ): bool {
-        if ($value === null || trim((string) $value) === '') {
+    ): bool
+    {
+        if ($value === null || trim((string)$value) === '') {
             return false;
         }
 
@@ -593,7 +596,7 @@ class TransactionCsvImporter
                 ')',
             ],
             '',
-            trim((string) $value)
+            trim((string)$value)
         );
 
         return is_numeric($value);
@@ -601,14 +604,15 @@ class TransactionCsvImporter
 
     private function parseNumber(
         mixed $value
-    ): float {
+    ): float
+    {
         if ($value === null) {
             throw new RuntimeException(
                 'Transaction amount is missing.'
             );
         }
 
-        $value = trim((string) $value);
+        $value = trim((string)$value);
 
         $negative = str_starts_with($value, '(')
             && str_ends_with($value, ')');
@@ -630,7 +634,7 @@ class TransactionCsvImporter
             );
         }
 
-        $amount = (float) $value;
+        $amount = (float)$value;
 
         return $negative
             ? -abs($amount)
@@ -639,7 +643,8 @@ class TransactionCsvImporter
 
     private function parseDate(
         mixed $value
-    ): Carbon {
+    ): Carbon
+    {
         if (! $value) {
             throw new RuntimeException(
                 'Transaction date is missing.'
@@ -658,8 +663,9 @@ class TransactionCsvImporter
 
     private function findAmountColumn(
         Collection $sample,
-        array $columns,
-    ): string {
+        array      $columns,
+    ): string
+    {
         if (count($columns) === 1) {
             return $columns[0];
         }
@@ -667,15 +673,15 @@ class TransactionCsvImporter
         foreach ($columns as $column) {
             $values = $sample
                 ->pluck($column)
-                ->filter(fn ($value) => $this->looksLikeNumber($value))
-                ->map(fn ($value) => $this->parseNumber($value));
+                ->filter(fn($value) => $this->looksLikeNumber($value))
+                ->map(fn($value) => $this->parseNumber($value));
 
             $hasPositive = $values->contains(
-                fn ($value) => $value > 0
+                fn($value) => $value > 0
             );
 
             $hasNegative = $values->contains(
-                fn ($value) => $value < 0
+                fn($value) => $value < 0
             );
 
             /*
@@ -695,8 +701,9 @@ class TransactionCsvImporter
 
     private function findDescriptionColumn(
         Collection $sample,
-        array $columns,
-    ): ?string {
+        array      $columns,
+    ): ?string
+    {
         $bestColumn = null;
         $bestLength = 0;
 
@@ -704,8 +711,7 @@ class TransactionCsvImporter
             $values = $sample
                 ->pluck($column)
                 ->filter(
-                    fn ($value) =>
-                        trim((string) $value) !== ''
+                    fn($value) => trim((string)$value) !== ''
                 );
 
             if ($values->isEmpty()) {
@@ -714,8 +720,7 @@ class TransactionCsvImporter
 
             $averageLength = $values
                 ->map(
-                    fn ($value) =>
-                    strlen(trim((string) $value))
+                    fn($value) => strlen(trim((string)$value))
                 )
                 ->average();
 
@@ -729,9 +734,10 @@ class TransactionCsvImporter
     }
 
     private function isDuplicate(
-        int $userId,
+        int   $userId,
         array $transaction,
-    ): bool {
+    ): bool
+    {
         return Transaction::query()
             ->where('user_id', $userId)
             ->where('type', $transaction['type'])
