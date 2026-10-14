@@ -91,21 +91,27 @@ class CategoryResource extends Resource
                 TextColumn::make('spend_classification')
                     ->label('Classification')
                     ->badge()
-                    ->formatStateUsing(function ($state) {
-                        $state = strtolower($state);
-                        $label = match ($state) {
-                            'discretionary' => 'Wants',
-                            'non_discretionary' => 'Needs',
-                            default => 'Unknown',
+                    ->formatStateUsing(function ($state, $record) {
+                        if ($record->type === 'income') {
+                            return '--';
+                        }
+
+                        return match (strtolower($state ?? '')) {
+                            'non_discretionary' => 'Non-Discretionary (Needs)',
+                            'discretionary' => 'Discretionary (Wants)',
+                            default => 'Unclassified',
                         };
-                        return str($state)
-                                ->replace('_', ' ')
-                                ->title() . " ({$label})";
                     })
-                    ->color(fn($state) => match (strtolower($state)) {
-                        'non_discretionary' => 'primary', // Needs
-                        'discretionary' => 'warning',   // Wants
-                        default => 'gray',
+                    ->color(function ($state, $record) {
+                        if ($record->type === 'income') {
+                            return 'gray';
+                        }
+
+                        return match (strtolower($state ?? '')) {
+                            'non_discretionary' => 'primary',
+                            'discretionary' => 'warning',
+                            default => 'gray',
+                        };
                     })
                     ->sortable(),
 
@@ -115,9 +121,6 @@ class CategoryResource extends Resource
 //                    ->state(fn (Category $record) => $record->user_id === null),
             ])
             ->persistFiltersInSession()
-            ->headerActions([
-                static::installDefaultsAction(),
-            ])
             ->filters([
                 SelectFilter::make('type')
                     ->options([
@@ -160,7 +163,7 @@ class CategoryResource extends Resource
             ->icon('heroicon-o-sparkles')
             ->color('info')
             ->modalHeading('Create Default Categories')
-            ->form([
+            ->schema([
                 CheckboxList::make('categories')
                     ->label('Choose Categories')
                     ->options([
@@ -305,13 +308,17 @@ class CategoryResource extends Resource
 
                 Notification::make()
                     ->title('Categories created')
-                    ->body('Great! Now add your first transaction.')
+                    ->body('Your selected categories are ready. You can now add transactions or continue managing your categories.')
                     ->success()
+                    ->actions([
+                        \Filament\Actions\Action::make('addTransaction')
+                            ->label('Add Transaction')
+                            ->button()
+                            ->url(
+                                \App\Filament\Resources\Transactions\TransactionResource::getUrl('create')
+                            ),
+                    ])
                     ->send();
-
-                return redirect(
-                    \App\Filament\Resources\Transactions\TransactionResource::getUrl('create')
-                );
             });
     }
 

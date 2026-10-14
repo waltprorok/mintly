@@ -3,7 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Transaction;
-use Carbon\Carbon;
+use App\Services\ReportPeriod;
 use Filament\Widgets\ChartWidget;
 use Livewire\Attributes\On;
 
@@ -15,48 +15,30 @@ class CategoryBreakdownChart extends ChartWidget
 
     protected static bool $isDiscovered = false;
 
-    public int $month;
-    public int $year;
+    public ?string $filter = null;
 
     public function mount(): void
     {
-        $newest = Transaction::query()
-            ->where('user_id', auth()->id())
-            ->max('due_at');
-
-        if ($newest) {
-            $date = Carbon::parse($newest);
-
-            $this->month = $date->month;
-            $this->year = $date->year;
-
-            return;
-        }
-
-        $this->month = now()->month;
-        $this->year = now()->year;
+        $this->filter = ReportPeriod::latest();
     }
 
     #[On('categoryPeriodChanged')]
     public function updatePeriod(array $data): void
     {
-        $this->month = (int) ($data['month'] ?? now()->month);
-        $this->year = (int) ($data['year'] ?? now()->year);
+        $this->filter = $data['filter'] ?? ReportPeriod::latest();
 
         $this->dispatch('$refresh');
     }
 
     protected function getData(): array
     {
-        $month = $this->month;
-        $year = $this->year;
+        [$start, $end] = ReportPeriod::range($this->filter);
 
-        // Aggregate in DB (faster + cleaner)
+        // Aggregate expenses by category
         $data = Transaction::query()
             ->where('transactions.user_id', auth()->id())
             ->where('transactions.type', 'expense')
-            ->whereMonth('transactions.due_at', $month)
-            ->whereYear('transactions.due_at', $year)
+            ->whereBetween('transactions.due_at', [$start, $end])
             ->join('categories', 'transactions.category_id', '=', 'categories.id')
             ->selectRaw('categories.name as category, SUM(transactions.amount) as total')
             ->groupBy('categories.name')
@@ -69,8 +51,7 @@ class CategoryBreakdownChart extends ChartWidget
         $income = Transaction::query()
             ->where('user_id', auth()->id())
             ->where('type', 'income')
-            ->whereMonth('due_at', $month)
-            ->whereYear('due_at', $year)
+            ->whereBetween('due_at', [$start, $end])
             ->sum('amount');
 
         $labels = $data->map(function ($amount, $label) use ($income) {

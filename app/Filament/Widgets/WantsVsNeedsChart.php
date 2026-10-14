@@ -3,7 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Transaction;
-use Carbon\Carbon;
+use App\Services\ReportPeriod;
 use Filament\Widgets\ChartWidget;
 use Livewire\Attributes\On;
 
@@ -15,41 +15,24 @@ class WantsVsNeedsChart extends ChartWidget
 
     protected static bool $isDiscovered = false;
 
-    public int $month;
-    public int $year;
+    public ?string $filter = null;
 
     public function mount(): void
     {
-        $newest = Transaction::query()
-            ->where('user_id', auth()->id())
-            ->max('due_at');
-
-        if ($newest) {
-            $date = Carbon::parse($newest);
-
-            $this->month = $date->month;
-            $this->year = $date->year;
-
-            return;
-        }
-
-        $this->month = now()->month;
-        $this->year = now()->year;
+        $this->filter = ReportPeriod::latest();
     }
 
     #[On('categoryPeriodChanged')]
     public function updatePeriod(array $data): void
     {
-        $this->month = (int) ($data['month'] ?? now()->month);
-        $this->year = (int) ($data['year'] ?? now()->year);
+        $this->filter = $data['filter'] ?? ReportPeriod::latest();
 
         $this->dispatch('$refresh');
     }
 
     protected function getData(): array
     {
-        $start = Carbon::create($this->year, $this->month)->startOfMonth();
-        $end = $start->copy()->endOfMonth();
+        [$start, $end] = ReportPeriod::range($this->filter);
 
         $totals = Transaction::query()
             ->where('transactions.user_id', auth()->id())

@@ -3,7 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Transaction;
-use Carbon\Carbon;
+use App\Services\ReportPeriod;
 use Filament\Tables\Columns\Summarizers\Summarizer;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Widgets\TableWidget;
@@ -20,33 +20,17 @@ class CategoryBreakdownTable extends TableWidget
 
     protected static bool $isDiscovered = false;
 
-    public int $month;
-    public int $year;
+    public ?string $filter = null;
 
     public function mount(): void
     {
-        $newest = Transaction::query()
-            ->where('user_id', auth()->id())
-            ->max('due_at');
-
-        if ($newest) {
-            $date = Carbon::parse($newest);
-
-            $this->month = $date->month;
-            $this->year = $date->year;
-
-            return;
-        }
-
-        $this->month = now()->month;
-        $this->year = now()->year;
+        $this->filter = ReportPeriod::latest();
     }
 
     #[On('categoryPeriodChanged')]
     public function updatePeriod(array $data): void
     {
-        $this->month = (int) ($data['month'] ?? now()->month);
-        $this->year = (int) ($data['year'] ?? now()->year);
+        $this->filter = $data['filter'] ?? ReportPeriod::latest();
 
         $this->resetTable();
     }
@@ -68,23 +52,25 @@ class CategoryBreakdownTable extends TableWidget
 
     protected function getTotalIncome(): float
     {
+        [$start, $end] = ReportPeriod::range($this->filter);
+
         return Transaction::query()
             ->where('user_id', auth()->id())
             ->where('type', 'income')
-            ->whereMonth('due_at', $this->month)
-            ->whereYear('due_at', $this->year)
+            ->whereBetween('due_at', [$start, $end])
             ->sum('amount');
     }
 
     public function getTableRecords(): Collection
     {
+        [$start, $end] = ReportPeriod::range($this->filter);
+
         $income = $this->getTotalIncome();
 
         return Transaction::query()
             ->where('user_id', auth()->id())
             ->where('type', 'expense')
-            ->whereMonth('due_at', $this->month)
-            ->whereYear('due_at', $this->year)
+            ->whereBetween('due_at', [$start, $end])
             ->with('category')
             ->get()
             ->groupBy(function ($record) {
@@ -122,7 +108,7 @@ class CategoryBreakdownTable extends TableWidget
             TextColumn::make('percent')
                 ->label('Income Usage')
                 ->alignCenter()
-                ->tooltip('Percentage of your total monthly income')
+                ->tooltip('Percentage of your total income for the selected period')
                 ->formatStateUsing(fn ($state) => $state . '%')
                 ->summarize([
                     Summarizer::make()

@@ -3,7 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Transaction;
-use Carbon\Carbon;
+use App\Services\ReportPeriod;
 use Filament\Widgets\ChartWidget;
 
 class IncomeVsExpenseChart extends ChartWidget
@@ -18,23 +18,17 @@ class IncomeVsExpenseChart extends ChartWidget
 
     public function mount(): void
     {
-        $newest = Transaction::query()
-            ->where('user_id', auth()->id())
-            ->max('due_at');
+        $this->filter = ReportPeriod::latest();
+    }
 
-        $this->filter = $newest
-            ? Carbon::parse($newest)->format('Y-m')
-            : now()->format('Y-m');
+    protected function getFilters(): ?array
+    {
+        return ReportPeriod::filters();
     }
 
     protected function getData(): array
     {
-        [$year, $month] = $this->filter
-            ? explode('-', $this->filter)
-            : [now()->year, now()->month];
-
-        $start = Carbon::create($year, $month)->startOfMonth();
-        $end = $start->copy()->endOfMonth();
+        [$start, $end] = ReportPeriod::range($this->filter);
 
         $income = Transaction::query()
             ->where('user_id', auth()->id())
@@ -92,37 +86,10 @@ class IncomeVsExpenseChart extends ChartWidget
         ];
     }
 
-    protected function getFilters(): ?array
-    {
-        $oldest = Transaction::where('user_id', auth()->id())->min('due_at');
-        $newest = Transaction::where('user_id', auth()->id())->max('due_at');
-
-        $start = $oldest ? Carbon::parse($oldest)->startOfMonth() : now()->startOfMonth();
-        $end = $newest ? Carbon::parse($newest)->startOfMonth() : now()->startOfMonth();
-
-        $periods = [];
-
-        while ($start <= $end) {
-            $key = $start->format('Y-m');
-            $label = $start->format('F Y');
-
-            $periods[$key] = $label;
-
-            $start->addMonth();
-        }
-
-        return collect($periods)->reverse()->toArray();
-    }
-
     public function updatedFilter(): void
     {
-        [$year, $month] = $this->filter
-            ? explode('-', $this->filter)
-            : [now()->year, now()->month];
-
         $this->dispatch('categoryPeriodChanged', [
-            'month' => (int) $month,
-            'year' => (int) $year,
+            'filter' => $this->filter,
         ]);
     }
 

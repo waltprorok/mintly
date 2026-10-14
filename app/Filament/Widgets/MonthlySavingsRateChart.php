@@ -3,7 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Transaction;
-use Carbon\Carbon;
+use App\Services\ReportPeriod;
 use Filament\Widgets\ChartWidget;
 use Livewire\Attributes\On;
 
@@ -15,79 +15,69 @@ class MonthlySavingsRateChart extends ChartWidget
 
     protected static bool $isDiscovered = false;
 
-    public int $month;
-
-    public int $year;
+    public ?string $filter = null;
 
     public function mount(): void
     {
-        $newest = Transaction::query()
-            ->where('user_id', auth()->id())
-            ->max('due_at');
-
-        if ($newest) {
-            $date = Carbon::parse($newest);
-
-            $this->month = $date->month;
-            $this->year = $date->year;
-
-            return;
-        }
-
-        $this->month = now()->month;
-        $this->year = now()->year;
+        $this->filter = ReportPeriod::latest();
     }
 
     #[On('categoryPeriodChanged')]
     public function updatePeriod(array $data): void
     {
-        $this->month = (int) ($data['month'] ?? now()->month);
-        $this->year = (int) ($data['year'] ?? now()->year);
+        $this->filter = $data['filter'] ?? ReportPeriod::latest();
 
         $this->dispatch('$refresh');
     }
 
     protected function getData(): array
     {
+        [$start, $end] = ReportPeriod::range($this->filter);
+
+        $isYearly = str_starts_with(
+            $this->filter ?? ReportPeriod::latest(),
+            'year-'
+        );
+
+        // Yearly: January through December
+        // Monthly: Last 6 months ending with the selected month
+        $months = $isYearly ? 12 : 6;
+
+        $endMonth = $end->copy()->startOfMonth();
+
         $labels = [];
-
         $incomeData = [];
-
         $expenseData = [];
-
         $netData = [];
 
-        for ($i = 5; $i >= 0; $i--) {
+        for ($i = $months - 1; $i >= 0; $i--) {
+            $date = $endMonth->copy()->subMonthsNoOverflow($i);
 
-            $date = Carbon::create($this->year, $this->month)
-                ->subMonths($i);
-
-            $start = $date->copy()->startOfMonth();
-
-            $end = $date->copy()->endOfMonth();
+            $monthStart = $date->copy()->startOfMonth();
+            $monthEnd = $date->copy()->endOfMonth();
 
             $income = Transaction::query()
                 ->where('user_id', auth()->id())
                 ->where('type', 'income')
-                ->whereBetween('due_at', [$start, $end])
+                ->whereBetween('due_at', [$monthStart, $monthEnd])
                 ->sum('amount');
 
             $expenses = Transaction::query()
                 ->where('user_id', auth()->id())
                 ->where('type', 'expense')
-                ->whereBetween('due_at', [$start, $end])
+                ->whereBetween('due_at', [$monthStart, $monthEnd])
                 ->sum('amount');
 
-            $net = $income - $expenses;
-            // Skip completely empty months
+            // Skip months without transactions
             if ($income <= 0 && $expenses <= 0) {
                 continue;
             }
 
             $labels[] = $date->format('M');
+
             $incomeData[] = round($income, 2);
             $expenseData[] = round($expenses, 2);
-            $netData[] = round($net, 2);
+            $netData[] = round($income - $expenses, 2);
         }
 
         return [

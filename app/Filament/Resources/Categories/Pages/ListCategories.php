@@ -13,6 +13,7 @@ class ListCategories extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
+            CategoryResource::installDefaultsAction(),
             CreateAction::make(),
         ];
     }
