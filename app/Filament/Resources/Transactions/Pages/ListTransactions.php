@@ -28,12 +28,6 @@ class ListTransactions extends ListRecords
                 ->icon('heroicon-o-arrow-down-tray')
                 ->color('gray')
                 ->action(function () {
-                    logger()->info('PDF Download', [
-                        'transactions' => (clone $this->getFilteredTableQuery())->count(),
-                        'memory_limit' => ini_get('memory_limit'),
-                        'max_execution_time' => ini_get('max_execution_time'),
-                    ]);
-
                     $transactions = (clone $this->getFilteredTableQuery())
                         ->with('category')
                         ->orderBy('due_at')
