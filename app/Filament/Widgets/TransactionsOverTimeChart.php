@@ -13,7 +13,7 @@ class TransactionsOverTimeChart extends ChartWidget
 
     protected ?string $maxHeight = '425px';
 
-    protected ?string $heading = 'Spending Activity by Day';
+    protected ?string $heading = 'Transaction Activity';
 
     protected static bool $isDiscovered = false;
 
