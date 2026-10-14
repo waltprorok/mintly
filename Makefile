@@ -12,7 +12,7 @@ list:
 	php artisan route:list --except-vendor
 
 log:
-	php artisan app:clear-log-files
+	php artisan log:clear
 
 migrate:
 	php artisan migrate
