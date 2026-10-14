@@ -196,7 +196,6 @@ class CategoryResource extends Resource
                         'Gym' => 'Gym',
                         'Personal Care' => 'Personal Care',
                         // Financial
-                        'Credit Card Payment' => 'Credit Card Payment',
                         'Debt Payments' => 'Debt Payments',
                         'Student Loan' => 'Student Loan',
                         'Taxes' => 'Taxes',
@@ -211,6 +210,7 @@ class CategoryResource extends Resource
                         'Gifts & Donations' => 'Gifts & Donations',
                         'Pets' => 'Pets',
                         'Hobbies' => 'Hobbies',
+                        'Video Games' => 'Video Games',
                         'One Time Purchase' => 'One Time Purchase',
                         // Family
                         'Childcare' => 'Childcare',
@@ -218,6 +218,12 @@ class CategoryResource extends Resource
                         // Catch-all
                         'Miscellaneous' => 'Miscellaneous',
                     ])
+                    ->disableOptionWhen(function (string $value): bool {
+                        return Category::query()
+                            ->where('user_id', auth()->id())
+                            ->where('name', $value)
+                            ->exists();
+                    })
                     ->columns(4)
                     ->required(),
             ])
@@ -255,7 +261,6 @@ class CategoryResource extends Resource
                     'Gym' => ['expense', 'discretionary'],
                     'Personal Care' => ['expense', 'discretionary'],
                     // Financial
-                    'Credit Card Payment' => ['expense', 'non_discretionary'],
                     'Debt Payments' => ['expense', 'non_discretionary'],
                     'Student Loan' => ['expense', 'non_discretionary'],
                     'Taxes' => ['expense', 'non_discretionary'],
@@ -270,6 +275,7 @@ class CategoryResource extends Resource
                     'Gifts & Donations' => ['expense', 'discretionary'],
                     'Pets' => ['expense', 'discretionary'],
                     'Hobbies' => ['expense', 'discretionary'],
+                    'Video Games' => ['expense', 'discretionary'],
                     'One Time Purchase' => ['expense', 'discretionary'],
                     // Family
                     'Childcare' => ['expense', 'non_discretionary'],
