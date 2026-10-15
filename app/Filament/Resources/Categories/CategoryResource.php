@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Categories;
 
+use App\Filament\Resources\Transactions\TransactionResource;
 use App\Models\Category;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
@@ -30,6 +31,15 @@ class CategoryResource extends Resource
                 $query->where('user_id', auth()->id())
                     ->orWhereNull('user_id');
             });
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => Pages\ListCategories::route('/'),
+            'create' => Pages\CreateCategory::route('/create'),
+            'edit' => Pages\EditCategory::route('/{record}/edit'),
+        ];
     }
 
     public static function canDelete($record): bool
@@ -311,23 +321,14 @@ class CategoryResource extends Resource
                     ->body('Your selected categories are ready. You can now add transactions or continue managing your categories.')
                     ->success()
                     ->actions([
-                        \Filament\Actions\Action::make('addTransaction')
+                        Action::make('addTransaction')
                             ->label('Add Transaction')
                             ->button()
                             ->url(
-                                \App\Filament\Resources\Transactions\TransactionResource::getUrl('create')
+                                TransactionResource::getUrl('create')
                             ),
                     ])
                     ->send();
             });
-    }
-
-    public static function getPages(): array
-    {
-        return [
-            'index' => Pages\ListCategories::route('/'),
-            'create' => Pages\CreateCategory::route('/create'),
-            'edit' => Pages\EditCategory::route('/{record}/edit'),
-        ];
     }
 }
