@@ -151,6 +151,7 @@ class RecurringTransactionService
 
                 if ($existing) {
                     $existing->update([
+                        'nickname' => $existing->nickname ?: $transaction->nickname,
                         'category_id' => $transaction->category_id,
                         'amount' => $transaction->amount,
                         'payment_method' => $transaction->payment_method,
@@ -159,6 +160,7 @@ class RecurringTransactionService
                     Transaction::create([
                         'user_id' => $transaction->user_id,
                         'merchant' => $transaction->merchant,
+                        'nickname' => $transaction->nickname,
                         'type' => $transaction->type,
                         'due_at' => $nextDate,
                         'category_id' => $transaction->category_id,

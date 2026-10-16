@@ -386,9 +386,7 @@ class TransactionCsvImporter
              * Don't mutate merchants into hard-coded names.
              * Keep the source description, only normalize whitespace.
              */
-            'merchant' => $this->cleanMerchant(
-                $description
-            ),
+            'merchant' => $this->cleanMerchant($description),
 
             'description' => $description,
 
@@ -493,9 +491,7 @@ class TransactionCsvImporter
          * 3. Reuse a category if this exact merchant has already
          * been categorized by this user.
          */
-        $merchantKey = $this->merchantKey(
-            $transaction['merchant']
-        );
+        $merchantKey = $this->merchantKey($transaction['merchant']);
 
         $previous = Transaction::query()
             ->with('category')

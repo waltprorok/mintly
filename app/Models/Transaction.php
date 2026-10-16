@@ -20,6 +20,7 @@ class Transaction extends Model
         'description',
         'notes',
         'merchant',
+        'nickname',
         'payment_method',
         'is_recurring',
         'recurring_rule',

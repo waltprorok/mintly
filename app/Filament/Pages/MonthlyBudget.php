@@ -64,7 +64,9 @@ class MonthlyBudget extends Page implements HasTable
 
                 TextColumn::make('merchant')
                     ->label('Merchant')
-                    ->default(fn($record) => $record->category->name),
+                    ->default(fn ($record) => $record->category->name)
+                    ->description(fn ($record) => $record->nickname)
+                    ->searchable(['merchant', 'nickname']),
 
                 TextColumn::make('amount')
                     ->money('USD')

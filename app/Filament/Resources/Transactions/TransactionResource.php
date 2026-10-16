@@ -73,6 +73,13 @@ class TransactionResource extends Resource
                 ->nullable(),
 
             TextInput::make('merchant')
+                ->label('Merchant')
+                ->placeholder('Nexflix.com')
+                ->maxLength(255)
+                ->readOnly(fn (?Transaction $record) => $record !== null)
+                ->helperText('Original merchant name. Use Nickname to customize the description.'),
+
+            TextInput::make('nickname')
                 ->placeholder('Netflix')
                 ->nullable(),
 
@@ -84,6 +91,14 @@ class TransactionResource extends Resource
                     'other' => 'Other',
                 ])
                 ->nullable(),
+
+            Section::make(' ')
+                ->columns(1)
+                ->schema([
+                    Toggle::make('is_paid')
+                        ->label('Paid')
+                        ->default(false),
+                ]),
 
             Select::make('recurring_rule')
                 ->label('Repeat')
@@ -104,14 +119,6 @@ class TransactionResource extends Resource
                     Groceries = Weekly
 
                 ')),
-
-            Section::make(' ')
-                ->columns(1)
-                ->schema([
-                    Toggle::make('is_paid')
-                        ->label('Paid')
-                        ->default(false),
-                ]),
 
             Textarea::make('notes')
                 ->rows(4)
@@ -144,7 +151,7 @@ class TransactionResource extends Resource
                 SelectColumn::make('category_id')
                     ->label('Category')
                     ->options(
-                        fn() => \App\Models\Category::query()
+                        fn() => Category::query()
                             ->where('user_id', auth()->id())
                             ->orderBy('name')
                             ->pluck('name', 'id')
@@ -157,8 +164,11 @@ class TransactionResource extends Resource
                     ->placeholder('Netflix')
                     ->limit(24)
                     ->tooltip(fn($state) => $state)
-                    ->searchable()
-                    ->sortable(),
+                    ->searchable(['merchant', 'nickname'])
+                    ->sortable()
+                    ->weight('medium')
+                    ->description(fn ($record) => $record->nickname)
+                    ->wrap(),
 
                 TextColumn::make('amount')
                     ->money('USD')
@@ -342,6 +352,43 @@ class TransactionResource extends Resource
                     }),
 //                    ->deselectRecordsAfterCompletion(),
 
+                BulkAction::make('update_nickname')
+                    ->label('Set Nickname')
+                    ->icon('heroicon-o-pencil-square')
+                    ->color('gray')
+                    ->size(Size::Small)
+                    ->modalWidth(Width::Medium)
+                    ->form([
+                        TextInput::make('nickname')
+                            ->label('Nickname')
+                            ->placeholder('Enter or select a nickname')
+                            ->datalist(fn () => Transaction::query()
+                                ->where('user_id', auth()->id())
+                                ->whereNotNull('nickname')
+                                ->where('nickname', '!=', '')
+                                ->distinct()
+                                ->orderBy('nickname')
+                                ->pluck('nickname')
+                                ->toArray())
+                            ->required()
+                            ->maxLength(255),
+                    ])
+                    ->action(function ($records, array $data) {
+                        Transaction::query()
+                            ->whereIn('id', $records->pluck('id'))
+                            ->where('user_id', auth()->id())
+                            ->update([
+                                'nickname' => $data['nickname'],
+                            ]);
+
+                        Notification::make()
+                            ->title('Nickname updated')
+                            ->body($records->count() . ' transactions updated.')
+                            ->success()
+                            ->send();
+                    }),
+//                    ->deselectRecordsAfterCompletion(),
+
                 BulkAction::make('mark_paid')
                     ->label('Mark as Paid')
                     ->icon('heroicon-o-check-circle')
@@ -362,6 +409,7 @@ class TransactionResource extends Resource
                             ->success()
                             ->send();
                     }),
+
                 DeleteBulkAction::make()
                     ->label('Delete')
                     ->size(Size::Small)

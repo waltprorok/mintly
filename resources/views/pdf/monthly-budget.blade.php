@@ -98,6 +98,12 @@
         .transaction-name {
             padding-left: 22px;
         }
+
+        .transaction-nickname {
+            font-size: 9px;
+            color: #6b7280;
+            margin-top: 2px;
+        }
         /* -------------------------------------------------
          * Categories
          * ------------------------------------------------- */
@@ -204,7 +210,15 @@
     @forelse ($income as $transaction)
         <tr class="transaction-row">
             <td class="transaction-name">
-                {{ $transaction->merchant ?: ($transaction->category?->name ?? 'Income') }}
+                <div>
+                    {{ $transaction->merchant ?: ($transaction->category?->name ?? 'Income') }}
+                </div>
+
+                @if (filled($transaction->nickname))
+                    <div class="transaction-nickname">
+                        {{ $transaction->nickname }}
+                    </div>
+                @endif
             </td>
 
             <td class="date">
@@ -267,7 +281,15 @@
         @foreach ($transactions as $transaction)
             <tr class="transaction-row">
                 <td class="transaction-name">
-                    {{ $transaction->merchant ?: $category }}
+                    <div>
+                        {{ $transaction->merchant ?: $category }}
+                    </div>
+
+                    @if (filled($transaction->nickname))
+                        <div class="transaction-nickname">
+                            {{ $transaction->nickname }}
+                        </div>
+                    @endif
                 </td>
 
                 <td class="date">

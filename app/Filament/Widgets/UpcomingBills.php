@@ -52,7 +52,8 @@ class UpcomingBills extends TableWidget
                         ? 'bold'
                         : 'normal'
                     )
-                    ->label('Merchant'),
+                    ->label('Merchant')
+                    ->description(fn ($record) => $record->nickname),
 
                 Tables\Columns\TextColumn::make('amount')
                     ->weight(fn ($record) =>
@@ -61,6 +62,12 @@ class UpcomingBills extends TableWidget
                         : 'normal'
                     )
                     ->money('USD')
+                    ->description(fn ($record) => filled($record->payment_method)
+                        ? str($record->payment_method)
+                            ->replace('_', ' ')
+                            ->title()
+                            ->toString() : null
+                    )
                     ->summarize(
                         Sum::make()
                             ->formatStateUsing(fn($state) => new HtmlString(

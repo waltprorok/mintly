@@ -22,6 +22,7 @@ class TransactionFactory extends Factory
             'description' => $this->faker->sentence(),
             'notes' => null,
             'merchant' => $this->faker->company(),
+            'nickname' => $this->faker->sentence(4),
             'payment_method' => 'bank',
             'is_recurring' => true,
             'recurring_rule' => 'monthly',
