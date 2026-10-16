@@ -7,6 +7,7 @@ use App\Models\Transaction;
 use Carbon\Carbon;
 use Filament\Actions\BulkAction;
 use Filament\Actions\DeleteBulkAction;
+use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
@@ -15,7 +16,10 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\Size;
 use Filament\Support\Enums\Width;
@@ -72,13 +76,28 @@ class TransactionResource extends Resource
                 ->seconds(false)
                 ->nullable(),
 
-            TextInput::make('merchant')
-                ->label('Merchant')
-                ->placeholder('Nexflix.com')
-                ->maxLength(255)
-                ->readOnly(fn (?Transaction $record) => $record !== null)
-                ->helperText('Original merchant name. Use Nickname to customize the description.'),
+            Group::make([
+                Grid::make(4)
+                    ->schema([
+                        TextInput::make('merchant')
+                            ->label('Merchant')
+                            ->placeholder('Netflix.com')
+                            ->maxLength(255)
+                            ->readOnly(fn (Get $get, ?Transaction $record) =>
+                                $record !== null && ! $get('allow_merchant_edit')
+                            )
+                            ->helperText('Original merchant name. Use Nickname to customize the description.')
+                            ->columnSpan(fn (?Transaction $record) => $record ? 3 : 4),
 
+                        Checkbox::make('allow_merchant_edit')
+                            ->label('Edit')
+                            ->default(false)
+                            ->live()
+                            ->dehydrated(false)
+                            ->visible(fn (?Transaction $record) => $record !== null)
+                            ->columnSpan(1),
+                    ]),
+            ]),
             TextInput::make('nickname')
                 ->placeholder('Netflix')
                 ->nullable(),
@@ -315,43 +334,6 @@ class TransactionResource extends Resource
                     }),
 //                    ->deselectRecordsAfterCompletion(),
 
-                BulkAction::make('update_frequency')
-                    ->label('Set Frequency')
-                    ->icon('heroicon-o-arrow-path')
-                    ->color('gray')
-                    ->size(Size::Small)
-                    ->modalWidth(Width::Medium)
-                    ->form([
-                        Select::make('recurring_rule')
-                            ->label('Frequency')
-                            ->options([
-                                'once' => 'One Time',
-                                'weekly' => 'Weekly',
-                                'biweekly' => 'Bi-Weekly',
-                                'monthly' => 'Monthly',
-                                'quarterly' => 'Quarterly',
-                                'semiannually' => 'Every Six Months',
-                                'yearly' => 'Yearly',
-                            ])
-                            ->required(),
-                    ])
-                    ->action(function ($records, array $data) {
-                        Transaction::query()
-                            ->whereIn('id', $records->pluck('id'))
-                            ->where('user_id', auth()->id())
-                            ->update([
-                                'recurring_rule' => $data['recurring_rule'],
-                                'is_recurring' => $data['recurring_rule'] !== 'once',
-                            ]);
-
-                        Notification::make()
-                            ->title('Frequency updated')
-                            ->body($records->count() . ' transactions updated.')
-                            ->success()
-                            ->send();
-                    }),
-//                    ->deselectRecordsAfterCompletion(),
-
                 BulkAction::make('update_nickname')
                     ->label('Set Nickname')
                     ->icon('heroicon-o-pencil-square')
@@ -383,6 +365,43 @@ class TransactionResource extends Resource
 
                         Notification::make()
                             ->title('Nickname updated')
+                            ->body($records->count() . ' transactions updated.')
+                            ->success()
+                            ->send();
+                    }),
+//                    ->deselectRecordsAfterCompletion(),
+
+                BulkAction::make('update_frequency')
+                    ->label('Set Frequency')
+                    ->icon('heroicon-o-arrow-path')
+                    ->color('gray')
+                    ->size(Size::Small)
+                    ->modalWidth(Width::Medium)
+                    ->form([
+                        Select::make('recurring_rule')
+                            ->label('Frequency')
+                            ->options([
+                                'once' => 'One Time',
+                                'weekly' => 'Weekly',
+                                'biweekly' => 'Bi-Weekly',
+                                'monthly' => 'Monthly',
+                                'quarterly' => 'Quarterly',
+                                'semiannually' => 'Every Six Months',
+                                'yearly' => 'Yearly',
+                            ])
+                            ->required(),
+                    ])
+                    ->action(function ($records, array $data) {
+                        Transaction::query()
+                            ->whereIn('id', $records->pluck('id'))
+                            ->where('user_id', auth()->id())
+                            ->update([
+                                'recurring_rule' => $data['recurring_rule'],
+                                'is_recurring' => $data['recurring_rule'] !== 'once',
+                            ]);
+
+                        Notification::make()
+                            ->title('Frequency updated')
                             ->body($records->count() . ' transactions updated.')
                             ->success()
                             ->send();
