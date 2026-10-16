@@ -90,7 +90,7 @@ class TransactionResource extends Resource
                             ->columnSpan(fn (?Transaction $record) => $record ? 3 : 4),
 
                         Checkbox::make('allow_merchant_edit')
-                            ->label('Edit')
+                            ->label('Edit Merchant')
                             ->default(false)
                             ->live()
                             ->dehydrated(false)
