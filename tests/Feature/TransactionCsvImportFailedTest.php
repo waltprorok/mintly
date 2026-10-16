@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Notifications;
+namespace Tests\Feature;
 
 use App\Models\User;
 use App\Notifications\TransactionCsvImportFailed;
