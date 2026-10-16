@@ -45,7 +45,6 @@ class TransactionResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-
             Hidden::make('user_id')
                 ->default(fn() => auth()->id())
                 ->required(),
@@ -86,7 +85,8 @@ class TransactionResource extends Resource
                             ->readOnly(fn (Get $get, ?Transaction $record) =>
                                 $record !== null && ! $get('allow_merchant_edit')
                             )
-                            ->helperText('Original merchant name. Use Nickname to customize the description.')
+                            ->helperText(fn (Get $get) =>
+                            $get('allow_merchant_edit') ? 'Changing the original merchant name may cause duplicate transactions during future CSV imports.' : null)
                             ->columnSpan(fn (?Transaction $record) => $record ? 3 : 4),
 
                         Checkbox::make('allow_merchant_edit')
@@ -98,6 +98,7 @@ class TransactionResource extends Resource
                             ->columnSpan(1),
                     ]),
             ]),
+
             TextInput::make('nickname')
                 ->placeholder('Netflix')
                 ->nullable(),
@@ -111,8 +112,7 @@ class TransactionResource extends Resource
                 ])
                 ->nullable(),
 
-            Section::make(' ')
-                ->columns(1)
+            Section::make('')
                 ->schema([
                     Toggle::make('is_paid')
                         ->label('Paid')

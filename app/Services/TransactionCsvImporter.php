@@ -130,10 +130,9 @@ class TransactionCsvImporter
             /*
              * Ignore completely empty CSV rows.
              */
-            if (
-                collect($row)
-                    ->filter(fn($value) => trim((string)$value) !== '')
-                    ->isEmpty()
+            if (collect($row)
+                ->filter(fn($value) => trim((string)$value) !== '')
+                ->isEmpty()
             ) {
                 continue;
             }
@@ -150,9 +149,7 @@ class TransactionCsvImporter
     {
         $sample = $rows->take(10);
 
-        $headers = array_keys(
-            $sample->first()
-        );
+        $headers = array_keys($sample->first());
 
         $dateColumns = [];
         $numericColumns = [];
@@ -282,9 +279,7 @@ class TransactionCsvImporter
         );
 
         if (! $descriptionColumn) {
-            throw new RuntimeException(
-                'Unable to identify a transaction description column.'
-            );
+            throw new RuntimeException('Unable to identify a transaction description column.');
         }
 
         /*
@@ -292,12 +287,8 @@ class TransactionCsvImporter
          *
          * Header names are only hints here, not requirements.
          */
-        $categoryColumn = collect($headers)->first(
-            fn($header) => str_contains(
-                Str::lower($header),
-                'category'
-            )
-        );
+        $categoryColumn = collect($headers)
+            ->first(fn($header) => str_contains(Str::lower($header), 'category'));
 
         /*
          * If we found DEBIT / CREDIT values, treat it like a
@@ -306,9 +297,7 @@ class TransactionCsvImporter
          * Otherwise, if we found Sale / Payment / Return,
          * treat it like a credit card export.
          */
-        $format = $directionColumn
-            ? 'bank'
-            : ($transactionTypeColumn ? 'credit_card' : 'generic');
+        $format = $directionColumn ? 'bank' : ($transactionTypeColumn ? 'credit_card' : 'generic');
 
         return [
             'format' => $format,
@@ -323,13 +312,9 @@ class TransactionCsvImporter
 
     private function normalizeRow(array $row, array $layout): ?array
     {
-        $description = trim(
-            (string)($row[$layout['description']] ?? '')
-        );
+        $description = trim((string)($row[$layout['description']] ?? ''));
 
-        $amount = $this->parseNumber(
-            $row[$layout['amount']] ?? null
-        );
+        $amount = $this->parseNumber($row[$layout['amount']] ?? null);
 
         /*
          * Credit card payment.
@@ -339,12 +324,7 @@ class TransactionCsvImporter
          */
         if ($layout['transaction_type']) {
             $transactionType = Str::upper(
-                trim(
-                    (string)(
-                        $row[$layout['transaction_type']]
-                        ?? ''
-                    )
-                )
+                trim((string)($row[$layout['transaction_type']] ?? ''))
             );
 
             if ($transactionType === 'PAYMENT') {
@@ -360,8 +340,7 @@ class TransactionCsvImporter
          */
         $lowerDescription = Str::lower($description);
 
-        if (
-            str_contains($lowerDescription, 'payment to')
+        if (str_contains($lowerDescription, 'payment to')
             && str_contains($lowerDescription, 'card')
         ) {
             return null;
@@ -374,51 +353,28 @@ class TransactionCsvImporter
         );
 
         return [
-            'date' => $this->parseDate(
-                $row[$layout['date']] ?? null
-            ),
-
+            'date' => $this->parseDate($row[$layout['date']] ?? null),
             'type' => $type,
-
             'amount' => abs($amount),
-
             /*
              * Don't mutate merchants into hard-coded names.
              * Keep the source description, only normalize whitespace.
              */
             'merchant' => $this->cleanMerchant($description),
-
             'description' => $description,
-
-            'external_category' => $layout['category']
-                ? trim(
-                    (string)(
-                        $row[$layout['category']]
-                        ?? ''
-                    )
-                )
-                : null,
-
-            'payment_method' => $layout['format'] === 'credit_card'
-                ? 'credit_card'
-                : 'bank',
+            'external_category' => $layout['category'] ? trim((string)($row[$layout['category']] ?? '')) : null,
+            'payment_method' => $layout['format'] === 'credit_card' ? 'credit_card' : 'bank',
         ];
     }
 
+    /*
+     * Bank exports with explicit CREDIT / DEBIT indicators.
+     */
     private function determineTransactionType(array $row, array $layout, float $amount): string
     {
-        /*
-         * Bank exports with explicit CREDIT / DEBIT indicators.
-         */
         if ($layout['direction']) {
             $direction = Str::upper(
-                trim(
-                    (string)(
-                        $row[$layout['direction']]
-                        ?? ''
-                    )
-                )
-            );
+                trim((string)($row[$layout['direction']] ?? '')));
 
             if ($direction === 'CREDIT') {
                 return 'income';
@@ -433,17 +389,13 @@ class TransactionCsvImporter
          * Credit card exports commonly use negative purchases.
          */
         if ($layout['format'] === 'credit_card') {
-            return $amount < 0
-                ? 'expense'
-                : 'income';
+            return $amount < 0 ? 'expense' : 'income';
         }
 
         /*
          * Generic fallback.
          */
-        return $amount < 0
-            ? 'expense'
-            : 'income';
+        return $amount < 0 ? 'expense' : 'income';
     }
 
     private function resolveCategory(int $userId, Collection $categories, array $transaction): ?Category
@@ -475,11 +427,7 @@ class TransactionCsvImporter
 
             if ($mappedName) {
                 $category = $categories->first(
-                    fn(Category $category) => strcasecmp(
-                            trim($category->name),
-                            $mappedName
-                        ) === 0
-                );
+                    fn(Category $category) => strcasecmp(trim($category->name), $mappedName) === 0);
 
                 if ($category) {
                     return $category;
@@ -555,10 +503,7 @@ class TransactionCsvImporter
 
         $value = trim($value);
 
-        return preg_match(
-                '/^(?:\d{1,2}\/\d{1,2}\/\d{2,4}|\d{4}-\d{1,2}-\d{1,2})$/',
-                $value
-            ) === 1;
+        return preg_match('/^(?:\d{1,2}\/\d{1,2}\/\d{2,4}|\d{4}-\d{1,2}-\d{1,2})$/', $value) === 1;
     }
 
     private function looksLikeNumber(mixed $value): bool
@@ -584,15 +529,12 @@ class TransactionCsvImporter
     private function parseNumber(mixed $value): float
     {
         if ($value === null) {
-            throw new RuntimeException(
-                'Transaction amount is missing.'
-            );
+            throw new RuntimeException('Transaction amount is missing.');
         }
 
         $value = trim((string)$value);
 
-        $negative = str_starts_with($value, '(')
-            && str_ends_with($value, ')');
+        $negative = str_starts_with($value, '(') && str_ends_with($value, ')');
 
         $value = str_replace(
             [
@@ -606,16 +548,12 @@ class TransactionCsvImporter
         );
 
         if (! is_numeric($value)) {
-            throw new RuntimeException(
-                "Invalid transaction amount: {$value}"
-            );
+            throw new RuntimeException("Invalid transaction amount: {$value}");
         }
 
         $amount = (float)$value;
 
-        return $negative
-            ? -abs($amount)
-            : $amount;
+        return $negative ? -abs($amount) : $amount;
     }
 
     private function parseDate(mixed $value): Carbon
@@ -627,12 +565,9 @@ class TransactionCsvImporter
         }
 
         try {
-            return Carbon::parse($value)
-                ->startOfDay();
+            return Carbon::parse($value)->startOfDay();
         } catch (Throwable) {
-            throw new RuntimeException(
-                "Invalid transaction date: {$value}"
-            );
+            throw new RuntimeException("Invalid transaction date: {$value}");
         }
     }
 
@@ -707,21 +642,11 @@ class TransactionCsvImporter
         return Transaction::query()
             ->where('user_id', $userId)
             ->where('type', $transaction['type'])
-            ->whereDate(
-                'due_at',
-                $transaction['date']
-            )
-            ->where(
-                'amount',
-                $transaction['amount']
-            )
+            ->whereDate('due_at', $transaction['date'])
+            ->where('amount', $transaction['amount'])
             ->whereRaw(
                 'LOWER(merchant) = ?',
-                [
-                    Str::lower(
-                        $transaction['merchant']
-                    ),
-                ]
+                [Str::lower($transaction['merchant']),]
             )
             ->exists();
     }
