@@ -5,23 +5,23 @@ git pull origin master
 export COMPOSER_ALLOW_SUPERUSER=1
 composer install --prefer-dist --no-dev --optimize-autoloader --no-interaction
 
-sudo -u www-data php artisan optimize:clear
-sudo -u www-data php artisan filament:optimize-clear
+php artisan optimize:clear
+php artisan filament:optimize-clear
 
-sudo -u www-data php artisan migrate --force
+php artisan migrate --force
 
 npm ci
 npm run build
 
-sudo -u www-data php artisan filament:upgrade || true
-sudo -u www-data php artisan filament:optimize
+php artisan filament:upgrade || true
+php artisan filament:optimize
 
-sudo -u www-data php artisan config:cache
-sudo -u www-data php artisan route:cache
-sudo -u www-data php artisan view:cache
-sudo -u www-data php artisan event:cache
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+php artisan event:cache
 
-sudo -u www-data php artisan queue:restart
+php artisan queue:restart
 #php artisan pulse:restart
 
 sudo supervisorctl status
