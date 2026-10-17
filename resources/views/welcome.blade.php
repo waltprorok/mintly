@@ -452,13 +452,21 @@
                         <div class="fw-bold text-uppercase small text-muted">Free Plan</div>
                         <div class="display-5 fw-bold my-2">$0</div>
                         <div class="text-secondary mb-3">
-                            Get full access to all features — Free
+                            Take control of your finances with full access to Mintly.
+                            Completely free during Early Access.
                         </div>
+
                         <ul class="text-secondary">
-                            <li>Categories</li>
-                            <li>Transactions</li>
-                            <li>Monthly summary</li>
-                            <li>Weekly cash flow</li>
+                            <li>Unlimited transactions & categories</li>
+                            <li>Bank & credit card CSV imports</li>
+                            <li>Monthly budgeting & recurring transactions</li>
+                            <li>Income & expense tracking</li>
+                            <li>Weekly cash flow overview</li>
+                            <li>Interactive financial charts</li>
+                            <li>Spending breakdowns by category</li>
+                            <li>Needs vs. wants analysis</li>
+                            <li>Monthly & yearly financial reports</li>
+                            <li>Downloadable PDF reports</li>
                         </ul>
                         <a href="{{ route('register') }}" class="btn btn-primary w-100 mb-2">
                             Start free
