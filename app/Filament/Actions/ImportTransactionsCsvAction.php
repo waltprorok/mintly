@@ -6,6 +6,7 @@ use App\Notifications\TransactionCsvImportFailed;
 use App\Services\TransactionCsvImporter;
 use Filament\Actions\Action;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Select;
 use Filament\Notifications\Notification;
 use Filament\Support\Enums\Width;
 use Illuminate\Support\Facades\Log;
@@ -30,7 +31,7 @@ class ImportTransactionsCsvAction
                 'Import transactions from your bank or credit card to quickly build your budget.'
             )
             ->modalContent(
-                fn () => view('filament.modals.import-transactions-csv')
+                fn() => view('filament.modals.import-transactions-csv')
             )
             ->modalSubmitActionLabel('Import Transactions')
             ->modalCancelActionLabel('Cancel')
@@ -56,6 +57,27 @@ class ImportTransactionsCsvAction
                         'extensions:csv',
                     ])
                     ->required(),
+
+                Select::make('account_type')
+                    ->label('Import From')
+                    ->options([
+                        'auto' => 'Auto Detect',
+                        'bank' => 'Bank / Checking Account',
+                        'credit_card' => 'Credit Card',
+                    ])
+                    ->default('auto')
+                    ->required(),
+
+                Select::make('amount_convention')
+                    ->label('How Are Purchases Shown?')
+                    ->options([
+                        'negative_expense' => 'Negative Amounts (-$50.00)',
+                        'positive_expense' => 'Positive Amounts ($50.00)',
+                    ])
+                    ->default('negative_expense')
+                    ->required()
+                    ->helperText('Most bank statements show purchases as negative amounts.
+                    Check your CSV file to see whether purchases are positive or negative amounts.'),
             ])
             ->action(function (array $data) {
                 $path = storage_path('app/' . $data['file']);
@@ -64,6 +86,8 @@ class ImportTransactionsCsvAction
                     $result = app(TransactionCsvImporter::class)->import(
                         userId: auth()->id(),
                         path: $path,
+                        accountType: $data['account_type'],
+                        amountConvention: $data['amount_convention'],
                     );
 
                     $notification = Notification::make()
