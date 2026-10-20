@@ -16,7 +16,7 @@ class IncomeExpenseChart extends ChartWidget
 
     protected static ?int $sort = 4;
 
-    public ?string $filter = '3';
+    public ?string $filter = null;
 
     protected function getFilters(): ?array
     {
@@ -27,9 +27,30 @@ class IncomeExpenseChart extends ChartWidget
         ];
     }
 
+    public function mount(): void
+    {
+        $firstTransaction = Transaction::query()
+            ->where('user_id', auth()->id())
+            ->orderBy('due_at')
+            ->first();
+
+        if (! $firstTransaction) {
+            $this->filter = '3';
+
+            return;
+        }
+
+        $monthsOfHistory = $firstTransaction->due_at
+                ->copy()
+                ->startOfMonth()
+                ->diffInMonths(now()->startOfMonth()) + 1;
+
+        $this->filter = $monthsOfHistory > 3 ? '6' : '3';
+    }
+
     protected function getData(): array
     {
-        $monthsToShow = (int) ($this->filter ?? 12);
+        $monthsToShow = (int) ($this->filter ?? 3);
 
         $userId = auth()->id();
 
@@ -43,7 +64,6 @@ class IncomeExpenseChart extends ChartWidget
         $expenseData = [];
 
         foreach ($months as $month) {
-
             $labels[] = $month->format('M Y');
 
             $incomeData[] = Transaction::query()
@@ -96,7 +116,7 @@ class IncomeExpenseChart extends ChartWidget
                     'hoverBorderColor' => '#22c55e',
                     'hoverBackgroundColor' => 'rgba(34,197,94,0.25)',
                     'tension' => 0.2,
-                    'borderRadius' => 6,
+                    'borderRadius' => 3,
                     'fill' => false,
                 ],
                 [
@@ -107,8 +127,8 @@ class IncomeExpenseChart extends ChartWidget
                     'hoverBorderColor' => $expenseHoverBorderColors,
                     'hoverBackgroundColor' => $expenseHoverBackgroundColors,
                     'tension' => 0.2,
-                    'borderRadius' => 6,
-                    'fill' => false,
+                    'borderRadius' => 3,
+                    'fill' => true,
                 ],
             ],
             'labels' => $labels,

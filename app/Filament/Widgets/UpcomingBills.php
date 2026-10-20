@@ -28,7 +28,11 @@ class UpcomingBills extends TableWidget
 
     public function getTableHeading(): string
     {
-        return 'Upcoming Bills This Week | Today ' . now()->format('M j');
+        return 'Upcoming Bills This Week ('
+            . now()->format('M j')
+            . '-'
+            . now()->addDays(6)->format('j')
+            . ')';
     }
 
     public function table(Table $table): Table
@@ -81,11 +85,29 @@ class UpcomingBills extends TableWidget
                 Tables\Columns\TextColumn::make('due_at')
                     ->label('Due Date')
                     ->weight(fn ($record) =>
-                    $record->due_at?->isSameDay(Carbon::today())
+                    $record->due_at?->isToday()
                         ? 'bold'
                         : 'normal'
                     )
-                    ->date('M j'),
+                    ->date('M j')
+                    ->description(function ($record) {
+                        if (! $record->due_at) {
+                            return null;
+                        }
+
+                        $dueDate = $record->due_at->startOfDay();
+                        $today = Carbon::today();
+
+                        if ($dueDate->isToday()) {
+                            return 'due today';
+                        }
+
+                        if ($dueDate->isPast()) {
+                            return 'Overdue by ' . (int) $dueDate->diffInDays($today) . ' days';
+                        }
+
+                        return 'in ' . (int) $today->diffInDays($dueDate) . ' days';
+                    }),
 
                 ToggleColumn::make('is_paid')
                     ->label('Paid')
