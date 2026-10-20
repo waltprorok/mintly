@@ -57,6 +57,7 @@ class UpcomingBills extends TableWidget
                         : 'normal'
                     )
                     ->label('Merchant')
+                    ->limit(16)
                     ->description(fn ($record) => $record->nickname),
 
                 Tables\Columns\TextColumn::make('amount')
