@@ -218,17 +218,18 @@ class CategoryResource extends Resource
                         'Entertainment' => 'Entertainment',
                         'Clothing' => 'Clothing',
                         'Shopping' => 'Shopping',
+                        'Amazon Purchases' => 'Amazon Purchases',
                         'Household' => 'Household',
                         'Travel' => 'Travel',
                         'Gifts & Donations' => 'Gifts & Donations',
                         'Pets' => 'Pets',
                         'Hobbies' => 'Hobbies',
                         'Video Games' => 'Video Games',
-                        'One Time Purchase' => 'One Time Purchase',
                         // Family
                         'Childcare' => 'Childcare',
                         'Education' => 'Education',
                         // Catch-all
+                        'One Time Purchase' => 'One Time Purchase',
                         'Miscellaneous' => 'Miscellaneous',
                     ])
                     ->disableOptionWhen(function (string $value): bool {
@@ -283,17 +284,18 @@ class CategoryResource extends Resource
                     'Entertainment' => ['expense', 'discretionary'],
                     'Clothing' => ['expense', 'discretionary'],
                     'Shopping' => ['expense', 'discretionary'],
+                    'Amazon Purchases' => ['expense', 'discretionary'],
                     'Household' => ['expense', 'discretionary'],
                     'Travel' => ['expense', 'discretionary'],
                     'Gifts & Donations' => ['expense', 'discretionary'],
                     'Pets' => ['expense', 'discretionary'],
                     'Hobbies' => ['expense', 'discretionary'],
                     'Video Games' => ['expense', 'discretionary'],
-                    'One Time Purchase' => ['expense', 'discretionary'],
                     // Family
                     'Childcare' => ['expense', 'non_discretionary'],
                     'Education' => ['expense', 'non_discretionary'],
                     // Catch-all
+                    'One Time Purchase' => ['expense', 'discretionary'],
                     'Miscellaneous' => ['expense', 'unknown'],
                 ];
 

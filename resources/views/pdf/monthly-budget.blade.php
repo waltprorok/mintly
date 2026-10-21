@@ -167,6 +167,12 @@
             padding-bottom: 10px;
         }
 
+        .payment-auto-pay {
+            font-size: 9px;
+            color: #6b7280;
+            margin-top: 0;
+        }
+
         /* Prevent category sections from splitting awkwardly. */
         .category-block {
             page-break-inside: avoid;
@@ -227,9 +233,17 @@
 
             <td class="payment">
                 @if ($transaction->payment_method)
-                    {{ str($transaction->payment_method)
-                        ->replace('_', ' ')
-                        ->title() }}
+                    <div>
+                        {{ str($transaction->payment_method)
+                            ->replace('_', ' ')
+                            ->title() }}
+                    </div>
+                @endif
+
+                @if ($transaction->auto_pay)
+                    <div class="payment-auto-pay">
+                        Auto Pay
+                    </div>
                 @endif
             </td>
 
@@ -298,9 +312,17 @@
 
                 <td class="payment">
                     @if ($transaction->payment_method)
-                        {{ str($transaction->payment_method)
-                            ->replace('_', ' ')
-                            ->title() }}
+                        <div>
+                            {{ str($transaction->payment_method)
+                                ->replace('_', ' ')
+                                ->title() }}
+                        </div>
+                    @endif
+
+                    @if ($transaction->auto_pay)
+                        <div class="payment-auto-pay">
+                            Auto Pay
+                        </div>
                     @endif
                 </td>
 
