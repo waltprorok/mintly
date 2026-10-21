@@ -23,6 +23,7 @@ class Transaction extends Model
         'nickname',
         'payment_method',
         'is_recurring',
+        'auto_pay',
         'recurring_rule',
         'is_paid',
     ];
@@ -30,6 +31,7 @@ class Transaction extends Model
     protected $casts = [
         'amount' => 'decimal:2',
         'due_at' => 'datetime',
+        'auto_pay' => 'boolean',
         'is_recurring' => 'boolean',
         'is_paid' => 'boolean',
     ];

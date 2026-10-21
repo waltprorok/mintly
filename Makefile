@@ -20,17 +20,20 @@ migrate:
 optimize:
 	php artisan optimize:clear
 
-prune:
-	php artisan telescope:prune --hours=0
+#prune:
+#	php artisan telescope:prune --hours=0
 
-prune-batch:
-	php artisan queue:prune-batches --hours=0
+#prune-batch:
+#	php artisan queue:prune-batches --hours=0
 
 pulse-clear:
 	php artisan pulse:clear
 
-pulse-work:
-	php artisan pulse:work
+#pulse-work:
+#	php artisan pulse:work
+
+rollback:
+	php artisan migrate:rollback
 
 test:
 	php artisan test

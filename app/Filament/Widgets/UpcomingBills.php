@@ -2,14 +2,15 @@
 
 namespace App\Filament\Widgets;
 
+use App\Filament\Tables\Columns\ToggleColumnWithDescription;
 use App\Models\Transaction;
 use Carbon\Carbon;
 use Filament\Tables;
 use Filament\Tables\Columns\Summarizers\Sum;
-use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget;
 use Illuminate\Support\HtmlString;
+use Illuminate\Support\Str;
 
 class UpcomingBills extends TableWidget
 {
@@ -58,6 +59,7 @@ class UpcomingBills extends TableWidget
                     )
                     ->label('Merchant')
                     ->limit(16)
+                    ->tooltip(fn($state) => $state)
                     ->description(fn ($record) => $record->nickname),
 
                 Tables\Columns\TextColumn::make('amount')
@@ -79,7 +81,7 @@ class UpcomingBills extends TableWidget
                                 '<strong>$' . number_format($state, 2) . '</strong>'
                             ))
                             ->html()
-                            ->label(' ')
+                            ->label('Total')
 //                            ->money('USD')
                     ),
 
@@ -96,27 +98,33 @@ class UpcomingBills extends TableWidget
                             return null;
                         }
 
-                        $dueDate = $record->due_at->startOfDay();
+                        $dueDate = $record->due_at->copy()->startOfDay();
                         $today = Carbon::today();
 
                         if ($dueDate->isToday()) {
                             return 'due today';
                         }
 
+                        $days = (int) abs($today->diffInDays($dueDate));
+
                         if ($dueDate->isPast()) {
-                            return 'Overdue by ' . (int) $dueDate->diffInDays($today) . ' days';
+                            return 'overdue by ' . $days . ' ' . Str::plural('day', $days);
                         }
 
-                        return 'in ' . (int) $today->diffInDays($dueDate) . ' days';
+                        return 'in ' . $days . ' ' . Str::plural('day', $days);
                     }),
 
-                ToggleColumn::make('is_paid')
+                ToggleColumnWithDescription::make('is_paid')
                     ->label('Paid')
-                    ->onColor('success')  // green when true
-                    ->offColor('gray')   // gray when false
+                    ->onColor('success')
+                    ->offColor('gray')
+                    ->description(fn ($record) =>
+                    $record->auto_pay ? 'Auto Pay' : 'Manual Pay'
+                    )
                     ->afterStateUpdated(function () {
                         $this->dispatch('updateBudgetStats');
                     }),
+
             ])
             ->defaultPaginationPageOption(10);
     }

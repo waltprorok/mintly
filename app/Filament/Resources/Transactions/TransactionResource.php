@@ -82,19 +82,17 @@ class TransactionResource extends Resource
                             ->label('Merchant')
                             ->placeholder('Netflix.com')
                             ->maxLength(255)
-                            ->readOnly(fn (Get $get, ?Transaction $record) =>
-                                $record !== null && ! $get('allow_merchant_edit')
+                            ->readOnly(fn(Get $get, ?Transaction $record) => $record !== null && ! $get('allow_merchant_edit')
                             )
-                            ->helperText(fn (Get $get) =>
-                            $get('allow_merchant_edit') ? 'Changing the original merchant name may cause duplicate transactions during future CSV imports.' : null)
-                            ->columnSpan(fn (?Transaction $record) => $record ? 3 : 4),
+                            ->helperText(fn(Get $get) => $get('allow_merchant_edit') ? 'Changing the original merchant name may cause duplicate transactions during future CSV imports.' : null)
+                            ->columnSpan(fn(?Transaction $record) => $record ? 3 : 4),
 
                         Checkbox::make('allow_merchant_edit')
                             ->label('Edit Merchant')
                             ->default(false)
                             ->live()
                             ->dehydrated(false)
-                            ->visible(fn (?Transaction $record) => $record !== null)
+                            ->visible(fn(?Transaction $record) => $record !== null)
                             ->columnSpan(1),
                     ]),
             ]),
@@ -111,13 +109,6 @@ class TransactionResource extends Resource
                     'other' => 'Other',
                 ])
                 ->nullable(),
-
-            Section::make('')
-                ->schema([
-                    Toggle::make('is_paid')
-                        ->label('Paid')
-                        ->default(false),
-                ]),
 
             Select::make('recurring_rule')
                 ->label('Repeat')
@@ -138,6 +129,28 @@ class TransactionResource extends Resource
                     Groceries = Weekly
 
                 ')),
+
+//            Checkbox::make('auto_pay')
+//                ->label('Auto Pay')
+//                ->default(false)
+//                ->helperText('This bill is automatically paid by your bank or credit card.'),
+
+            Section::make('')
+                ->schema([
+                    Toggle::make('auto_pay')
+                        ->label('Auto Pay')
+                        ->default(false)
+                        ->helperText('This bill is automatically paid by your bank or credit card.'),
+                ]),
+
+            Section::make('')
+                ->schema([
+                    Toggle::make('is_paid')
+                        ->label('Paid')
+                        ->default(false)
+                        ->helperText('This transaction is marked paid.'),
+                ]),
+
 
             Textarea::make('notes')
                 ->rows(4)
@@ -186,7 +199,7 @@ class TransactionResource extends Resource
                     ->searchable(['merchant', 'nickname'])
                     ->sortable()
                     ->weight('medium')
-                    ->description(fn ($record) => $record->nickname)
+                    ->description(fn($record) => $record->nickname)
                     ->wrap(),
 
                 TextColumn::make('amount')
@@ -218,6 +231,12 @@ class TransactionResource extends Resource
                         ]);
                     })
                     ->sortable(),
+
+                ToggleColumn::make('auto_pay')
+                    ->label('Auto Pay')
+                    ->sortable()
+                    ->onColor('success')
+                    ->offColor('gray'),
 
                 ToggleColumn::make('is_paid')
                     ->label('Paid')
@@ -344,7 +363,7 @@ class TransactionResource extends Resource
                         TextInput::make('nickname')
                             ->label('Nickname')
                             ->placeholder('Enter or select a nickname')
-                            ->datalist(fn () => Transaction::query()
+                            ->datalist(fn() => Transaction::query()
                                 ->where('user_id', auth()->id())
                                 ->whereNotNull('nickname')
                                 ->where('nickname', '!=', '')
@@ -407,6 +426,37 @@ class TransactionResource extends Resource
                             ->send();
                     }),
 //                    ->deselectRecordsAfterCompletion(),
+
+                BulkAction::make('set_auto_pay')
+                    ->label('Set Auto Pay')
+                    ->icon('heroicon-o-credit-card')
+                    ->color('gray')
+                    ->size(Size::Small)
+                    ->modalHeading('Set Auto Pay')
+                    ->modalDescription('Update the Auto Pay setting for the selected transactions.')
+                    ->schema([
+                        Toggle::make('auto_pay')
+                            ->label('Auto Pay')
+                            ->default(true)
+                            ->helperText('Enable or disable automatic payments for the selected transactions.'),
+                    ])
+                    ->action(function ($records, array $data) {
+                        Transaction::whereIn('id', $records->pluck('id'))
+                            ->update([
+                                'auto_pay' => $data['auto_pay'],
+                            ]);
+
+                        Notification::make()
+                            ->title('Transactions updated')
+                            ->body(
+                                $records->count() . ' transactions ' .
+                                ($data['auto_pay'] ? 'enabled' : 'disabled') .
+                                ' for Auto Pay.'
+                            )
+                            ->success()
+                            ->send();
+                    })
+                    ->deselectRecordsAfterCompletion(),
 
                 BulkAction::make('mark_paid')
                     ->label('Mark as Paid')
