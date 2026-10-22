@@ -153,7 +153,6 @@ class RecurringTransactionService
                     $existing->update([
                         'nickname' => $existing->nickname ?: $transaction->nickname,
                         'category_id' => $transaction->category_id,
-                        'amount' => $transaction->amount,
                         'payment_method' => $transaction->payment_method,
                         'auto_pay' => $transaction->auto_pay,
                     ]);

@@ -19,6 +19,11 @@ class ListTransactions extends ListRecords
 
     protected static string $resource = TransactionResource::class;
 
+    protected function getTableQueryStringIdentifier(): ?string
+    {
+        return null;
+    }
+
     protected function getHeaderActions(): array
     {
         return [

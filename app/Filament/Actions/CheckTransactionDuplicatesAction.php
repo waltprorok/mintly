@@ -16,9 +16,7 @@ class CheckTransactionDuplicatesAction
             ->color('gray')
             ->action(function (Component $livewire) {
                 // Clear previous duplicate results before running a new check.
-                $livewire->tableFilters['potential_duplicates'] = [
-                    'isActive' => false,
-                ];
+                unset($livewire->tableFilters['potential_duplicates']);
 
                 $duplicates = app(TransactionDuplicateService::class)
                     ->find($livewire->getFilteredTableQuery());
