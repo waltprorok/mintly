@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Transactions\Pages;
 
+use App\Filament\Actions\CheckTransactionDuplicatesAction;
 use App\Filament\Actions\DownloadTransactionsPdfAction;
 use App\Filament\Actions\ImportTransactionsCsvAction;
 use App\Filament\Resources\Transactions\TransactionResource;
@@ -14,13 +15,15 @@ class ListTransactions extends ListRecords
 {
     use ExposesTableToWidgets;
 
+    public array $duplicateTransactionIds = [];
+
     protected static string $resource = TransactionResource::class;
 
     protected function getHeaderActions(): array
     {
         return [
             ImportTransactionsCsvAction::make(),
-
+            CheckTransactionDuplicatesAction::make(),
             DownloadTransactionsPdfAction::make(
                 fn () => $this->getFilteredTableQuery()
             ),

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Transactions;
 
+use App\Filament\Resources\Transactions\Pages\ListTransactions;
 use App\Models\Category;
 use App\Models\Transaction;
 use Carbon\Carbon;
@@ -26,6 +27,7 @@ use Filament\Support\Enums\Width;
 use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -129,11 +131,6 @@ class TransactionResource extends Resource
                     Groceries = Weekly
 
                 ')),
-
-//            Checkbox::make('auto_pay')
-//                ->label('Auto Pay')
-//                ->default(false)
-//                ->helperText('This bill is automatically paid by your bank or credit card.'),
 
             Section::make('')
                 ->schema([
@@ -337,6 +334,15 @@ class TransactionResource extends Resource
                         }
 
                         $query->whereYear('due_at', $value);
+                    }),
+
+                Filter::make('potential_duplicates')
+                    ->label('Potential Duplicates')
+                    ->query(function (Builder $query, ListTransactions $livewire): Builder {
+                        return $query->whereIn(
+                            'id',
+                            $livewire->duplicateTransactionIds
+                        );
                     }),
             ])
             ->searchable()
