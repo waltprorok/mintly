@@ -189,7 +189,11 @@ class TransactionResource extends Resource
                             ->pluck('name', 'id')
                             ->toArray()
                     )
-                    ->searchable()
+                    ->searchable(query: function (Builder $query, string $search): Builder {
+                        return $query->whereHas('category', function (Builder $categoryQuery) use ($search) {
+                            $categoryQuery->where('name', 'like', "%{$search}%");
+                        });
+                    })
                     ->sortable(),
 
                 TextColumn::make('merchant')
@@ -229,6 +233,27 @@ class TransactionResource extends Resource
                         $record->update([
                             'is_recurring' => $state !== 'once',
                         ]);
+                    })
+                    ->searchable(query: function (Builder $query, string $search): Builder {
+                        $options = [
+                            'once' => 'One Time',
+                            'weekly' => 'Weekly',
+                            'biweekly' => 'Bi-Weekly',
+                            'monthly' => 'Monthly',
+                            'quarterly' => 'Quarterly',
+                            'semiannually' => 'Every Six Months',
+                            'yearly' => 'Yearly',
+                        ];
+
+                        $matchingRules = collect($options)
+                            ->filter(fn ($label, $value) =>
+                                str_contains(strtolower($label), strtolower($search))
+                                || str_contains(strtolower($value), strtolower($search))
+                            )
+                            ->keys()
+                            ->all();
+
+                        return $query->whereIn('recurring_rule', $matchingRules);
                     })
                     ->sortable(),
 
