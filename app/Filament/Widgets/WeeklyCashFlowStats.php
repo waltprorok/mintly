@@ -61,7 +61,7 @@ class WeeklyCashFlowStats extends StatsOverviewWidget
             $this->month === now()->month &&
             $this->year === now()->year
         ) {
-            $currentWeek = (int) ceil(now()->day / 7);
+            $currentWeek = (int)ceil(now()->day / 7);
         }
 
         return collect(range(1, $this->getWeeksInMonth()))
@@ -87,7 +87,14 @@ class WeeklyCashFlowStats extends StatsOverviewWidget
                             ? 'heroicon-m-bolt'
                             : null
                     )
-                    ->color($net >= 0 ? 'success' : 'danger');
+                    ->color($net >= 0 ? 'success' : 'danger')
+                    ->extraAttributes(
+                        $isCurrentWeek
+                            ? [
+                                'class' => '!bg-primary-50 dark:!bg-primary-950/30 ring-1 ring-primary-200 dark:ring-primary-800',
+                        ]
+                            : []
+                    );
             })
             ->toArray();
     }
