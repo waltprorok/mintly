@@ -231,7 +231,7 @@ class MonthlyBudget extends Page implements HasTable
                 ->requiresConfirmation()
                 ->modalHeading("Prepare {$nextPeriodLabel}")
                 ->modalDescription(
-                    "Recurring transactions will be carried forward into {$nextPeriodLabel} based on their frequency. *Not one time purchases"
+                    "Recurring transactions will carry forward into {$nextPeriodLabel}  based on their frequency. One-time purchases will not be included."
                 )
                 ->modalSubmitActionLabel('Prepare')
                 ->action(function () use ($selectedPeriod, $nextPeriodLabel) {

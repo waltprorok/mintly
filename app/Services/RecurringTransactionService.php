@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Transaction;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 
 class RecurringTransactionService
 {
@@ -73,11 +74,33 @@ class RecurringTransactionService
             ->get();
 
         $created = 0;
+        $processed = [];
 
         foreach ($transactions as $transaction) {
+            if (in_array($transaction->recurring_rule, ['weekly', 'biweekly'], true)) {
+                $key = implode('|', [
+                    $transaction->merchant,
+                    $transaction->type,
+                    $transaction->recurring_rule,
+                    $transaction->category_id ?? '',
+                    $transaction->payment_method ?? '',
+                ]);
+
+                if (isset($processed[$key])) {
+                    continue;
+                }
+
+                $processed[$key] = true;
+            }
+
             $currentDate = $transaction->due_at->copy();
             $day = $transaction->due_at->day;
             $iterations = 0;
+
+            $amount = $this->getRecurringAmount(
+                transaction: $transaction,
+                transactions: $transactions,
+            );
 
             while ($iterations++ <= 50) {
                 $nextDate = match ($transaction->recurring_rule) {
@@ -164,7 +187,7 @@ class RecurringTransactionService
                         'type' => $transaction->type,
                         'due_at' => $nextDate,
                         'category_id' => $transaction->category_id,
-                        'amount' => $transaction->amount,
+                        'amount' => $amount,
                         'payment_method' => $transaction->payment_method,
                         'auto_pay' => $transaction->auto_pay,
                         'recurring_rule' => $transaction->recurring_rule,
@@ -179,5 +202,26 @@ class RecurringTransactionService
         }
 
         return $created;
+    }
+
+    private function getRecurringAmount(Transaction $transaction, Collection $transactions): float
+    {
+        // Only average weekly and biweekly expenses.
+        if (
+            $transaction->type !== 'expense'
+            || ! in_array($transaction->recurring_rule, ['weekly', 'biweekly'], true)
+        ) {
+            return (float)$transaction->amount;
+        }
+
+        $group = $transactions->filter(
+            fn(Transaction $item) => $item->merchant === $transaction->merchant
+                && $item->type === $transaction->type
+                && $item->recurring_rule === $transaction->recurring_rule
+                && $item->category_id === $transaction->category_id
+                && $item->payment_method === $transaction->payment_method
+        );
+
+        return round((float)$group->avg('amount'), 2);
     }
 }

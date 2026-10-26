@@ -443,7 +443,7 @@ class TransactionCsvImporter
              * Preserve the source description.
              * Only normalize the merchant display name.
              */
-            'merchant' => $this->cleanMerchant($description),
+            'merchant' => MerchantNormalizer::display($description),
             'description' => $description,
 
             'external_category' => $layout['category']
@@ -708,7 +708,7 @@ class TransactionCsvImporter
          * 4. Reuse the category from a previously
          * categorized transaction with the same merchant.
          */
-        $merchantKey = $this->merchantKey($transaction['merchant']);
+        $merchantKey = MerchantNormalizer::normalize($transaction['merchant']);
 
         $previous = Transaction::query()
             ->with('category')
@@ -717,8 +717,8 @@ class TransactionCsvImporter
             ->latest('due_at')
             ->get()
             ->first(
-                fn(Transaction $existing) => $this->merchantKey($existing->merchant)
-                    === $merchantKey
+                fn(Transaction $existing) =>
+                    MerchantNormalizer::normalize($existing->merchant) === $merchantKey
             );
 
         return $previous?->category;
@@ -754,14 +754,6 @@ class TransactionCsvImporter
         return Str::of($merchant)
             ->words(3, '')
             ->title()
-            ->toString();
-    }
-
-    private function merchantKey(?string $merchant): string
-    {
-        return Str::of($merchant ?? '')
-            ->lower()
-            ->replaceMatches('/[^a-z0-9]+/', '')
             ->toString();
     }
 
