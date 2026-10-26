@@ -12,71 +12,102 @@ use Throwable;
 class RollForwardRecurringTransactions extends Command
 {
     protected $signature = 'app:roll-forward-recurring-transactions
-                                {userId?}
-                                {--date= : Reference month, e.g. 2026-06-01}';
+                            {userId?}
+                            {--date= : Reference month, e.g. 2026-06-01}';
 
     protected $description = 'Prepare next month recurring transactions for all users';
 
-    public function handle(): void
+    public function handle(RecurringTransactionService $service): int
     {
-        $service = app(RecurringTransactionService::class);
+        try {
+            $referenceDate = $this->option('date')
+                ? Carbon::parse($this->option('date'))->startOfMonth()
+                : now()->startOfMonth();
+        } catch (Throwable $e) {
+            $this->error('Invalid reference date.');
+
+            return self::FAILURE;
+        }
+
+        $targetDate = $referenceDate
+            ->copy()
+            ->addMonthNoOverflow();
+
+        $this->info("Preparing recurring transactions for {$targetDate->format('F Y')}");
+
+        $query = User::query();
 
         if ($userId = $this->argument('userId')) {
-            $users = User::whereKey($userId)->get();
-        } else {
-            $users = User::all();
+            $query->whereKey($userId);
         }
 
-        $referenceDate = $this->option('date')
-            ? Carbon::parse($this->option('date'))->startOfMonth()
-            : now()->startOfMonth();
+        $processed = 0;
+        $created = 0;
+        $failed = 0;
 
-        $targetPeriod = $referenceDate
-            ->copy()
-            ->addMonthNoOverflow()
-            ->format('F Y');
+        $query->chunkById(100, function ($users) use (
+            $service,
+            $referenceDate,
+            $targetDate,
+            &$processed,
+            &$created,
+            &$failed
+        ) {
+            foreach ($users as $user) {
+                $processed++;
 
-        $this->info("Processing {$users->count()} users for {$targetPeriod}");
+                try {
+                    $count = $service->run(
+                        userId: $user->id,
+                        nextMonthOnly: true,
+                        referenceDate: $referenceDate->copy(),
+                    );
 
-        foreach ($users as $user) {
-            try {
-                $created = $service->run(
-                    userId: $user->id,
-                    nextMonthOnly: true,
-                    referenceDate: $referenceDate,
-                );
+                    $created += $count;
 
-                $this->line(
-                    "User {$user->id}: {$created} created"
-                );
+                    $this->line(
+                        "User {$user->id}: {$count} created"
+                    );
 
-                Log::info('Recurring transactions prepared', [
-                    'user_id' => $user->id,
-                    'source_period' => $referenceDate->format('Y-m'),
-                    'target_period' => $referenceDate
-                        ->copy()
-                        ->addMonthNoOverflow()
-                        ->format('Y-m'),
-                    'created' => $created,
-                ]);
-            } catch (Throwable $e) {
-                Log::error(
-                    'Recurring transaction preparation failed',
-                    [
+                    Log::info('Recurring transactions prepared', [
                         'user_id' => $user->id,
                         'source_period' => $referenceDate->format('Y-m'),
-                        'target_period' => $referenceDate
-                            ->copy()
-                            ->addMonthNoOverflow()
-                            ->format('Y-m'),
+                        'target_period' => $targetDate->format('Y-m'),
+                        'created' => $count,
+                    ]);
+
+                } catch (Throwable $e) {
+                    $failed++;
+
+                    Log::error('Recurring transaction preparation failed', [
+                        'user_id' => $user->id,
+                        'source_period' => $referenceDate->format('Y-m'),
+                        'target_period' => $targetDate->format('Y-m'),
                         'error' => $e->getMessage(),
-                    ]
-                );
+                    ]);
 
-                $this->error("User {$user->id} failed");
+                    $this->error(
+                        "User {$user->id}: Failed - {$e->getMessage()}"
+                    );
+                }
             }
-        }
+        });
 
-        $this->info('Done');
+        $this->newLine();
+
+        $this->info('Recurring transaction preparation complete.');
+
+        $this->table(
+            ['Metric', 'Total'],
+            [
+                ['Users Processed', $processed],
+                ['Transactions Created', $created],
+                ['Users Failed', $failed],
+            ]
+        );
+
+        return $failed > 0
+            ? self::FAILURE
+            : self::SUCCESS;
     }
 }
