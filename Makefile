@@ -20,8 +20,8 @@ migrate:
 optimize:
 	php artisan optimize:clear
 
-#prune:
-#	php artisan telescope:prune --hours=0
+prune:
+	php artisan telescope:prune --hours=0
 
 #prune-batch:
 #	php artisan queue:prune-batches --hours=0
