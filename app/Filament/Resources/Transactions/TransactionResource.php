@@ -158,6 +158,8 @@ class TransactionResource extends Resource
 
     public static function table(Table $table): Table
     {
+        $categoryOptions = null;
+
         return $table
             ->columns([
                 TextColumn::make('due_at')
@@ -179,13 +181,13 @@ class TransactionResource extends Resource
 
                 SelectColumn::make('category_id')
                     ->label('Category')
-                    ->options(
-                        fn() => Category::query()
+                    ->options(function () use (&$categoryOptions) {
+                        return $categoryOptions ??= Category::query()
                             ->where('user_id', auth()->id())
                             ->orderBy('name')
                             ->pluck('name', 'id')
-                            ->toArray()
-                    )
+                            ->toArray();
+                    })
                     ->searchable(query: function (Builder $query, string $search): Builder {
                         return $query->whereHas('category', function (Builder $categoryQuery) use ($search) {
                             $categoryQuery->where('name', 'like', "%{$search}%");
@@ -243,8 +245,7 @@ class TransactionResource extends Resource
                         ];
 
                         $matchingRules = collect($options)
-                            ->filter(fn ($label, $value) =>
-                                str_contains(strtolower($label), strtolower($search))
+                            ->filter(fn($label, $value) => str_contains(strtolower($label), strtolower($search))
                                 || str_contains(strtolower($value), strtolower($search))
                             )
                             ->keys()

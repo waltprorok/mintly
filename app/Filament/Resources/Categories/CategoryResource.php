@@ -30,7 +30,8 @@ class CategoryResource extends Resource
             ->where(function (Builder $query) {
                 $query->where('user_id', auth()->id())
                     ->orWhereNull('user_id');
-            });
+            })
+            ->withExists('transactions');
     }
 
     public static function getPages(): array
@@ -150,8 +151,8 @@ class CategoryResource extends Resource
                 DeleteAction::make()
                     ->label('')
                     ->icon('heroicon-o-trash')
-                    ->visible(fn($record) => ! $record->transactions()->exists())
-                    ->before(function ($record) {
+                    ->visible(fn ($record) => ! $record->transactions_exists)
+                    ->before(function (DeleteAction $action, $record) {
                         if ($record->transactions()->exists()) {
                             Notification::make()
                                 ->title('Cannot delete category')
@@ -159,9 +160,9 @@ class CategoryResource extends Resource
                                 ->danger()
                                 ->send();
 
-                            return false;
+                            $action->halt();
                         }
-                    }),
+                    })
             ])
             ->defaultSort('name');
     }
