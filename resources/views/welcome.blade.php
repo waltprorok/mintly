@@ -29,6 +29,42 @@
     <meta name="google-site-verification" content="RPPhABGHaCi4Qmbse4behpD6u3I7nrE7nxuVnXzE3mA"/>
     <meta name="theme-color" content="#080d0c">
     <meta name="robots" content="index, follow">
+    @verbatim
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            "@id": "https://mintlybudget.com/#software",
+            "name": "Mintly Budget",
+            "url": "https://mintlybudget.com/",
+            "description": "Mintly is a free monthly budget planner and cash flow tracking application that helps individuals manage income, expenses, recurring bills, and weekly spending.",
+            "applicationCategory": "FinanceApplication",
+            "applicationSubCategory": "Personal Finance",
+            "operatingSystem": "Web",
+            "browserRequirements": "Requires a modern web browser",
+            "image": "https://mintlybudget.com/images/social-preview-v1.png",
+            "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "USD",
+                "description": "Free during early access. No credit card required."
+            },
+            "featureList": [
+                "Monthly budget planning",
+                "Weekly cash flow tracking",
+                "Income and expense tracking",
+                "Recurring transaction management",
+                "Bank and credit card CSV imports",
+                "Automatic preparation of future monthly budgets",
+                "Bill payment tracking",
+                "Financial reports and spending analysis",
+                "PDF financial reports",
+                "Loan payment calculator",
+                "Needs versus wants spending analysis"
+            ]
+        }
+    </script>
+    @endverbatim
 
     @vite(['resources/css/bootstrap.css', 'resources/js/app.js'])
 </head>
@@ -643,6 +679,65 @@
                 </div>
             </div>
 
+            {{-- GEO FAQ --}}
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="q8">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#a8">
+                        Is Mintly Budget free to use?
+                    </button>
+                </h2>
+
+                <div id="a8" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body text-secondary">
+                        Yes. Mintly Budget is currently free during early access.
+                        Users can create an account, import transactions,
+                        manage monthly budgets, track expenses, and view
+                        financial reports without providing a credit card.
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="q9">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#a9">
+                        Can Mintly automatically prepare next month's budget?
+                    </button>
+                </h2>
+
+                <div id="a9" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body text-secondary">
+                        Yes. Mintly includes a Prepare Next Month feature
+                        that carries recurring income and expenses into
+                        the following month based on their frequency.
+
+                        This helps users maintain a consistent budget
+                        without manually recreating recurring transactions.
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="q10">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#a10">
+                        What budgeting app works without connecting a bank account?
+                    </button>
+                </h2>
+
+                <div id="a10" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body text-secondary">
+                        Mintly Budget allows users to manage their finances
+                        without connecting a bank account.
+
+                        Transactions can be entered manually or imported
+                        using CSV files downloaded from a bank or credit card.
+
+                        This gives users control over their financial
+                        information while still providing budgeting,
+                        reporting, and cash flow tracking tools.
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         <div class="text-center mt-4">
@@ -656,12 +751,10 @@
 <footer class="bg-dark text-light pt-5 pb-4">
     <div class="container">
         <div class="row text-start">
-
             <!-- Brand -->
             <div class="col-12 col-md-4 mb-4">
                 <div class="d-flex align-items-center justify-content-center justify-content-md-start mb-3">
-                    <img
-                        src="{{ asset('images/apple-touch-icon.png') }}"
+                    <img src="{{ asset('images/apple-touch-icon.png') }}"
                         alt="Mintly logo"
                         class="me-3 rounded"
                         style="width: 60px; height: 60px;"
