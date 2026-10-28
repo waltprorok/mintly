@@ -80,7 +80,7 @@ class ImportTransactionsCsvAction
                     Check your CSV file to see whether purchases are positive or negative amounts.'),
             ])
             ->action(function (array $data) {
-                $path = storage_path('app/' . $data['file']);
+                $path = Storage::disk('local')->path($data['file']);
 
                 try {
                     $result = app(TransactionCsvImporter::class)->import(

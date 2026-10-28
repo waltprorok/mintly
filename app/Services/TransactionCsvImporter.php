@@ -591,6 +591,11 @@ class TransactionCsvImporter
 
         $description = Str::lower(trim($description));
 
+        if (str_contains($description, 'online transfer to') || str_contains($description, 'online transfer from'))
+        {
+            return true;
+        }
+
         /*
          * Bank payments to credit cards.
          *
@@ -931,16 +936,37 @@ class TransactionCsvImporter
 
     private function isDuplicate(int $userId, array $transaction): bool
     {
-        return Transaction::query()
+        $merchantKey = MerchantNormalizer::normalize($transaction['merchant']);
+
+        $existingTransactions = Transaction::query()
             ->where('user_id', $userId)
             ->where('type', $transaction['type'])
             ->whereDate('due_at', $transaction['date'])
-            ->where('amount', $transaction['amount'])
-            ->whereRaw(
-                'LOWER(merchant) = ?',
-                [Str::lower($transaction['merchant'])]
-            )
-            ->exists();
+            ->get();
+
+        foreach ($existingTransactions as $existing) {
+            if (
+                MerchantNormalizer::normalize($existing->merchant) !== $merchantKey
+            ) {
+                continue;
+            }
+
+            // Exact duplicate, regardless of payment status.
+            if (abs((float) $existing->amount - $transaction['amount']) < 0.01) {
+                return true;
+            }
+
+            // Potential duplicate of an unpaid planned transaction.
+            if (
+                ! $existing->is_paid &&
+                $existing->is_recurring &&
+                abs((float) $existing->amount - $transaction['amount']) <= 1.00
+            ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function mapMerchantCategory(string $merchant): ?string

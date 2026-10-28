@@ -15,14 +15,25 @@ class CheckTransactionDuplicatesAction
             ->icon('heroicon-o-document-duplicate')
             ->color('gray')
             ->action(function (Component $livewire) {
-                // Clear previous duplicate results before running a new check.
-                unset($livewire->tableFilters['potential_duplicates']);
 
+                // Reset previous duplicate results.
+                $livewire->duplicateTransactionIds = [];
+
+                // Disable the duplicate filter before querying.
+                $livewire->tableFilters['potential_duplicates'] = [
+                    'isActive' => false,
+                ];
+
+                // Get transactions matching current table filters.
+                $query = $livewire->getFilteredTableQuery();
+
+                // Find duplicates.
                 $duplicates = app(TransactionDuplicateService::class)
-                    ->find($livewire->getFilteredTableQuery());
+                    ->find($query);
 
+                // Collect duplicate IDs.
                 $duplicateIds = $duplicates
-                    ->flatMap(fn(array $pair) => [
+                    ->flatMap(fn (array $pair) => [
                         $pair['original']->id,
                         $pair['duplicate']->id,
                     ])
@@ -30,8 +41,10 @@ class CheckTransactionDuplicatesAction
                     ->values()
                     ->all();
 
+                // Store duplicate IDs.
                 $livewire->duplicateTransactionIds = $duplicateIds;
 
+                // Activate duplicate filter.
                 $livewire->tableFilters['potential_duplicates'] = [
                     'isActive' => true,
                 ];
