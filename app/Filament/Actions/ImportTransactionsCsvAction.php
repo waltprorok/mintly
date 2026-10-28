@@ -40,6 +40,7 @@ class ImportTransactionsCsvAction
                 FileUpload::make('file')
                     ->label('CSV File')
                     ->validationAttribute('CSV file')
+                    ->preserveFilenames()
                     ->helperText(
                         '🔒 Your CSV is processed securely and removed from temporary storage after importing.'
                     )
