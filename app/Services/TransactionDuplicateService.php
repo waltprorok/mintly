@@ -19,20 +19,10 @@ class TransactionDuplicateService
         foreach ($transactions as $index => $transaction) {
             foreach ($transactions->slice($index + 1) as $candidate) {
 
-                // Must be the same transaction type.
                 if ($transaction->type !== $candidate->type) {
                     continue;
                 }
 
-                // Must be within the allowed date range.
-                if (
-                    Carbon::parse($transaction->due_at)
-                        ->diffInDays(Carbon::parse($candidate->due_at)) > $daysTolerance
-                ) {
-                    break;
-                }
-
-                // Must be the same normalized merchant.
                 if (
                     MerchantNormalizer::normalize($transaction->merchant)
                     !== MerchantNormalizer::normalize($candidate->merchant)
@@ -40,31 +30,48 @@ class TransactionDuplicateService
                     continue;
                 }
 
+                $daysDifference = Carbon::parse($transaction->due_at)
+                    ->diffInDays(Carbon::parse($candidate->due_at));
+
+                $sameMonth = Carbon::parse($transaction->due_at)
+                    ->isSameMonth(Carbon::parse($candidate->due_at));
+
                 $difference = abs(
-                    (float) $transaction->amount - (float) $candidate->amount
+                    (float)$transaction->amount - (float)$candidate->amount
                 );
 
-                $maxAmount = max(
-                    (float) $transaction->amount,
-                    (float) $candidate->amount
-                );
+                $sameAmount = $difference < 0.01;
 
-                $percentageDifference = $maxAmount > 0
-                    ? ($difference / $maxAmount) * 100
-                    : 0;
+                $monthlyAndOnce = (
+                        $transaction->recurring_rule === 'monthly' &&
+                        $candidate->recurring_rule === 'once'
+                    ) || (
+                        $transaction->recurring_rule === 'once' &&
+                        $candidate->recurring_rule === 'monthly'
+                    );
 
-                // Ignore amounts differing by more than 10%.
-                if ($percentageDifference > 10) {
+                // Monthly planned transaction vs. imported one-time transaction.
+                if ($monthlyAndOnce && $sameMonth && $daysDifference <= $daysTolerance) {
+
+                    if ($difference <= 1.00) {
+                        $duplicates->push([
+                            'original' => $transaction,
+                            'duplicate' => $candidate,
+                            'confidence' => 'Potential',
+                        ]);
+                    }
+
                     continue;
                 }
 
-                $duplicates->push([
-                    'original' => $transaction,
-                    'duplicate' => $candidate,
-                    'confidence' => $difference < 0.01
-                        ? 'High'
-                        : 'Potential',
-                ]);
+                // Exact matches only for all other transactions.
+                if ($daysDifference === 0 && $sameAmount) {
+                    $duplicates->push([
+                        'original' => $transaction,
+                        'duplicate' => $candidate,
+                        'confidence' => 'High',
+                    ]);
+                }
             }
         }
 
