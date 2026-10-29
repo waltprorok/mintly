@@ -17,11 +17,11 @@ class TransactionCsvImporter
      * @throws Throwable
      */
     public function import(
-        int    $userId,
+        int $userId,
         string $path,
         string $accountType = 'auto',
-        string $amountConvention = 'negative_expense'): array
-    {
+        string $amountConvention = 'negative_expense'
+    ): array {
         if (! in_array($accountType, ['auto', 'bank', 'credit_card'], true)) {
             throw new RuntimeException('Invalid CSV account type.');
         }
@@ -48,6 +48,7 @@ class TransactionCsvImporter
 
         return DB::transaction(function () use ($userId, $rows, $layout, $categories) {
             $created = 0;
+            $updated = 0;
             $duplicates = 0;
             $transfers = 0;
             $unmatched = 0;
@@ -60,15 +61,29 @@ class TransactionCsvImporter
 
                 if ($normalized === null) {
                     $transfers++;
-
                     continue;
                 }
 
-                // Skip transactions already imported.
-                if ($this->isDuplicate($userId, $normalized)) {
-                    $duplicates++;
+                $existing = $this->findExistingTransaction($userId, $normalized);
 
-                    continue;
+                if ($existing !== null) {
+                    if ($this->isExactDuplicate($existing, $normalized)) {
+                        $duplicates++;
+                        continue;
+                    }
+
+                    // Only reconcile an unpaid planned monthly transaction.
+                    // Never overwrite an already-paid charge with a different one.
+                    if ($existing->recurring_rule === 'monthly') {
+                        $existing->update([
+                            'amount' => $normalized['amount'],
+                            'due_at' => $normalized['date'],
+                            'description' => $normalized['description'],
+                            'is_paid' => true,
+                        ]);
+                        $updated++;
+                        continue;
+                    }
                 }
 
                 $category = $this->resolveCategory(
@@ -101,6 +116,7 @@ class TransactionCsvImporter
 
             return [
                 'created' => $created,
+                'updated' => $updated,
                 'duplicates' => $duplicates,
                 'transfers' => $transfers,
                 'unmatched' => $unmatched,
@@ -123,12 +139,7 @@ class TransactionCsvImporter
                 return collect();
             }
 
-            $headers = array_map(
-                fn($header) => trim((string)$header),
-                $headers
-            );
-
-            // Remove a UTF-8 BOM if present.
+            $headers = array_map(fn($header) => trim((string) $header), $headers);
             $headers[0] = preg_replace('/^\xEF\xBB\xBF/', '', $headers[0]);
 
             if (count($headers) !== count(array_unique($headers))) {
@@ -138,30 +149,13 @@ class TransactionCsvImporter
             $rows = collect();
 
             while (($values = fgetcsv($handle)) !== false) {
-                /*
-                 * Some bank CSV exports include extra trailing blank columns.
-                 */
-                $values = array_slice(
-                    $values,
-                    0,
-                    count($headers)
-                );
-
-                $values = array_pad(
-                    $values,
-                    count($headers),
-                    null
-                );
-
+                $values = array_slice($values, 0, count($headers));
+                $values = array_pad($values, count($headers), null);
                 $row = array_combine($headers, $values);
 
-                /*
-                 * Ignore completely empty CSV rows.
-                 */
                 if (collect($row)
-                    ->filter(fn($value) => trim((string)$value) !== '')
-                    ->isEmpty()
-                ) {
+                    ->filter(fn($value) => trim((string) $value) !== '')
+                    ->isEmpty()) {
                     continue;
                 }
 
@@ -177,180 +171,97 @@ class TransactionCsvImporter
     private function detectLayout(Collection $rows, string $accountType, string $amountConvention): array
     {
         $sample = $rows->take(10);
-
         $headers = array_keys($sample->first());
-
         $dateColumns = [];
         $numericColumns = [];
         $textColumns = [];
-
         $directionColumn = null;
         $transactionTypeColumn = null;
 
-        /*
-         * Identify explicit Debit and Credit columns.
-         *
-         * These are different from columns containing the
-         * text values DEBIT and CREDIT.
-         */
         $debitColumn = $this->findHeader($headers, [
-            'Debit',
-            'Debit Amount',
-            'Withdrawal',
-            'Withdrawals',
-            'Money Out',
+            'Debit', 'Debit Amount', 'Withdrawal', 'Withdrawals', 'Money Out',
         ]);
-
         $creditColumn = $this->findHeader($headers, [
-            'Credit',
-            'Credit Amount',
-            'Deposit',
-            'Deposits',
-            'Money In',
+            'Credit', 'Credit Amount', 'Deposit', 'Deposits', 'Money In',
         ]);
-
         $hasSplitAmounts = $debitColumn !== null && $creditColumn !== null;
 
         foreach ($headers as $header) {
-            $values = $sample
-                ->pluck($header)
-                ->filter(fn($value) => trim((string)$value) !== '');
+            $values = $sample->pluck($header)
+                ->filter(fn($value) => trim((string) $value) !== '');
 
             if ($values->isEmpty()) {
                 continue;
             }
 
-            /*
-             * Skip separate amount columns.
-             *
-             * These will be handled independently.
-             */
-            if ($hasSplitAmounts
-                && in_array($header, [$debitColumn, $creditColumn], true)
-            ) {
+            if ($hasSplitAmounts && in_array($header, [$debitColumn, $creditColumn], true)) {
                 continue;
             }
 
-            /*
-             * Numeric detection first.
-             */
             $numericMatches = $values->filter(
                 fn($value) => $this->looksLikeNumber($value)
             )->count();
 
             if ($numericMatches / $values->count() >= 0.70) {
                 $numericColumns[] = $header;
-
                 continue;
             }
 
-            /*
-             * Date detection second.
-             */
             $dateMatches = $values->filter(
                 fn($value) => $this->looksLikeDate($value)
             )->count();
 
             if ($dateMatches / $values->count() >= 0.70) {
                 $dateColumns[] = $header;
-
                 continue;
             }
 
-            /*
-             * DEBIT / CREDIT direction.
-             */
-            $directionMatches = $values->filter(function ($value) {
-                return in_array(
-                    Str::upper(trim((string)$value)),
-                    ['DEBIT', 'CREDIT'],
-                    true
-                );
-            })->count();
+            $directionMatches = $values->filter(fn($value) => in_array(
+                Str::upper(trim((string) $value)), ['DEBIT', 'CREDIT'], true
+            ))->count();
 
             if ($directionMatches / $values->count() >= 0.50) {
                 $directionColumn = $header;
-
                 continue;
             }
 
-            /*
-             * Credit card transaction type.
-             */
-            $typeMatches = $values->filter(function ($value) {
-                return in_array(
-                    Str::upper(trim((string)$value)),
-                    [
-                        'SALE',
-                        'PAYMENT',
-                        'RETURN',
-                        'REFUND',
-                        'ADJUSTMENT',
-                    ],
-                    true
-                );
-            })->count();
+            $typeMatches = $values->filter(fn($value) => in_array(
+                Str::upper(trim((string) $value)),
+                ['SALE', 'PAYMENT', 'RETURN', 'REFUND', 'ADJUSTMENT'],
+                true
+            ))->count();
 
             if ($typeMatches / $values->count() >= 0.40) {
                 $transactionTypeColumn = $header;
-
                 continue;
             }
 
             $textColumns[] = $header;
         }
 
-        /*
-         * Prefer recognizable date headers.
-         */
         $dateColumn = $this->findHeader($dateColumns, [
-            'Transaction Date',
-            'Trans. Date',
-            'Date',
-            'Posting Date',
-            'Posted Date',
-            'Post Date',
+            'Transaction Date', 'Trans. Date', 'Date',
+            'Posting Date', 'Posted Date', 'Post Date',
         ]) ?? ($dateColumns[0] ?? null);
 
         if (! $dateColumn) {
-            throw new RuntimeException(
-                'Unable to identify a transaction date column.'
-            );
+            throw new RuntimeException('Unable to identify a transaction date column.');
         }
 
-        /*
-         * Determine the amount column.
-         *
-         * Split Debit/Credit files do not require a
-         * single Amount column.
-         */
         $amountColumn = null;
-
         if (! $hasSplitAmounts) {
             if (empty($numericColumns)) {
-                throw new RuntimeException(
-                    'Unable to identify a transaction amount column.'
-                );
+                throw new RuntimeException('Unable to identify a transaction amount column.');
             }
-
             $amountColumn = $this->findAmountColumn(
                 sample: $sample,
                 columns: $numericColumns,
             );
         }
 
-        /*
-         * Prefer recognizable description headers.
-         */
         $descriptionColumn = $this->findHeader($textColumns, [
-            'Description',
-            'Transaction Description',
-            'Merchant',
-            'Merchant Name',
-            'Payee',
-            'Name',
-            'Details',
-            'Memo',
+            'Description', 'Transaction Description', 'Merchant',
+            'Merchant Name', 'Payee', 'Name', 'Details', 'Memo',
         ]);
 
         if (! $descriptionColumn) {
@@ -361,27 +272,13 @@ class TransactionCsvImporter
         }
 
         if (! $descriptionColumn) {
-            throw new RuntimeException(
-                'Unable to identify a transaction description column.'
-            );
+            throw new RuntimeException('Unable to identify a transaction description column.');
         }
 
-        /*
-         * Look for a category column.
-         */
-        $categoryColumn = collect($headers)
-            ->first(
-                fn($header) => str_contains(
-                    Str::lower($header),
-                    'category'
-                )
-            );
+        $categoryColumn = collect($headers)->first(
+            fn($header) => str_contains(Str::lower($header), 'category')
+        );
 
-        /*
-         * Determine account format.
-         *
-         * Explicit account type takes priority over detection.
-         */
         if ($accountType !== 'auto') {
             $format = $accountType;
         } else {
@@ -406,26 +303,13 @@ class TransactionCsvImporter
 
     private function normalizeRow(array $row, array $layout): ?array
     {
-        $description = trim(
-            (string)($row[$layout['description']] ?? '')
-        );
+        $description = trim((string) ($row[$layout['description']] ?? ''));
 
-        /*
-         * Skip credit card payments and recognized transfers.
-         */
         if ($this->isTransfer($row, $layout, $description)) {
             return null;
         }
 
-        /*
-         * Support either a single Amount column or
-         * separate Debit and Credit columns.
-         */
-        $amount = $this->getTransactionAmount(
-            row: $row,
-            layout: $layout,
-        );
-
+        $amount = $this->getTransactionAmount(row: $row, layout: $layout);
         $type = $this->determineTransactionType(
             row: $row,
             layout: $layout,
@@ -433,23 +317,14 @@ class TransactionCsvImporter
         );
 
         return [
-            'date' => $this->parseDate(
-                $row[$layout['date']] ?? null
-            ),
+            'date' => $this->parseDate($row[$layout['date']] ?? null),
             'type' => $type,
             'amount' => abs($amount),
-
-            /*
-             * Preserve the source description.
-             * Only normalize the merchant display name.
-             */
             'merchant' => MerchantNormalizer::display($description),
             'description' => $description,
-
             'external_category' => $layout['category']
-                ? trim((string)($row[$layout['category']] ?? ''))
+                ? trim((string) ($row[$layout['category']] ?? ''))
                 : null,
-
             'payment_method' => $layout['format'] === 'credit_card'
                 ? 'credit_card'
                 : 'bank',
@@ -458,25 +333,12 @@ class TransactionCsvImporter
 
     private function getTransactionAmount(array $row, array $layout): float
     {
-        /*
-         * Separate Debit and Credit columns.
-         */
         if ($layout['debit'] && $layout['credit']) {
-            $debitValue = trim(
-                (string)($row[$layout['debit']] ?? '')
-            );
-
-            $creditValue = trim(
-                (string)($row[$layout['credit']] ?? '')
-            );
-
+            $debitValue = trim((string) ($row[$layout['debit']] ?? ''));
+            $creditValue = trim((string) ($row[$layout['credit']] ?? ''));
             $hasDebit = $debitValue !== '';
             $hasCredit = $creditValue !== '';
 
-            /*
-             * A transaction should not contain values
-             * in both columns or neither column.
-             */
             if ($hasDebit === $hasCredit) {
                 throw new RuntimeException(
                     'Invalid transaction: expected an amount in either Debit or Credit.'
@@ -490,30 +352,15 @@ class TransactionCsvImporter
             return abs($this->parseNumber($creditValue));
         }
 
-        /*
-         * Standard single Amount column.
-         */
-        return $this->parseNumber(
-            $row[$layout['amount']] ?? null
-        );
+        return $this->parseNumber($row[$layout['amount']] ?? null);
     }
 
     private function determineTransactionType(array $row, array $layout, float $amount): string
     {
-        /*
-         * Explicit transaction types take priority.
-         *
-         * This handles credit card exports where SALE
-         * amounts may be positive or negative.
-         */
         if ($layout['transaction_type']) {
-            $transactionType = Str::upper(
-                trim(
-                    (string)(
-                        $row[$layout['transaction_type']] ?? ''
-                    )
-                )
-            );
+            $transactionType = Str::upper(trim(
+                (string) ($row[$layout['transaction_type']] ?? '')
+            ));
 
             if ($transactionType === 'SALE') {
                 return 'expense';
@@ -524,17 +371,10 @@ class TransactionCsvImporter
             }
         }
 
-        /*
-         * Bank exports with explicit CREDIT / DEBIT indicators.
-         */
         if ($layout['direction']) {
-            $direction = Str::upper(
-                trim(
-                    (string)(
-                        $row[$layout['direction']] ?? ''
-                    )
-                )
-            );
+            $direction = Str::upper(trim(
+                (string) ($row[$layout['direction']] ?? '')
+            ));
 
             if ($direction === 'CREDIT') {
                 return 'income';
@@ -545,44 +385,23 @@ class TransactionCsvImporter
             }
         }
 
-        /*
-         * Separate Debit/Credit columns.
-         *
-         * Debit = Expense
-         * Credit = Income
-         *
-         * This is independent of the single-column
-         * amount convention.
-         */
         if ($layout['debit'] && $layout['credit']) {
             return $amount < 0 ? 'expense' : 'income';
         }
 
-        /*
-         * Single Amount column.
-         *
-         * Some credit cards use negative purchases.
-         * Others use positive purchases.
-         */
         if ($layout['amount_convention'] === 'positive_expense') {
             return $amount > 0 ? 'expense' : 'income';
         }
 
-        /*
-         * Existing Chase-style behavior.
-         */
         return $amount < 0 ? 'expense' : 'income';
     }
 
     private function isTransfer(array $row, array $layout, string $description): bool
     {
-        /*
-         * Explicit credit card payment transaction type.
-         */
         if ($layout['transaction_type']) {
-            $transactionType = Str::upper(
-                trim((string)($row[$layout['transaction_type']] ?? ''))
-            );
+            $transactionType = Str::upper(trim(
+                (string) ($row[$layout['transaction_type']] ?? '')
+            ));
 
             if ($transactionType === 'PAYMENT') {
                 return true;
@@ -591,35 +410,19 @@ class TransactionCsvImporter
 
         $description = Str::lower(trim($description));
 
-        if (str_contains($description, 'online transfer to') || str_contains($description, 'online transfer from'))
-        {
+        if (str_contains($description, 'online transfer to')
+            || str_contains($description, 'online transfer from')) {
             return true;
         }
 
-        /*
-         * Bank payments to credit cards.
-         *
-         * Preserve the existing detection rule.
-         */
-        if (str_contains($description, 'payment to') && str_contains($description, 'card'))
-        {
+        if (str_contains($description, 'payment to') && str_contains($description, 'card')) {
             return true;
         }
 
-        /*
-         * Common credit card payment descriptions.
-         *
-         * Restrict these additional patterns to
-         * explicitly identified credit card exports.
-         */
         if ($layout['format'] === 'credit_card') {
             $patterns = [
-                'payment received',
-                'automatic payment',
-                'payment thank you',
-                'payment - thank you',
-                'autopay payment',
-                'credit card autopay',
+                'payment received', 'automatic payment', 'payment thank you',
+                'payment - thank you', 'autopay payment', 'credit card autopay',
             ];
 
             foreach ($patterns as $pattern) {
@@ -636,10 +439,7 @@ class TransactionCsvImporter
     {
         foreach ($candidates as $candidate) {
             foreach ($headers as $header) {
-                if (
-                    Str::lower(trim($header))
-                    === Str::lower($candidate)
-                ) {
+                if (Str::lower(trim($header)) === Str::lower($candidate)) {
                     return $header;
                 }
             }
@@ -650,20 +450,11 @@ class TransactionCsvImporter
 
     private function resolveCategory(int $userId, Collection $categories, array $transaction): ?Category
     {
-        /*
-         * 1. Try merchant-based category mapping.
-         *
-         * Example:
-         * Amazon Mktpl*595Ut5Cg0 -> Amazon Purchases
-         */
         $mappedName = $this->mapMerchantCategory($transaction['description']);
 
         if ($mappedName) {
             $category = $categories->first(
-                fn(Category $category) => strcasecmp(
-                        trim($category->name),
-                        $mappedName
-                    ) === 0
+                fn(Category $category) => strcasecmp(trim($category->name), $mappedName) === 0
             );
 
             if ($category) {
@@ -671,14 +462,10 @@ class TransactionCsvImporter
             }
         }
 
-        /*
-         * 2. Try an exact category supplied by the CSV.
-         */
         if ($transaction['external_category']) {
             $category = $categories->first(
                 fn(Category $category) => strcasecmp(
-                        trim($category->name),
-                        trim($transaction['external_category'])
+                        trim($category->name), trim($transaction['external_category'])
                     ) === 0
             );
 
@@ -687,20 +474,12 @@ class TransactionCsvImporter
             }
         }
 
-        /*
-         * 3. Try generic financial category mapping.
-         */
         if ($transaction['external_category']) {
-            $mappedName = $this->mapExternalCategory(
-                $transaction['external_category']
-            );
+            $mappedName = $this->mapExternalCategory($transaction['external_category']);
 
             if ($mappedName) {
                 $category = $categories->first(
-                    fn(Category $category) => strcasecmp(
-                            trim($category->name),
-                            $mappedName
-                        ) === 0
+                    fn(Category $category) => strcasecmp(trim($category->name), $mappedName) === 0
                 );
 
                 if ($category) {
@@ -709,10 +488,6 @@ class TransactionCsvImporter
             }
         }
 
-        /*
-         * 4. Reuse the category from a previously
-         * categorized transaction with the same merchant.
-         */
         $merchantKey = MerchantNormalizer::normalize($transaction['merchant']);
 
         $previous = Transaction::query()
@@ -741,7 +516,6 @@ class TransactionCsvImporter
             'food & drink' => 'Dining',
             'bills & utilities' => 'Utilities',
             'home' => 'House',
-
             default => null,
         };
     }
@@ -756,10 +530,7 @@ class TransactionCsvImporter
             ->replaceMatches('/\s+/', ' ')
             ->trim();
 
-        return Str::of($merchant)
-            ->words(3, '')
-            ->title()
-            ->toString();
+        return Str::of($merchant)->words(3, '')->title()->toString();
     }
 
     private function looksLikeDate(mixed $value): bool
@@ -768,53 +539,37 @@ class TransactionCsvImporter
             return false;
         }
 
-        $value = trim($value);
-
         return preg_match(
                 '/^(?:\d{1,2}\/\d{1,2}\/\d{2,4}|\d{4}-\d{1,2}-\d{1,2})$/',
-                $value
+                trim($value)
             ) === 1;
     }
 
     private function looksLikeNumber(mixed $value): bool
     {
-        if ($value === null || trim((string)$value) === '') {
+        if ($value === null || trim((string) $value) === '') {
             return false;
         }
 
-        $value = str_replace(
-            ['$', ',', '(', ')'],
-            '',
-            trim((string)$value)
-        );
-
+        $value = str_replace(['$', ',', '(', ')'], '', trim((string) $value));
         return is_numeric($value);
     }
 
     private function parseNumber(mixed $value): float
     {
         if ($value === null) {
-            throw new RuntimeException(
-                'Transaction amount is missing.'
-            );
+            throw new RuntimeException('Transaction amount is missing.');
         }
 
-        $value = trim((string)$value);
-
+        $value = trim((string) $value);
         $negative = str_starts_with($value, '(') && str_ends_with($value, ')');
-
-        $value = str_replace(
-            ['$', ',', '(', ')'],
-            '',
-            $value
-        );
+        $value = str_replace(['$', ',', '(', ')'], '', $value);
 
         if (! is_numeric($value)) {
             throw new RuntimeException("Invalid transaction amount: {$value}");
         }
 
-        $amount = (float)$value;
-
+        $amount = (float) $value;
         return $negative ? -abs($amount) : $amount;
     }
 
@@ -833,34 +588,18 @@ class TransactionCsvImporter
 
     private function findAmountColumn(Collection $sample, array $columns): string
     {
-        /*
-         * Prefer explicitly named transaction amount columns.
-         *
-         * Never prefer Balance over Amount.
-         */
         $amountColumn = $this->findHeader($columns, [
-            'Amount',
-            'Transaction Amount',
-            'Transaction Amt',
-            'Total Amount',
+            'Amount', 'Transaction Amount', 'Transaction Amt', 'Total Amount',
         ]);
 
         if ($amountColumn) {
             return $amountColumn;
         }
 
-        /*
-         * Exclude balance-related columns from consideration.
-         */
-        $columns = array_values(
-            array_filter(
-                $columns,
-                fn($column) => ! str_contains(
-                    Str::lower($column),
-                    'balance'
-                )
-            )
-        );
+        $columns = array_values(array_filter(
+            $columns,
+            fn($column) => ! str_contains(Str::lower($column), 'balance')
+        ));
 
         if (count($columns) === 1) {
             return $columns[0];
@@ -870,25 +609,15 @@ class TransactionCsvImporter
             throw new RuntimeException('Unable to identify a transaction amount column.');
         }
 
-        /*
-         * Prefer columns containing both positive
-         * and negative transaction amounts.
-         */
         $candidates = [];
 
         foreach ($columns as $column) {
-            $values = $sample
-                ->pluck($column)
+            $values = $sample->pluck($column)
                 ->filter(fn($value) => $this->looksLikeNumber($value))
                 ->map(fn($value) => $this->parseNumber($value));
 
-            $hasPositive = $values->contains(
-                fn($value) => $value > 0
-            );
-
-            $hasNegative = $values->contains(
-                fn($value) => $value < 0
-            );
+            $hasPositive = $values->contains(fn($value) => $value > 0);
+            $hasNegative = $values->contains(fn($value) => $value < 0);
 
             if ($hasPositive && $hasNegative) {
                 $candidates[] = $column;
@@ -899,9 +628,6 @@ class TransactionCsvImporter
             return $candidates[0];
         }
 
-        /*
-         * Avoid silently selecting an incorrect amount column.
-         */
         throw new RuntimeException('Unable to determine which CSV column contains transaction amounts.');
     }
 
@@ -911,18 +637,15 @@ class TransactionCsvImporter
         $bestLength = 0;
 
         foreach ($columns as $column) {
-            $values = $sample
-                ->pluck($column)
-                ->filter(fn($value) => trim((string)$value) !== ''
-                );
+            $values = $sample->pluck($column)
+                ->filter(fn($value) => trim((string) $value) !== '');
 
             if ($values->isEmpty()) {
                 continue;
             }
 
             $averageLength = $values
-                ->map(fn($value) => strlen(trim((string)$value))
-                )
+                ->map(fn($value) => strlen(trim((string) $value)))
                 ->average();
 
             if ($averageLength > $bestLength) {
@@ -934,39 +657,44 @@ class TransactionCsvImporter
         return $bestColumn;
     }
 
-    private function isDuplicate(int $userId, array $transaction): bool
+    /**
+     * Prefer exact matches. Otherwise return only a unique unpaid monthly
+     * plan in the same calendar month. Ambiguous monthly plans are not
+     * automatically reconciled.
+     */
+    private function findExistingTransaction(int $userId, array $transaction): ?Transaction
     {
         $merchantKey = MerchantNormalizer::normalize($transaction['merchant']);
 
-        $existingTransactions = Transaction::query()
+        $matches = Transaction::query()
             ->where('user_id', $userId)
             ->where('type', $transaction['type'])
-            ->whereDate('due_at', $transaction['date'])
-            ->get();
+            ->whereYear('due_at', $transaction['date']->year)
+            ->whereMonth('due_at', $transaction['date']->month)
+            ->get()
+            ->filter(fn(Transaction $existing) =>
+                MerchantNormalizer::normalize($existing->merchant) === $merchantKey
+            );
 
-        foreach ($existingTransactions as $existing) {
-            if (
-                MerchantNormalizer::normalize($existing->merchant) !== $merchantKey
-            ) {
-                continue;
-            }
+        // Prioritize existing monthly recurring transactions.
+        $monthly = $matches->filter(fn(Transaction $existing) =>
+            $existing->recurring_rule === 'monthly'
+        );
 
-            // Exact duplicate, regardless of payment status.
-            if (abs((float) $existing->amount - $transaction['amount']) < 0.01) {
-                return true;
-            }
-
-            // Potential duplicate of an unpaid planned transaction.
-            if (
-                ! $existing->is_paid &&
-                $existing->is_recurring &&
-                abs((float) $existing->amount - $transaction['amount']) <= 1.00
-            ) {
-                return true;
-            }
+        if ($monthly->count() === 1) {
+            return $monthly->first();
         }
 
-        return false;
+        // Otherwise, check for exact duplicates.
+        return $matches->first(fn(Transaction $existing) =>
+        $this->isExactDuplicate($existing, $transaction)
+        );
+    }
+
+    private function isExactDuplicate(Transaction $existing, array $transaction): bool
+    {
+        return $existing->due_at->isSameDay($transaction['date'])
+            && abs((float) $existing->amount - (float) $transaction['amount']) < 0.01;
     }
 
     private function mapMerchantCategory(string $merchant): ?string
@@ -974,18 +702,10 @@ class TransactionCsvImporter
         $merchant = Str::lower(trim($merchant));
 
         return match (true) {
+            Str::startsWith($merchant, ['amazon prime', 'amzn prime']) => 'Subscriptions',
             Str::startsWith($merchant, [
-                'amazon prime',
-                'amzn prime',
-            ]) => 'Subscriptions',
-
-            Str::startsWith($merchant, [
-                'amazon mktpl',
-                'amazon.com',
-                'amzn mktp',
-                'amzn mktpl',
+                'amazon mktpl', 'amazon.com', 'amzn mktp', 'amzn mktpl',
             ]) => 'Amazon Purchases',
-
             default => null,
         };
     }
