@@ -153,6 +153,11 @@ class TransactionResource extends Resource
                 ->rows(4)
                 ->nullable(),
 
+            Textarea::make('description')
+                ->rows(2)
+                ->nullable()
+                ->readOnly(fn (?Transaction $record) => $record !== null)
+                ->helperText('Original transaction description from your bank or CSV import.'),
         ]);
     }
 
