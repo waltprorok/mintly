@@ -40,12 +40,12 @@ class IncomeExpenseChart extends ChartWidget
             return;
         }
 
-        $monthsOfHistory = $firstTransaction->due_at
-                ->copy()
-                ->startOfMonth()
-                ->diffInMonths(now()->startOfMonth()) + 1;
+        $monthsOfHistory = $firstTransaction?->due_at
+                ?->copy()
+                ?->startOfMonth()
+                ?->diffInMonths(now()->startOfMonth()) + 1;
 
-        $this->filter = $monthsOfHistory > 3 ? '6' : '3';
+        $this->filter = ($monthsOfHistory ?? 0) > 3 ? '6' : '3';
     }
 
     protected function getData(): array
