@@ -71,6 +71,7 @@ class DashboardPanelProvider extends PanelProvider
                     </div>
                 ')
             )
+            ->emailVerification()
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
