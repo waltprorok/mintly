@@ -18,7 +18,7 @@ class LoanCalculator extends Page implements HasForms
     protected static ?string $navigationLabel = 'Loan Calculator';
     protected static ?string $title = 'Loan Calculator';
     protected string $view = 'filament.pages.loan-calculator';
-    protected static ?int $navigationSort = 6;
+    protected static ?int $navigationSort = 7;
 
     public ?array $data = [];
 

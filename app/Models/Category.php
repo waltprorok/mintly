@@ -30,14 +30,19 @@ class Category extends Model
     |--------------------------------------------------------------------------
     */
 
-    public function user(): BelongsTo
+    public function budgets(): HasMany
     {
-        return $this->belongsTo(User::class);
+        return $this->hasMany(CategoryBudget::class);
     }
 
     public function transactions(): HasMany
     {
         return $this->hasMany(Transaction::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
     /*
