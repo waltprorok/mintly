@@ -225,6 +225,46 @@ class BudgetTracker extends Page implements HasTable
                         $this->resetTable();
                     }),
 
+                Action::make('copyBudgets')
+                    ->label('Copy to Next Month')
+                    ->icon('heroicon-o-document-duplicate')
+                    ->color('gray')
+                    ->visible(function (): bool {
+                        $sourceMonth = Carbon::createFromFormat(
+                            '!Y-m',
+                            $this->selectedMonth
+                        )->startOfMonth();
+
+                        return CategoryBudget::query()
+                            ->where('user_id', auth()->id())
+                            ->whereDate('month', $sourceMonth->toDateString())
+                            ->exists();
+                    })
+                    ->requiresConfirmation()
+                    ->modalHeading('Copy Budgets to Next Month')
+                    ->modalDescription('Copy the selected month’s budgets to the next month. Existing budgets will not be overwritten.')
+                    ->action(function (CategoryBudgetService $service): void {
+                        $sourceMonth = Carbon::createFromFormat(
+                            '!Y-m',
+                            $this->selectedMonth
+                        )->startOfMonth();
+
+                        $targetMonth = $sourceMonth->copy()->addMonth();
+
+                        $created = $service->copyToNextMonth(
+                            auth()->id(),
+                            $sourceMonth,
+                            $targetMonth
+                        );
+
+                        Notification::make()
+                            ->title("{$created} category budgets copied")
+                            ->success()
+                            ->send();
+
+                        $this->resetTable();
+                    }),
+
                 CreateAction::make()
                     ->label('Add Budget')
                     ->model(CategoryBudget::class)

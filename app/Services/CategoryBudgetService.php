@@ -47,4 +47,37 @@ class CategoryBudgetService
 
         return $created;
     }
+
+    public function copyToNextMonth(
+        int $userId,
+        Carbon $sourceMonth,
+        Carbon $targetMonth
+    ): int
+    {
+        $budgets = CategoryBudget::query()
+            ->where('user_id', $userId)
+            ->whereDate('month', $sourceMonth->copy()->startOfMonth())
+            ->get();
+
+        $created = 0;
+
+        foreach ($budgets as $budget) {
+            $newBudget = CategoryBudget::query()->firstOrCreate(
+                [
+                    'user_id' => $userId,
+                    'category_id' => $budget->category_id,
+                    'month' => $targetMonth->copy()->startOfMonth()->toDateString(),
+                ],
+                [
+                    'amount' => $budget->amount,
+                ]
+            );
+
+            if ($newBudget->wasRecentlyCreated) {
+                $created++;
+            }
+        }
+
+        return $created;
+    }
 }
