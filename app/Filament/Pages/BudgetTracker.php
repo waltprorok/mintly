@@ -200,6 +200,22 @@ class BudgetTracker extends Page implements HasTable
                     ->label('Generate Budgets')
                     ->icon('heroicon-o-arrow-path')
                     ->color('gray')
+                    ->visible(function (): bool {
+                        $sourceMonth = Carbon::createFromFormat(
+                            '!Y-m',
+                            $this->selectedMonth
+                        )->startOfMonth()->subMonth();
+
+                        return Transaction::query()
+                            ->where('user_id', auth()->id())
+                            ->where('type', 'expense')
+                            ->whereNotNull('category_id')
+                            ->whereBetween('due_at', [
+                                $sourceMonth->copy()->startOfMonth(),
+                                $sourceMonth->copy()->endOfMonth(),
+                            ])
+                            ->exists();
+                    })
                     ->requiresConfirmation()
                     ->modalHeading('Generate Monthly Budgets')
                     ->modalDescription('Generate budgets using the previous month’s transactions. Existing budgets will not be overwritten.')
@@ -268,6 +284,7 @@ class BudgetTracker extends Page implements HasTable
                 CreateAction::make()
                     ->label('Add Budget')
                     ->model(CategoryBudget::class)
+                    ->modalWidth('md')
                     ->schema($this->budgetFormSchema())
                     ->mutateDataUsing(function (array $data): array {
                         $data['user_id'] = auth()->id();
