@@ -105,7 +105,7 @@ class BudgetTracker extends Page implements HasTable
                     ->sortable()
                     ->summarize(
                         Sum::make()
-                            ->label('Total')
+                            ->label('Total Budget')
                             ->money('USD')
                     ),
 
@@ -114,7 +114,7 @@ class BudgetTracker extends Page implements HasTable
                     ->money('USD')
                     ->summarize(
                         Summarizer::make()
-                            ->label('Total')
+                            ->label('Total Allocated')
                             ->using(function (QueryBuilder $query): float {
                                 $categoryIds = (clone $query)
                                     ->select('category_id')
@@ -139,7 +139,7 @@ class BudgetTracker extends Page implements HasTable
                     ->money('USD')
                     ->summarize(
                         Summarizer::make()
-                            ->label('Total')
+                            ->label('Total Paid')
                             ->using(function (QueryBuilder $query): float {
                                 $categoryIds = (clone $query)
                                     ->select('category_id')
@@ -167,7 +167,7 @@ class BudgetTracker extends Page implements HasTable
                     ->color(fn($state) => $state < 0 ? 'danger' : 'success')
                     ->summarize(
                         Summarizer::make()
-                            ->label('Total')
+                            ->label('Total Remaining')
                             ->using(function (QueryBuilder $query): float {
                                 $budgets = (clone $query)
                                     ->select(['category_id', 'amount'])
