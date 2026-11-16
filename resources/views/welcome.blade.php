@@ -84,7 +84,26 @@
         <div class="collapse navbar-collapse" id="mainNav">
             <ul class="navbar-nav me-auto">
                 <li class="nav-item"><a class="nav-link" href="#how-it-works">How it works</a></li>
-                <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle"
+                       href="#"
+                       id="featuresDropdown"
+                       role="button"
+                       data-bs-toggle="dropdown"
+                       aria-expanded="false">
+                        Features
+                    </a>
+
+                    <ul class="dropdown-menu" aria-labelledby="featuresDropdown">
+                        <li><a class="dropdown-item" href="{{ url('/#features') }}">All Features</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{{ route('marketing.monthly-budget-planner') }}">Monthly Budget Planner</a></li>
+                        <li><a class="dropdown-item" href="{{ route('marketing.expense-tracker') }}">Expense Tracker</a></li>
+                        <li><a class="dropdown-item" href="{{ route('marketing.budget-tracker') }}">Budget Tracker</a></li>
+                        <li><a class="dropdown-item" href="{{ route('marketing.cash-flow-planner') }}">Cash Flow Planner</a></li>
+                        <li><a class="dropdown-item" href="{{ route('marketing.csv-import') }}">CSV Transaction Import</a></li>
+                    </ul>
+                </li>
                 <li class="nav-item"><a class="nav-link" href="#view-app">View App</a></li>
                 <li class="nav-item"><a class="nav-link" href="#pricing">Pricing</a></li>
             </ul>
@@ -403,6 +422,7 @@
                 ['file' => '1-dashboard.png', 'label' => 'Full dashboard overview'],
                 ['file' => '2-budget-planner.png', 'label' => 'Monthly budget planning'],
                 ['file' => '3-budget-planner-weeks.png', 'label' => 'Detailed monthly breakdown'],
+                ['file' => 'budget-tracker.png', 'label' => 'Budget Tracker'],
                 ['file' => '4-reports.png', 'label' => 'Visual reports & insights'],
                 ['file' => '5-transactions.png', 'label' => 'Transaction tracking'],
                 ['file' => '6-create-transaction.png', 'label' => 'Quick transaction entry'],

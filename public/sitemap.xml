@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+    <!-- Homepage -->
+    <url>
+        <loc>https://mintlybudget.com/</loc>
+    </url>
+
+    <!-- Monthly Budget Planner -->
+    <url>
+        <loc>https://mintlybudget.com/monthly-budget-planner</loc>
+    </url>
+
+    <!-- Expense Tracker -->
+    <url>
+        <loc>https://mintlybudget.com/expense-tracker</loc>
+    </url>
+
+    <!-- Budget Tracker -->
+    <url>
+        <loc>https://mintlybudget.com/budget-tracker</loc>
+    </url>
+
+    <!-- Cash Flow Planner -->
+    <url>
+        <loc>https://mintlybudget.com/cash-flow-planner</loc>
+    </url>
+
+    <!-- CSV Import -->
+    <url>
+        <loc>https://mintlybudget.com/csv-import</loc>
+    </url>
+
+</urlset>

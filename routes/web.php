@@ -30,3 +30,15 @@ Route::post('/register', [RegisterController::class, 'register'])
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::view('/terms', 'legal.terms')->name('terms');
 Route::view('/privacy', 'legal.privacy')->name('privacy');
+
+/*
+|--------------------------------------------------------------------------
+| Marketing SEO Pages
+|--------------------------------------------------------------------------
+*/
+
+Route::view('/monthly-budget-planner', 'marketing.monthly-budget-planner')->name('marketing.monthly-budget-planner');
+Route::view('/expense-tracker', 'marketing.expense-tracker')->name('marketing.expense-tracker');
+Route::view('/budget-tracker', 'marketing.budget-tracker')->name('marketing.budget-tracker');
+Route::view('/cash-flow-planner', 'marketing.cash-flow-planner')->name('marketing.cash-flow-planner');
+Route::view('/csv-import', 'marketing.csv-import')->name('marketing.csv-import');
