@@ -74,7 +74,7 @@
 
                     <ul class="dropdown-menu" aria-labelledby="featuresDropdown">
                         <li><a class="dropdown-item" href="{{ url('/#features') }}">All Features</a></li>
-                        <li><hr class="dropdown-divider"></li>
+{{--                        <li><hr class="dropdown-divider"></li>--}}
                         <li><a class="dropdown-item" href="{{ route('marketing.monthly-budget-planner') }}">Monthly Budget Planner</a></li>
                         <li><a class="dropdown-item" href="{{ route('marketing.expense-tracker') }}">Expense Tracker</a></li>
                         <li><a class="dropdown-item"  href="{{ route('marketing.budget-tracker') }}">Budget Tracker</a></li>
