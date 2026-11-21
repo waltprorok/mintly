@@ -75,7 +75,7 @@ class TransactionResource extends Resource
 
             DatePicker::make('due_at')
                 ->seconds(false)
-                ->nullable(),
+                ->required(),
 
             Group::make([
                 Grid::make(4)
