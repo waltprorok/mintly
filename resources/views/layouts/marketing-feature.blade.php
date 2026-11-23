@@ -6,18 +6,18 @@
 
     {{-- SEO --}}
     <title>@yield('title') | Mintly Budget</title>
-    <meta name="description" content="@yield('description')">
-    <link rel="canonical" href="@yield('canonical')">
+    <meta name="description" content="@yield('description', 'Mintly helps you plan your monthly budget, track expenses, and manage your cash flow.')">
+    <link rel="canonical" href="@yield('canonical', url()->current())">
     <meta name="robots" content="index, follow">
 
     {{-- Open Graph --}}
     <meta property="og:title" content="@yield('title') | Mintly Budget">
-    <meta property="og:description" content="@yield('description')">
-    <meta property="og:url" content="@yield('canonical')">
+    <meta property="og:description" content="@yield('description', 'Mintly helps you plan your monthly budget, track expenses, and manage your cash flow.')">
+    <meta property="og:url" content="@yield('canonical', url()->current())">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Mintly">
     <meta property="og:locale" content="en_US">
-    <meta property="og:image" content="{{ asset('images/social-preview-v1.png') }}">
+    <meta property="og:image" content="{{ secure_asset('images/social-preview-v1.png') }}">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
 
@@ -25,11 +25,11 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="@yield('title') | Mintly Budget">
     <meta name="twitter:description" content="@yield('description')">
-    <meta name="twitter:image" content="{{ asset('images/social-preview-v1.png') }}">
+    <meta name="twitter:image" content="{{ secure_asset('images/social-preview-v1.png') }}">
     <meta name="twitter:site" content="@waltprorok">
 
     {{-- Icons --}}
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('images/apple-touch-icon.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ secure_asset('images/apple-touch-icon.png') }}">
     <meta name="theme-color" content="#080d0c">
     <meta name="google-site-verification" content="RPPhABGHaCi4Qmbse4behpD6u3I7nrE7nxuVnXzE3mA">
 

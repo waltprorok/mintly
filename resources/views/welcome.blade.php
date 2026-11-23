@@ -6,7 +6,7 @@
     <title>Mintly | Monthly Budget Planner & Cash Flow Tracker</title>
     <meta name="description" content="Plan your monthly budget and track cash flow in real time with Mintly. Stay on top of bills, income, and spending with a simple weekly view.">
 
-    <link rel="canonical" href="https://mintlybudget.com">
+    <link rel="canonical" href="https://mintlybudget.com/">
 
     <meta property="og:title" content="Mintly | Monthly Budget Planner & Cash Flow Tracker">
     <meta property="og:description" content="Plan your monthly budget and track cash flow in real time. See what’s left each week and stay in control with Mintly.">
