@@ -1,8 +1,9 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Models;
 
 use App\Models\Category;
+use App\Models\CategoryBudget;
 use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -51,5 +52,20 @@ class CategoryTest extends TestCase
 
         $this->assertCount(3, $category->transactions);
         $this->assertTrue($category->transactions->first()->is($transactions->first()));
+    }
+
+    public function test_it_has_many_budgets(): void
+    {
+        $category = Category::factory()->create();
+
+        $budgets = CategoryBudget::query()->create([
+            'user_id' => $category->user_id,
+            'category_id' => $category->id,
+            'month' => '2026-11-01',
+            'amount' => 500.00,
+        ]);
+
+        $this->assertCount(1, $category->budgets);
+        $this->assertTrue($category->budgets->first()->is($budgets));
     }
 }

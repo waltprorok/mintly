@@ -17,7 +17,7 @@ class CategoryBudget extends Model
     protected function casts(): array
     {
         return [
-            'month' => 'date',
+            'month' => 'date:Y-m-d',
             'amount' => 'decimal:2',
         ];
     }
