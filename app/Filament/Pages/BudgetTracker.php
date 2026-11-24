@@ -299,6 +299,7 @@ class BudgetTracker extends Page implements HasTable
                     ->icon('heroicon-o-pencil-square')
                     ->iconButton()
                     ->tooltip('Edit Budget')
+                    ->modalWidth('md')
                     ->schema($this->budgetFormSchema())
                     ->mutateDataUsing(function (array $data): array {
                         unset($data['category_id']);
