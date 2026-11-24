@@ -64,6 +64,7 @@ class BudgetTracker extends Page implements HasTable
     public function table(Table $table): Table
     {
         return $table
+            ->defaultPaginationPageOption(25)
             ->query(fn(): Builder => CategoryBudget::query()
                 ->select('category_budgets.*')
                 ->with('category')
