@@ -3,13 +3,11 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
     {{-- SEO --}}
     <title>@yield('title') | Mintly Budget</title>
     <meta name="description" content="@yield('description', 'Mintly helps you plan your monthly budget, track expenses, and manage your cash flow.')">
     <link rel="canonical" href="@yield('canonical', url()->current())">
     <meta name="robots" content="index, follow">
-
     {{-- Open Graph --}}
     <meta property="og:title" content="@yield('title') | Mintly Budget">
     <meta property="og:description" content="@yield('description', 'Mintly helps you plan your monthly budget, track expenses, and manage your cash flow.')">
@@ -20,14 +18,12 @@
     <meta property="og:image" content="{{ secure_asset('images/social-preview-v1.png') }}">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-
     {{-- Twitter --}}
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="@yield('title') | Mintly Budget">
     <meta name="twitter:description" content="@yield('description')">
     <meta name="twitter:image" content="{{ secure_asset('images/social-preview-v1.png') }}">
     <meta name="twitter:site" content="@waltprorok">
-
     {{-- Icons --}}
     <link rel="apple-touch-icon" sizes="180x180" href="{{ secure_asset('images/apple-touch-icon.png') }}">
     <meta name="theme-color" content="#080d0c">
@@ -142,7 +138,6 @@
         <div class="row text-start">
             <div class="col-12 col-md-4 mb-4">
                 <div class="d-flex align-items-center mb-3">
-
                     <img src="{{ asset('images/apple-touch-icon.png') }}"
                          alt="Mintly logo"
                          class="me-3 rounded"
@@ -151,14 +146,12 @@
                     <h4 class="mb-0 fw-bold">
                         {{ config('app.name') }}
                     </h4>
-
                 </div>
 
                 <p class="text-secondary">
                     Plan your month, track each week,
                     and stay in control of your money.
                 </p>
-
             </div>
 
             <div class="col-12 col-md-8">
@@ -216,9 +209,7 @@
                                     Log in
                                 </a>
                             </li>
-
                         </ul>
-
                     </div>
 
                     <div class="col-12 col-md-4 mb-4">
